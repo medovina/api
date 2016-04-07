@@ -1,0 +1,23 @@
+#%RAML 1.0 Library
+
+uses:
+  Errors: !include error.raml
+
+traits:
+  secured:
+    is: [
+          Errors.fail: { code: "400", msg: "Access token is missing" },
+          Errors.fail: { code: "401", msg: "Access token is invalid or you cannot perfor this action." }
+        ]
+    headers:
+      Authorization:
+        description: A valid token must be transfered this way.
+
+  admin:
+    is: [
+          Errors.fail: { code: "400", msg: "Access token is missing" },
+          Errors.fail: { code: "401", msg: "Access token is not a valid administration token or you cannot perfor this action." }
+        ]
+    headers:
+      Authorization:
+        description: A valid token must be transfered this way.

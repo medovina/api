@@ -1,0 +1,24 @@
+#%RAML 1.0 Library
+
+resourceTypes:
+  - collection:
+    
+  - collectionItem:
+
+traits:
+  pageable:
+    queryParameters:
+       offset:
+         description: Skip over a number of elements by specifying an offset value for the query
+         type: number
+         format: int32
+         required: false
+         example: 20
+         default: 0
+       limit:
+         description: Limit the number of elements on the response
+         type: number
+         format: int32
+         required: false
+         example: 80
+         default: 10

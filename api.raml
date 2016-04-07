@@ -1,24 +1,70 @@
 #%RAML 1.0
 title: ReCodEx REST API
+uses:
+  Security: !include traits/security.raml
+  Collections: !include traits/collections.raml
 version: v1
+protocols: [ HTTPS ]
 baseUri: http://api.recodex.cz
-types:
-  TestType:
-    type: object
-    properties:
-      id: number
-      optional?: string
-      expanded:
-        type: object
-        properties:
-          count: number
-/helloWorld:
+
+/users:
   get:
-    responses:
-      200:
-        body:
-          application/json:
-            example: |
-              {
-                "message" : "Hello World"
-              }
+    is: [ Security.admin, Collections.pageable ]
+    description: Get the list of all users.
+  put:
+    is: [ Security.secured ]
+    description: |
+      Create new ReCodEx account or bind an existing account with
+      another authentication service.
+
+  /{userId}:
+    is: [ Security.secured ]
+    get:
+      description: Get details of a specific user.
+      responses:
+        200:
+          displayName: Retrieve user's profile.
+          description: The user's profile details.
+          body:
+
+    put:
+      description: Update user's personal information.
+    delete:
+      description: Close user's account.
+
+    /logins:
+      get:
+        description: Get the list of user's authentication methods.
+
+      /{loginId}:
+        put:
+          description: Enable or disable an authentication method.
+        delete:
+          description: Disable an authentication method.
+
+    /settings:
+      description: User's settings.
+      get:
+        description: Get user's current settings.
+      put:
+        description: Change the settings of the user.
+
+    /log:
+      get:
+        is: [ Collections.pageable ]
+        description: Get the history of user's activities.
+
+    /groups:
+      get:
+        is: [ Collections.pageable ]
+        description: The list of groups into which the user belongs.
+
+    /assignments:
+      get:
+        is: [ Collections.pageable ]
+        description: The list of assignments for the user accross all groups.
+
+    /submissions:
+      get:
+        is: [ Collections.pageable ]
+        description: The history of user's assignments' submissions.

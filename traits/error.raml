@@ -1,0 +1,15 @@
+#%RAML 1.0 Library
+
+traits:
+  fail:
+    responses:
+      <<code>>:
+        description: "<<code>> error response: <<msg>>"
+        body:
+          application/json:
+            example: |
+              {
+                "success": false,
+                "code": <<code>>,
+                "msg": <<msg>>
+              }
