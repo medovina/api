@@ -9,18 +9,7 @@ baseUri: http://api.recodex.org/{version}
 mediaType: application/json
 securitySchemes:
   - oauth_2_0: !include securitySchemes/oauth_2_0.raml
-
 securedBy: [ oauth_2_0 ]
-
-/auth:
-  description: Basic username + password authentication.
-  securedBy: [ null ]
-  /token:
-    description: Generate or refresh an access token.
-  /scope:
-    get:
-    post:
-      description: Get
 
 /instances:
   get:
