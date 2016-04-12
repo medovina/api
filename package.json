@@ -1,0 +1,22 @@
+{
+  "name": "api-doc",
+  "version": "1.0.0",
+  "description": "The documentation of the REST ReCodEx API.",
+  "main": "index.js",
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "build": "./raml2html/bin/raml2html api.raml > out/api.html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ReCodEx/api-doc.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ReCodEx/api-doc/issues"
+  },
+  "homepage": "https://github.com/ReCodEx/api-doc#readme"
+}
