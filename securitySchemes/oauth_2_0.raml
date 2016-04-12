@@ -1,0 +1,58 @@
+#%RAML 1.0 SecurityScheme
+
+type: OAuth 2.0
+description: |
+  ReCodEx supports OAuth 2.0 for authenticating API requests.
+
+describedBy:
+  headers:
+    Authorization:
+      description: |
+         Used to send a valid OAuth 2 access token. Do not use
+         with the "access_token" query string parameter.
+      type: string
+      pattern: "^Bearer: .+$"
+
+  queryParameters:
+    access_token:
+      description: |
+        Used to send a valid OAuth 2 access token. Do not use together with
+        the "Authorization" header
+      type: string
+
+  responses:
+    400:
+      description: Access token is missing in the request.
+      body:
+        application/json:
+          example: |
+            {
+              "success": false,
+              "code": 400,
+              "msg": "Access token is missing"
+            }
+    401:
+      description: Access token is not valid (it expired, was revoked, uses wrong encryption keys or is damaged).
+      body:
+        application/json:
+          example: |
+            {
+              "success": false,
+              "code": 401,
+              "msg": "Access token is not a valid administration token (it expired, was revoked, uses wrong encryption keys or is damaged) or you cannot perform this action."
+            }
+    403:
+      description: User cannot perform this action.
+      body:
+        application/json:
+          example: |
+            {
+              "success": false,
+              "code": 403,
+              "msg": "You cannot perform this action."
+            }
+
+settings:
+  authorizationUri: null
+  accessTokenUri: https://api.recodex.org/v1/oauth2/token
+  authorizationGrants: [ implicit, password, refresh_token ]

@@ -7,7 +7,7 @@ traits:
   secured:
     is: [
           Errors.fail: { code: "400", msg: "Access token is missing" },
-          Errors.fail: { code: "401", msg: "Access token is invalid or you cannot perfor this action." }
+          Errors.fail: { code: "401", msg: "Access token is invalid (it expired, was revoked, uses wrong encryption keys or is damaged) or you cannot perform this action." }
         ]
     headers:
       Authorization:
@@ -16,8 +16,8 @@ traits:
   admin:
     is: [
           Errors.fail: { code: "400", msg: "Access token is missing" },
-          Errors.fail: { code: "401", msg: "Access token is not a valid administration token or you cannot perfor this action." }
+          Errors.fail: { code: "401", msg: "Access token is not a valid administration token (it expired, was revoked, uses wrong encryption keys or is damaged) or you cannot perform this action." }
         ]
     headers:
       Authorization:
-        description: A valid token must be transfered this way.
+        description: A valid admin's token must be transfered this way.
