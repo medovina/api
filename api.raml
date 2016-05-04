@@ -16,32 +16,39 @@ securedBy: [ oauth_2_0 ]
     description: Get the list of all instances
     queryParameters:
       valid:
-        displayName: Valid
         description: Get only valid or invalid instances
         type: boolean
         required: false
       language:
-        displayName: Language
         description: Get only instances with given language
         type: string
         minLength: 2
         maxLength: 2
         required: false
+    responses:
+      200:
+        body:
+          application/json:
+            example: |
+              [
+                {
+                  "id": 1,
+                  "name": "MFF UK",
+                  "language": "cs"
+                }
+              ]
   post:
     description: Create a new instance for a separate institution
     queryParameters:
       name:
-        displayName: Instance Name
         description: Name of the instance
         type: string
         example: MFF UK, Prague
       userId:
-        displayName: Owner
         description: Owner of the instance
         type: string
         example: John Doe
       language:
-        displayName: Language
         description: Default app language of the instance specified by the two letter standard [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1)
         type: string
         example: en
@@ -51,6 +58,16 @@ securedBy: [ oauth_2_0 ]
   /{instanceId}:
     get:
       description: Get the instance details
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                {
+                  "id": 1,
+                  "name": "MFF UK",
+                  "language": "cs"
+                }
     put:
       description: Update the instance details
     delete:
@@ -77,7 +94,6 @@ securedBy: [ oauth_2_0 ]
     description: Get the list of all groups
     queryParameters:
       instanceId:
-        displayName: Instance ID
         description: Get only groups of the instance with given
         required: false
   post:
