@@ -10,10 +10,12 @@ info:
   description: 
 tags:
   - name: assignment
-    description: Everything about your Pets
+    description: Exercise assignment endpoints
 paths:
   "/assignments":
     get:
+      tags:
+        - assignment
       description: 'The list of all assignments througout the history of ReCodEx.
 
 '
@@ -23,9 +25,13 @@ paths:
         name: Authorization
         type: string
     post:
+      tags:
+        - assignment
       description: Create a new assignment.
   "/assignments/{assignmentId}":
     delete:
+      tags:
+        - assignment
       description: Remove an assignment.
       parameters:
       - in: path
@@ -33,6 +39,8 @@ paths:
         required: true
         type: string
     get:
+      tags:
+        - assignment
       description: Get details of an assignment.
       parameters:
       - in: path
@@ -40,6 +48,8 @@ paths:
         required: true
         type: string
     put:
+      tags:
+        - assignment
       description: Edit assignment settings.
       parameters:
       - in: path
@@ -48,6 +58,8 @@ paths:
         type: string
   "/assignments/{assignmentId}/configuration":
     get:
+      tags:
+        - assignment
       description: The list of all specific configurations.
       parameters:
       - in: path
@@ -55,6 +67,8 @@ paths:
         required: true
         type: string
     post:
+      tags:
+        - assignment
       description: Create new configuration.
       parameters:
       - in: path
@@ -63,6 +77,8 @@ paths:
         type: string
   "/assignments/{assignmentId}/configuration/{configurationId}":
     delete:
+      tags:
+        - assignment
       description: Delete unnecessary configuration.
       parameters:
       - in: path
@@ -74,6 +90,8 @@ paths:
         required: true
         type: string
     get:
+      tags:
+        - assignment
       description: Get details of the configuration.
       parameters:
       - in: path
@@ -85,6 +103,8 @@ paths:
         required: true
         type: string
     put:
+      tags:
+        - assignment
       description: Change the configuration.
       parameters:
       - in: path
@@ -97,6 +117,8 @@ paths:
         type: string
   "/assignments/{assignmentId}/instructions":
     get:
+      tags:
+        - assignment
       description: |
         Get the list of all available language variants of
         the instructions and the instructions in the default language.
@@ -106,6 +128,8 @@ paths:
         required: true
         type: string
     post:
+      tags:
+        - assignment
       description: Create instructions in a different language.
       parameters:
       - in: path
@@ -114,6 +138,8 @@ paths:
         type: string
   "/assignments/{assignmentId}/instructions/{lang}":
     delete:
+      tags:
+        - assignment
       description: Delete instructions in a specific language.
       parameters:
       - in: path
@@ -125,6 +151,8 @@ paths:
         required: true
         type: string
     get:
+      tags:
+        - assignment
       description: Get instructions for the exercise in a specific language.
       parameters:
       - in: path
@@ -136,6 +164,8 @@ paths:
         required: true
         type: string
     put:
+      tags:
+        - assignment
       description: Edit the instructions.
       parameters:
       - in: path
@@ -148,6 +178,8 @@ paths:
         type: string
   "/assignments/{assignmentId}/submissions":
     get:
+      tags:
+        - assignment
       description: The list of all submissions for this assignment.
       parameters:
       - in: path
@@ -733,4 +765,3 @@ securityDefinitions:
     scopes: {}
     tokenUrl: https://api.recodex.org/v1/oauth2/token
     type: oauth2
-swagger: '2.0'
