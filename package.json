@@ -7,7 +7,7 @@
     "example": "examples"
   },
   "scripts": {
-    "build": "./raml2html/bin/raml2html api.raml > out/api.html"
+    "build": "raml2html/bin/raml2html -i api.raml -o out/api.html"
   },
   "repository": {
     "type": "git",

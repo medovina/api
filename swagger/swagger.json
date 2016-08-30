@@ -1,0 +1,2699 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Včelka API",
+        "description": "Včelka API for mobile  devices",
+        "version": "1.0.0"
+    },
+    "host": "www.vcelka.cz",
+    "schemes": [
+        "https"
+    ],
+    "basePath": "/api/v1",
+    "produces": [
+        "application/json"
+    ],
+    "securityDefinitions": {
+        "login": {
+            "type": "oauth2",
+            "description": "Login using OAuth2 based authentication process",
+            "flow": "password",
+            "tokenUrl": "/oauth/token",
+            "scopes": {
+                "read": "Get information of the user.",
+                "write": "Update the information of the user."
+            }
+        }
+    },
+    "paths": {
+        "/oauth/token": {
+            "post": {
+                "summary": "Log the user into the application",
+                "description": "User must be logged into the application to perform most actions in the application.\n",
+                "tags": [
+                    "user"
+                ],
+                "parameters": [
+                    {
+                        "name": "client_id",
+                        "in": "query",
+                        "description": "The client ID of the App",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "client_secret",
+                        "in": "query",
+                        "description": "The secret key of the client",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "grant_type",
+                        "in": "query",
+                        "description": "The OAuth2 grant type",
+                        "type": "string",
+                        "required": true,
+                        "enum": [
+                            "password",
+                            "google"
+                        ]
+                    },
+                    {
+                        "name": "username",
+                        "in": "formData",
+                        "description": "The login (email address) of the user. Required for grant type 'password'",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "password",
+                        "in": "formData",
+                        "description": "The plaintext password of the user. Required for grant type 'password'",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "googleIdToken",
+                        "in": "formData",
+                        "required": false,
+                        "description": "Valid ID token of a user. Required for grant type 'google'",
+                        "type": "string"
+                    },
+                    {
+                        "name": "device_id",
+                        "in": "formData",
+                        "description": "The plaintext password of the user.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User was logged in",
+                        "schema": {
+                            "$ref": "#/definitions/UserAccess"
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication failed",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/oauth/refresh-token": {
+            "post": {
+                "summary": "Refresh access token",
+                "tags": [
+                    "user"
+                ],
+                "parameters": [
+                    {
+                        "name": "client_id",
+                        "in": "query",
+                        "description": "The client ID of the App",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "client_secret",
+                        "in": "query",
+                        "description": "The secret key of the client",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "grant_type",
+                        "in": "query",
+                        "description": "The OAuth2 grant type",
+                        "type": "string",
+                        "required": true,
+                        "enum": [
+                            "refresh_token"
+                        ]
+                    },
+                    {
+                        "name": "refresh_token",
+                        "in": "query",
+                        "description": "A valid refresh token",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User was logged in",
+                        "schema": {
+                            "$ref": "#/definitions/UserAccess"
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication failed",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/logout": {
+            "post": {
+                "summary": "Log out of all devices",
+                "description": "This API call makes all active access tokens of the user invalid.\n",
+                "tags": [
+                    "user"
+                ],
+                "security": [
+                    {
+                        "login": [
+                            "read"
+                        ]
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The user was logged out of all devices.",
+                        "schema": {
+                            "$ref": "#/definitions/Confirmation"
+                        }
+                    },
+                    "401": {
+                        "description": "The access token is not valid.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/create-account": {
+            "get": {
+                "summary": "Registration information",
+                "description": "Get the information needed for the creation of a new user account.\n",
+                "tags": [
+                    "user"
+                ],
+                "parameters": [
+                    {
+                        "name": "client_id",
+                        "in": "query",
+                        "description": "The client ID of the App",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "client_secret",
+                        "in": "query",
+                        "description": "The secret key of the client",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The information",
+                        "schema": {
+                            "$ref": "#/definitions/RegistrationInfo"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Registration",
+                "description": "To create a new accout for a user, use this endpoint.\n",
+                "tags": [
+                    "user"
+                ],
+                "parameters": [
+                    {
+                        "name": "client_id",
+                        "in": "query",
+                        "description": "The client ID of the App",
+                        "type": "string",
+                        "required": true
+                    },
+                    {
+                        "name": "client_secret",
+                        "in": "query",
+                        "description": "The secret key of the client",
+                        "type": "string",
+                        "required": true
+                    },
+                    {
+                        "name": "device_id",
+                        "in": "formData",
+                        "description": "The ID of the device, which can be used for sending push notifications.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "formData",
+                        "description": "The prefered language of the user formated according to ISO 639-1.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "firstName",
+                        "in": "formData",
+                        "description": "The first name of the user.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "lastName",
+                        "in": "formData",
+                        "description": "The first name of the user.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "email",
+                        "in": "formData",
+                        "description": "The email of the user.",
+                        "required": true,
+                        "type": "string",
+                        "format": "email"
+                    },
+                    {
+                        "name": "password",
+                        "in": "formData",
+                        "description": "The plaintext password the user will use for authentication.",
+                        "type": "string",
+                        "required": true
+                    },
+                    {
+                        "name": "userType",
+                        "in": "formData",
+                        "description": "The type of the user account.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "agreesWithLevebeeTerms",
+                        "in": "formData",
+                        "description": "The user confirms he has read and aggrees with the terms of use of Levebee.",
+                        "type": "string",
+                        "required": true,
+                        "enum": [
+                            "yes"
+                        ]
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User account was created. The user can immediatelly access the app using the returned access token.",
+                        "schema": {
+                            "$ref": "#/definitions/UserAccess"
+                        }
+                    },
+                    "400": {
+                        "description": "User account could not be created because some parameters were missing or their value was invalid.\nPlease make sure that your request contains at least one authentication method information (password, google ID token).\n",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "409": {
+                        "description": "The account could not be created because the email address is already taken.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/create-account-google-auth": {
+            "post": {
+                "summary": "Registration using google authentication",
+                "description": "To create a new accout for a Google user, use this endpoint.\n",
+                "tags": [
+                    "user"
+                ],
+                "parameters": [
+                    {
+                        "name": "client_id",
+                        "in": "query",
+                        "description": "The client ID of the App",
+                        "type": "string",
+                        "required": true
+                    },
+                    {
+                        "name": "client_secret",
+                        "in": "query",
+                        "description": "The secret key of the client",
+                        "type": "string",
+                        "required": true
+                    },
+                    {
+                        "name": "device_id",
+                        "in": "formData",
+                        "description": "The ID of the device, which can be used for sending push notifications.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "formData",
+                        "description": "The prefered language of the user formated according to ISO 639-1.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "googleIdToken",
+                        "in": "formData",
+                        "description": "A valid Google ID token.",
+                        "type": "string",
+                        "required": true
+                    },
+                    {
+                        "name": "userType",
+                        "in": "formData",
+                        "description": "The type of the user account.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "agreesWithLevebeeTerms",
+                        "in": "formData",
+                        "description": "The user confirms he has read and aggrees with the terms of use of Levebee.",
+                        "type": "string",
+                        "required": true,
+                        "enum": [
+                            "yes"
+                        ]
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User account was created. The user can immediatelly access the app using the returned access token.",
+                        "schema": {
+                            "$ref": "#/definitions/UserAccess"
+                        }
+                    },
+                    "400": {
+                        "description": "User account could not be created because some parameters were missing or their value was invalid.\nPlease make sure that your request contains at least one authentication method information (password, google ID token).\n",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "409": {
+                        "description": "The account could not be created because the email address is already taken.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/reset-password": {
+            "post": {
+                "summary": "Request password reset",
+                "description": "If the user forgets his/her password, he/she can ask for a reset. This request\ndoesn't reset the password, but as a result, the user will receive an email with\ninstructions and the rest of the password reset takes place in the website.\n",
+                "tags": [
+                    "user"
+                ],
+                "parameters": [
+                    {
+                        "name": "client_id",
+                        "description": "The client ID of the App",
+                        "in": "query",
+                        "type": "string",
+                        "required": true
+                    },
+                    {
+                        "name": "client_secret",
+                        "description": "The secret key of the client",
+                        "in": "query",
+                        "type": "string",
+                        "required": true
+                    },
+                    {
+                        "name": "email",
+                        "description": "The email address of the user account.",
+                        "in": "formData",
+                        "type": "string",
+                        "format": "email"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An email was sent to the user.",
+                        "schema": {
+                            "$ref": "#/definitions/Confirmation"
+                        }
+                    },
+                    "400": {
+                        "description": "User account with this email address does not exist.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/check-email-address": {
+            "get": {
+                "summary": "Email address availability",
+                "description": "Before the app tries to create account, it must check, if the email address given by the user is already taken, or not.\n",
+                "tags": [
+                    "user"
+                ],
+                "parameters": [
+                    {
+                        "name": "client_id",
+                        "in": "query",
+                        "description": "The client ID of the App",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "client_secret",
+                        "in": "query",
+                        "description": "The secret key of the client",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "email",
+                        "in": "query",
+                        "description": "The email address to be checked.",
+                        "type": "string",
+                        "format": "email"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The email address is available.",
+                        "schema": {
+                            "$ref": "#/definitions/Confirmation"
+                        }
+                    },
+                    "409": {
+                        "description": "The email address is already taken.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/devices/register": {
+            "post": {
+                "summary": "Register device to the app",
+                "description": "Send the device id to match with push notifications.\n",
+                "tags": [
+                    "user"
+                ],
+                "parameters": [
+                    {
+                        "name": "device_id",
+                        "description": "The current iOS or Android device id",
+                        "in": "formData",
+                        "type": "string",
+                        "required": true
+                    },
+                    {
+                        "name": "old_device_id",
+                        "description": "Expired id of this device to remove from server",
+                        "in": "formData",
+                        "type": "string",
+                        "required": false
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Device id was stored.",
+                        "schema": {
+                            "$ref": "#/definitions/Confirmation"
+                        }
+                    },
+                    "400": {
+                        "description": "User account with this email address does not exist.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/dashboard": {
+            "get": {
+                "summary": "User's dashboard",
+                "description": "Get the list of all readers supervised by the current reader.\n",
+                "tags": [
+                    "user"
+                ],
+                "security": [
+                    {
+                        "login": [
+                            "read"
+                        ]
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The user's dashboard data.",
+                        "schema": {
+                            "$ref": "#/definitions/UsersDashboard"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/settings": {
+            "get": {
+                "summary": "Settings data",
+                "description": "The links for the user's account management and for all the readers.\n",
+                "tags": [
+                    "user"
+                ],
+                "security": [
+                    {
+                        "login": [
+                            "read"
+                        ]
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The user's settings summary.",
+                        "schema": {
+                            "$ref": "#/definitions/UsersSettingsSummary"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/readers/add": {
+            "get": {
+                "summary": "New reader information",
+                "description": "Get all the information needed for displaying a form for creating a new reader account.\n",
+                "tags": [
+                    "reader"
+                ],
+                "security": [
+                    {
+                        "login": [
+                            "read"
+                        ]
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The information about the available avatars.",
+                        "schema": {
+                            "$ref": "#/definitions/Avatars"
+                        }
+                    },
+                    "401": {
+                        "description": "The access token is not valid.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create new reader",
+                "description": "Create a new reader account.\n",
+                "tags": [
+                    "reader"
+                ],
+                "security": [
+                    {
+                        "login": [
+                            "write"
+                        ]
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "formData",
+                        "description": "The name of the reader.",
+                        "type": "string"
+                    },
+                    {
+                        "name": "avatarId",
+                        "in": "formData",
+                        "description": "The ID of the selected avatar for the reader.",
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "schoolYear",
+                        "in": "formData",
+                        "description": "The school year of the reader.",
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "age",
+                        "in": "formData",
+                        "description": "Age of the reader in years",
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "readingProblems",
+                        "in": "formData",
+                        "description": "Does the reader have some problems with reading?",
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "geneticMethod",
+                        "in": "formData",
+                        "description": "Does the user learn through the so-called 'genetic method of reading'",
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "The reader account was created.",
+                        "schema": {
+                            "$ref": "#/definitions/NewReader"
+                        }
+                    },
+                    "401": {
+                        "description": "The access token is not valid.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/diagnostics/text": {
+            "get": {
+                "summary": "Text for the diagnostics",
+                "tags": [
+                    "diagnostics"
+                ],
+                "security": [
+                    {
+                        "login": [
+                            "read"
+                        ]
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "lastArticle",
+                        "in": "query",
+                        "required": false,
+                        "description": "The ID of the last article, which the reader read.",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The text for the diagnostics",
+                        "schema": {
+                            "$ref": "#/definitions/DiagnosticsArticle"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/diagnostics/questions": {
+            "get": {
+                "summary": "Diagnostics information",
+                "description": "The list of all sections and questions for the diagnostics form.\n",
+                "tags": [
+                    "diagnostics"
+                ],
+                "security": [
+                    {
+                        "login": [
+                            "write"
+                        ]
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The diagnostics information",
+                        "schema": {
+                            "$ref": "#/definitions/DiagnosticsInformation"
+                        }
+                    },
+                    "401": {
+                        "description": "The access token is not valid.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "403": {
+                        "description": "The user does not have rights to access the specified user.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/diagnostics/save": {
+            "post": {
+                "summary": "Submit diagnostics results",
+                "description": "Submit the results of diagnostics for the reader.\n",
+                "tags": [
+                    "diagnostics"
+                ],
+                "security": [
+                    {
+                        "login": [
+                            "write"
+                        ]
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "readerId",
+                        "in": "formData",
+                        "type": "integer",
+                        "format": "int32",
+                        "required": true
+                    },
+                    {
+                        "name": "time",
+                        "in": "formData",
+                        "type": "integer",
+                        "format": "int32",
+                        "required": true
+                    },
+                    {
+                        "name": "answers",
+                        "in": "formData",
+                        "type": "string",
+                        "description": "Selected answers ids separated by ';' (semicolon)",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The diagnostics information",
+                        "schema": {
+                            "$ref": "#/definitions/DiagnosticsResult"
+                        }
+                    },
+                    "401": {
+                        "description": "The access token is not valid.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "403": {
+                        "description": "The user does not have rights to access the specified user.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/diagnostics/skip": {
+            "post": {
+                "summary": "Skip diagnostics",
+                "description": "User decided to skip diagnostics and to create playlist based on\nreader's age (in fact on reader's school year)\n",
+                "tags": [
+                    "diagnostics"
+                ],
+                "security": [
+                    {
+                        "login": [
+                            "write"
+                        ]
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "readerId",
+                        "in": "query",
+                        "type": "integer",
+                        "format": "int32",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Just a confirmation",
+                        "schema": {
+                            "$ref": "#/definitions/Confirmation"
+                        }
+                    },
+                    "401": {
+                        "description": "The access token is not valid.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "403": {
+                        "description": "The user does not have rights to access the specified user.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/readers/{id}/dashboard": {
+            "get": {
+                "summary": "Reader's dashboard",
+                "description": "The dashboard of the reader.\n",
+                "tags": [
+                    "reader"
+                ],
+                "security": [
+                    {
+                        "login": [
+                            "read"
+                        ]
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "description": "Reader's ID",
+                        "in": "path",
+                        "type": "integer",
+                        "format": "int32",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The dashboard",
+                        "schema": {
+                            "$ref": "#/definitions/ReaderDashboard"
+                        }
+                    },
+                    "401": {
+                        "description": "The access token is not valid.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "403": {
+                        "description": "The user does not have rights to access the specified user.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/readers/{id}/markets": {
+            "get": {
+                "summary": "Reader's markets",
+                "description": "The markets for the reader.\n",
+                "tags": [
+                    "reader"
+                ],
+                "security": [
+                    {
+                        "login": [
+                            "read"
+                        ]
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "description": "Reader's ID",
+                        "in": "path",
+                        "type": "integer",
+                        "format": "int32",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The list of markets",
+                        "schema": {
+                            "$ref": "#/definitions/Markets"
+                        }
+                    },
+                    "401": {
+                        "description": "The access token is not valid.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "403": {
+                        "description": "The user does not have rights to access the specified user.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/readers/{id}/licence": {
+            "get": {
+                "summary": "Reader's licence",
+                "description": "The dashboard of the reader.\n",
+                "tags": [
+                    "reader"
+                ],
+                "security": [
+                    {
+                        "login": [
+                            "read"
+                        ]
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "description": "Reader's ID",
+                        "in": "path",
+                        "type": "integer",
+                        "format": "int32",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Licence information",
+                        "schema": {
+                            "$ref": "#/definitions/ReadersLicence"
+                        }
+                    },
+                    "401": {
+                        "description": "The access token is not valid.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "403": {
+                        "description": "The user does not have rights to access the specified user.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/readers/{id}/points": {
+            "get": {
+                "summary": "Reader's points",
+                "description": "The information about reader's points.\n",
+                "tags": [
+                    "reader"
+                ],
+                "security": [
+                    {
+                        "login": [
+                            "read"
+                        ]
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "description": "Reader's ID",
+                        "in": "path",
+                        "type": "integer",
+                        "format": "int32",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The information about reader's points",
+                        "schema": {
+                            "$ref": "#/definitions/ReaderPoints"
+                        }
+                    },
+                    "401": {
+                        "description": "The access token is not valid.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "403": {
+                        "description": "The user does not have rights to access the specified user.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/exercise": {
+            "get": {
+                "summary": "Data of reader's playlist item",
+                "description": "The information about reader's points. More about data format at [Vcelka - app. dev](https://docs.google.com/document/d/1OFmxV7SGhmhlEO8YEVFH43aWDOnfjzeElmXtdJZxI2E/edit#) document, section 1.1.4.\n",
+                "tags": [
+                    "exercises"
+                ],
+                "security": [
+                    {
+                        "login": [
+                            "read"
+                        ]
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "readerId",
+                        "description": "Reader's ID",
+                        "in": "query",
+                        "type": "integer",
+                        "format": "int32",
+                        "required": true
+                    },
+                    {
+                        "name": "playlistItemId",
+                        "description": "Playlist item ID",
+                        "in": "query",
+                        "type": "integer",
+                        "format": "int32",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The information about the playlist item - the exercise metadata and the data",
+                        "schema": {
+                            "$ref": "#/definitions/Exercise"
+                        }
+                    },
+                    "401": {
+                        "description": "The access token is not valid.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "403": {
+                        "description": "The user does not have rights to access the specified user.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/exercise/submit-results": {
+            "post": {
+                "summary": "Save reader's results",
+                "description": "Save as many reader's results as needed in one batch request.\n",
+                "tags": [
+                    "exercises"
+                ],
+                "security": [
+                    {
+                        "login": [
+                            "write"
+                        ]
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "readerId",
+                        "description": "Reader's ID",
+                        "in": "query",
+                        "type": "integer",
+                        "format": "int32",
+                        "required": true
+                    },
+                    {
+                        "name": "results",
+                        "description": "An array of results. Pass in !formData!, not body. Only swagger couldn't get it.",
+                        "in": "body",
+                        "schema": {
+                          "$ref": "#/definitions/ExerciseResults"
+                        },
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The result response",
+                        "schema": {
+                            "$ref": "#/definitions/ExerciseResultResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "The access token is not valid.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "403": {
+                        "description": "The user does not have rights to access the specified user.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/media": {
+            "get": {
+                "summary": "Get all media",
+                "description": "Get the download links for gzip files with exercise media.\n",
+                "tags": [
+                    "exercises"
+                ],
+                "security": [
+                    {
+                        "login": [
+                            "read"
+                        ]
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "client_id",
+                        "in": "query",
+                        "description": "The client ID of the App",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "client_secret",
+                        "in": "query",
+                        "description": "The secret key of the client",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "lastUpdate",
+                        "description": "Last update datetime (empty string if first download)",
+                        "in": "query",
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Media data links",
+                        "schema": {
+                            "$ref": "#/definitions/MediaDataLinks"
+                        }
+                    },
+                    "401": {
+                        "description": "The access token is not valid.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/exercise/letters": {
+            "get": {
+                "summary": "Get all letters.",
+                "description": "Get all non-capital letters and their text object id. Also includes info about diacritics and vowels.",
+                "tags": [
+                    "exercises"
+                ],
+                "security": [
+                    {
+                        "login": [
+                            "read"
+                        ]
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Letters",
+                        "schema": {
+                            "$ref": "#/definitions/Letters"
+                        }
+                    },
+                    "401": {
+                        "description": "The access token is not valid.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/library/{readerId}": {
+            "get": {
+                "summary": "Library",
+                "description": "The whole list of reader's books in his/her library.\n",
+                "tags": [
+                    "library"
+                ],
+                "security": [
+                    {
+                        "login": [
+                            "read"
+                        ]
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "readerId",
+                        "description": "Reader's ID",
+                        "in": "path",
+                        "type": "integer",
+                        "format": "int32",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The metadata of all reader's \"books\"",
+                        "schema": {
+                            "$ref": "#/definitions/Library"
+                        }
+                    },
+                    "401": {
+                        "description": "The access token is not valid.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "403": {
+                        "description": "The user does not have rights to access the specified user.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/library/{readerId}/item/{itemId}": {
+            "get": {
+                "summary": "Data of a library item",
+                "description": "The information about reader's points.\n",
+                "tags": [
+                    "library"
+                ],
+                "security": [
+                    {
+                        "login": [
+                            "read"
+                        ]
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "readerId",
+                        "description": "Reader's ID",
+                        "in": "path",
+                        "type": "integer",
+                        "format": "int32",
+                        "required": true
+                    },
+                    {
+                        "name": "itemId",
+                        "description": "library item ID",
+                        "in": "path",
+                        "type": "integer",
+                        "format": "int32",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The information about the library item - the metadata and the whole content",
+                        "schema": {
+                            "$ref": "#/definitions/LibraryItem"
+                        }
+                    },
+                    "401": {
+                        "description": "The access token is not valid.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "403": {
+                        "description": "The user does not have rights to access the specified user or the library item.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/text-content/how-to-use-app": {
+            "get": {
+                "summary": "The How-to guide for mobile apps",
+                "tags": [
+                    "text-content"
+                ],
+                "parameters": [
+                    {
+                        "name": "client_id",
+                        "in": "query",
+                        "description": "The client ID of the App",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "client_secret",
+                        "in": "query",
+                        "description": "The secret key of the client",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "platform",
+                        "in": "query",
+                        "type": "string",
+                        "required": true,
+                        "enum": [
+                            "android"
+                        ]
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The how-to guide",
+                        "schema": {
+                            "$ref": "#/definitions/TextContent"
+                        }
+                    }
+                }
+            }
+        },
+        "/content/narrative-pictures": {
+            "get": {
+                "summary": "Narrative pictures list",
+                "description": "Narrative pictures list, ordered by id.\n",
+                "tags": [
+                    "content"
+                ],
+                "security": [
+                    {
+                        "login": [
+                            "read"
+                        ]
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The list of all narrative pictures",
+                        "schema": {
+                            "$ref": "#/definitions/NarrativePicturesList"
+                        }
+                    },
+                    "401": {
+                        "description": "The access token is not valid.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/content/narrative-pictures/detail": {
+            "get": {
+                "summary": "Narrative picture detail",
+                "description": "Narrative picture detail - connection of layers to text objects.",
+                "tags": [
+                    "content"
+                ],
+                "security": [
+                    {
+                        "login": [
+                            "read"
+                        ]
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "required": true,
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The detailed data of the narrative picture",
+                        "schema": {
+                            "$ref": "#/definitions/NarrativePicture"
+                        }
+                    },
+                    "401": {
+                        "description": "The access token is not valid.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "Narrative picture with this id does not exist.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "AccessToken": {
+            "type": "object",
+            "description": "The access token for the user.",
+            "properties": {
+                "access_token": {
+                    "type": "string",
+                    "description": "The access token, which is used to sign other requests."
+                },
+                "token_type": {
+                    "type": "string",
+                    "description": "The type of the access token.",
+                    "enum": [
+                        "bearer"
+                    ]
+                },
+                "expires_in": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "The time, in which the token expires, in seconds."
+                },
+                "refresh_token": {
+                    "type": "string",
+                    "description": "Token, which can be used to re-generate a token when this access token is about to expire. The refresh token expires at the same tame as the access token."
+                }
+            },
+            "required": [
+                "access_token",
+                "token_type",
+                "expires_in",
+                "refresh_token"
+            ]
+        },
+        "Avatar": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "The ID of the avatar."
+                },
+                "url": {
+                    "type": "string",
+                    "format": "url",
+                    "description": "The URL of the avatar image."
+                }
+            },
+            "required": [
+                "id",
+                "url"
+            ]
+        },
+        "Avatars": {
+            "type": "object",
+            "properties": {
+                "availableAvatars": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Avatar"
+                    }
+                }
+            },
+            "required": [
+                "availableAvatars"
+            ]
+        },
+        "DiagnosticsArticle": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "text": {
+                    "type": "string"
+                },
+                "source": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "id",
+                "text",
+                "source"
+            ]
+        },
+        "DiagnosticsInformation": {
+            "type": "object",
+            "properties": {
+                "sections": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "title": {
+                                "type": "string"
+                            },
+                            "description": {
+                                "type": "string"
+                            },
+                            "questions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "format": "int32"
+                                        },
+                                        "text": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "id",
+                                        "text"
+                                    ]
+                                }
+                            }
+                        },
+                        "required": [
+                            "title",
+                            "questions"
+                        ]
+                    }
+                }
+            },
+            "required": [
+                "sections"
+            ]
+        },
+        "DiagnosticsSubmission": {
+            "type": "object",
+            "properties": {
+                "sections": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int32",
+                                "description": "The ID of a section of questions."
+                            },
+                            "answers": {
+                                "type": "array",
+                                "items": {
+                                    "type": "integer",
+                                    "format": "int32",
+                                    "description": "ID of all answers checked in the section."
+                                }
+                            }
+                        },
+                        "required": [
+                            "id",
+                            "answers"
+                        ]
+                    }
+                }
+            },
+            "required": [
+                "sections"
+            ]
+        },
+        "DiagnosticsResult": {
+            "type": "object",
+            "properties": {
+                "stats": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/DiagnosticsStats"
+                    }
+                },
+                "recommendations": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "text": {
+                                "type": "string"
+                            },
+                            "recommendedExercise": {
+                                "$ref": "#/definitions/RecommendedExercise"
+                            },
+                            "reasons": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "required": [
+                            "text",
+                            "recommendedExercise",
+                            "reasons"
+                        ]
+                    }
+                }
+            },
+            "required": [
+                "stats",
+                "recommendations"
+            ]
+        },
+        "DiagnosticsStats": {
+            "type": "object",
+            "properties": {
+                "title": {
+                    "type": "string"
+                },
+                "percent": {
+                    "type": "integer",
+                    "format": "int32"
+                }
+            },
+            "required": [
+                "title",
+                "percent"
+            ]
+        },
+        "Markets": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/Market"
+            }
+        },
+        "Market": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "previewUrl": {
+                    "type": "string"
+                },
+                "marketUrl": {
+                    "type": "string"
+                },
+                "minPoints": {
+                    "type": "integer",
+                    "format": "int32"
+                }
+            },
+            "required": [
+                "name",
+                "previewUrl",
+                "marketUrl",
+                "minPoints"
+            ]
+        },
+        "PlaylistItem": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "sectionId": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "exerciseId": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "level": {
+                    "type": "integer",
+                    "description": "The level of the exercise at this playlist item. If the level is not specified, then it is considered to be equal to 1.\n",
+                    "format": "int32"
+                },
+                "maxLevel": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Maximum level of the exercise. If the maximum level is not specified, then it is considered to be equal to 1,\nand the 'level' must be equal to 1 as well.\n"
+                },
+                "name": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "id",
+                "sectionId",
+                "exerciseId",
+                "name"
+            ]
+        },
+        "RecommendedExercise": {
+            "type": "object",
+            "properties": {
+                "sectionId": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "exerciseId": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "level": {
+                    "type": "integer",
+                    "description": "The level of the exercise at this playlist item. If the level is not specified, then it is considered to be equal to 1.\n",
+                    "format": "int32"
+                },
+                "maxLevel": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Maximum level of the exercise. If the maximum level is not specified, then it is considered to be equal to 1,\nand the 'level' must be equal to 1 as well.\n"
+                },
+                "name": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "sectionId",
+                "exerciseId",
+                "name"
+            ]
+        },
+        "Exercise": {
+            "type": "object",
+            "properties": {
+                "metadata": {
+                    "$ref": "#/definitions/ExerciseMetadata"
+                },
+                "settings": {
+                    "$ref": "#/definitions/ExerciseSettings"
+                },
+                "data": {
+                    "$ref": "#/definitions/ExerciseData"
+                }
+            },
+            "required": [
+                "metadata",
+                "data"
+            ]
+        },
+        "ExerciseMetadata": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "instructions": {
+                    "type": "string"
+                },
+                "detailedInstructions": {
+                    "type": "string"
+                },
+                "instructionsAudioUrl": {
+                    "type": "string"
+                },
+                "settingsUrl": {
+                    "description": "The URL for a web view to display the settings form of the exercise.",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "name",
+                "instructions",
+                "detailedInstructions"
+            ]
+        },
+        "ExerciseSettings": {
+            "type": "string",
+            "description": "The settings of the exercise serialized as a JSON",
+            "properties": { }
+        },
+        "ExerciseData": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/TextObject"
+            }
+        },
+        "ExerciseResults": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int32",
+                        "description": "Playlist item id."
+                    },
+                    "percent": {
+                        "type": "integer",
+                        "format": "int32",
+                        "description": "Percentage of correct answers/tasks in the exercise. -1 if no percentage is possible."
+                    },
+                    "objectsCount": {
+                        "type": "integer",
+                        "format": "int32",
+                        "description": "Count of used objects in the exercise. Usually same as the count or quantity setting."
+                    },
+                    "time": {
+                        "type": "integer",
+                        "format": "int32",
+                        "description": "Total count of seconds from the start event until the display of the results."
+                    },
+                    "feeling": {
+                        "type": "string",
+                        "description": "Selected smiley face. Values: ok, easy, hard"
+                    },
+                    "date": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "The date and the time of completing the exercise."
+                    }
+                }
+            }
+        },
+        "ExerciseResultResponse": {
+            "type": "object",
+            "properties": {
+                "success": {
+                    "type": "boolean"
+                },
+                "changedExercisesIds": {
+                    "type": "array",
+                    "description": "The IDs of the playlist items, which will be removed or their settings changed due to update.\n",
+                    "items": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                },
+                "dailyStreakPoints": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "randomRewardPoints": {
+                    "type": "integer",
+                    "format": "int32"
+                }
+            }
+        },
+        "TextObject": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "text": {
+                    "type": "string"
+                },
+                "syllables": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/WordSyllable"
+                    }
+                },
+                "childObjects": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/TextObject"
+                    }
+                },
+                "assimilation": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Assimilation"
+                    }
+                },
+                "questions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/TextQuestion"
+                    }
+                }
+            },
+            "required": [
+                "id"
+            ]
+        },
+        "WordSyllable": {
+            "type": "object",
+            "properties": {
+                "start": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "end": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "textObjectId": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "isLong": {
+                    "type": "boolean"
+                },
+                "isSimple": {
+                    "type": "boolean"
+                }
+            },
+            "required": [
+                "start",
+                "end"
+            ]
+        },
+        "Assimilation": {
+            "type": "object",
+            "properties": {
+                "position": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "letter": {
+                    "type": "string"
+                },
+                "similar": {
+                    "type": "string"
+                }
+            }
+        },
+        "TextQuestion": {
+            "type": "object",
+            "properties": {
+                "text": {
+                    "type": "string"
+                },
+                "answers": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "text": {
+                                "type": "string"
+                            },
+                            "isCorrect": {
+                                "type": "boolean"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "MediaDataLinks": {
+            "type": "object",
+            "properties": {
+                "urlList": {
+                    "type": "array",
+                    "description": "List of links of the archives with media data, from oldest to newest",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "Letters": {
+            "type": "object",
+            "properties": {
+                "success": {
+                    "type": "boolean"
+                },
+                "letters": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "text": {
+                                "type": "string"
+                            },
+                            "text_object_id": {
+                                "type": "integer",
+                                "format": "int32"
+                            },
+                            "has_diacritic": {
+                                "type": "boolean"
+                            },
+                            "is_vowel": {
+                                "type": "boolean"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "Library": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/LibraryItemMetadata"
+            }
+        },
+        "LibraryItem": {
+            "type": "object",
+            "properties": {
+                "metadata": {
+                    "$ref": "#/definitions/LibraryItemMetadata"
+                },
+                "text": {
+                    "type": "string",
+                    "description": "The whole text of the library item formated in HTML."
+                }
+            },
+            "required": [
+                "metadata",
+                "text"
+            ]
+        },
+        "LibraryItemMetadata": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "author": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "id",
+                "title",
+                "author"
+            ]
+        },
+        "LibraryItemData": {
+            "type": "string",
+            "description": "The whole text of the library item formated in HTML.",
+            "properties": {
+                
+            }
+        },
+        "Playlist": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/PlaylistItem"
+                    }
+                }
+            },
+            "required": [
+                "id",
+                "name",
+                "description",
+                "items"
+            ]
+        },
+        "ReaderDashboard": {
+            "type": "object",
+            "properties": {
+                "title": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "playlists": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Playlist"
+                    }
+                }
+            },
+            "required": [
+                "title",
+                "description",
+                "playlists"
+            ]
+        },
+        "ReaderPoints": {
+            "type": "object",
+            "properties": {
+                "available": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "The number of points which can be spent in a market."
+                },
+                "spent": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "The total number of points spent in the markets."
+                },
+                "total": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "The total amount of points received for exercises."
+                }
+            },
+            "required": [
+                "available",
+                "spent",
+                "total"
+            ]
+        },
+        "ReaderSettingsSummary": {
+            "type": "object",
+            "properties": {
+                "reader": {
+                    "$ref": "#/definitions/Reader"
+                },
+                "links": {
+                    "$ref": "#/definitions/ReaderSettingsLinks"
+                }
+            },
+            "required": [
+                "reader",
+                "links"
+            ]
+        },
+        "ReaderSettingsLinks": {
+            "type": "object",
+            "properties": {
+                "supervision": {
+                    "type": "string",
+                    "description": "The link to the supervision section of settings."
+                },
+                "exercisesManagement": {
+                    "type": "string",
+                    "description": "The link to the editation of the reader's playlist."
+                },
+                "results": {
+                    "type": "string",
+                    "description": "The link to the results screen."
+                }
+            },
+            "required": [
+                "supervision",
+                "exercisesManagement",
+                "results"
+            ]
+        },
+        "User": {
+            "type": "object",
+            "description": "The user account, which is the \"owner\" of the user account. If the logged in user is the owner of the reader, then this field is missing.",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "The internal ID of the user."
+                },
+                "email": {
+                    "type": "string",
+                    "description": "The email of the user."
+                },
+                "firstName": {
+                    "type": "string",
+                    "description": "The first name of the user."
+                },
+                "lastName": {
+                    "type": "string",
+                    "description": "The last name of the user."
+                },
+                "lang": {
+                    "type": "string",
+                    "description": "The prefered language of the user formated according to ISO 639-1."
+                },
+                "userType": {
+                    "type": "string",
+                    "description": "The type of the user account."
+                }
+            },
+            "required": [
+                "id",
+                "email",
+                "firstName",
+                "lastName",
+                "lang",
+                "userType"
+            ]
+        },
+        "UserAccess": {
+            "type": "object",
+            "properties": {
+                "user": {
+                    "$ref": "#/definitions/User"
+                },
+                "token": {
+                    "$ref": "#/definitions/AccessToken"
+                }
+            },
+            "required": [
+                "user",
+                "token"
+            ]
+        },
+        "UsersDashboard": {
+            "type": "object",
+            "properties": {
+                "readers": {
+                    "type": "array",
+                    "description": "The array of reader's supervised by the current user.",
+                    "items": {
+                        "$ref": "#/definitions/Reader"
+                    }
+                }
+            },
+            "required": [
+                "readers"
+            ]
+        },
+        "UsersSettingsLinks": {
+            "type": "object",
+            "properties": {
+                "messages": {
+                    "type": "string"
+                },
+                "support": {
+                    "type": "string"
+                },
+                "myAccount": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "messages",
+                "support",
+                "myAccount"
+            ]
+        },
+        "UsersSettingsSummary": {
+            "type": "object",
+            "properties": {
+                "links": {
+                    "$ref": "#/definitions/UsersSettingsLinks"
+                },
+                "readers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ReaderSettingsSummary"
+                    }
+                }
+            },
+            "required": [
+                "links",
+                "readers"
+            ]
+        },
+        "NarrativePicture": {
+            "type": "object",
+            "properties": {
+                "narrativePicture": {
+                    "$ref": "#/definitions/NarrativePitureMatadata"
+                },
+                "content": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/NarrativePictureTextObject"
+                    }
+                }
+            },
+            "required": [
+                "narrativePicture",
+                "content"
+            ]
+        },
+        "NarrativePicturesList": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/NarrativePitureMatadata"
+            }
+        },
+        "NarrativePitureMatadata": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Unique identifier"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Displayable name of the picture"
+                },
+                "url": {
+                    "type": "string",
+                    "description": "Source url of the picture"
+                }
+            },
+            "required": [
+                "id",
+                "name",
+                "url"
+            ]
+        },
+        "NarrativePictureTextObject": {
+            "type": "object",
+            "properties": {
+                "textObjectId": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Text object id"
+                },
+                "layerId": {
+                    "type": "string",
+                    "description": "SVG layer id"
+                }
+            },
+            "required": [
+                "textObjectId",
+                "layerId"
+            ]
+        },
+        "Reader": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "avatar": {
+                    "$ref": "#/definitions/Avatar"
+                },
+                "user": {
+                    "$ref": "#/definitions/User"
+                }
+            },
+            "required": [
+                "id",
+                "name",
+                "avatar",
+                "user"
+            ]
+        },
+        "NewReader": {
+            "type": "object",
+            "properties": {
+                "reader": {
+                    "$ref": "#/definitions/Reader"
+                },
+                "licence": {
+                    "$ref": "#/definitions/ReadersLicence"
+                }                
+            },
+            "required": [
+                "reader",
+                "licence"
+            ]
+        },
+        "ReadersLicence": {
+            "type": "object",
+            "properties": {
+                "isValid": {
+                    "type": "boolean"
+                },
+                "renewPageUrl": {
+                    "type": "string"
+                },
+                "expiration": {
+                    "type": "string",
+                    "format": "date-time"
+                }
+            },
+            "required": [
+                "isValid",
+                "renewPageUrl",
+                "expiration"
+            ]
+        },
+        "RegistrationInfo": {
+            "type": "object",
+            "properties": {
+                "userTypes": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "termsUrl": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "userTypes",
+                "termsUrl"
+            ]
+        },
+        "TextContent": {
+            "type": "object",
+            "properties": {
+                "success": {
+                    "type": "boolean"
+                },
+                "html": {
+                    "type": "string",
+                    "description": "The HTML data for the How-To guide"
+                }
+            },
+            "required": [
+                "success",
+                "html"
+            ]
+        },
+        "DateTime": {
+            "type": "object",
+            "description": "This is the time, by which this reader can run exercises. After this date,\nhe must purchase a new licence. If the reader does not have a valid licence,\na null value is returned instead of a date.\n",
+            "properties": {
+                "date": {
+                    "type": "string",
+                    "description": "The date and time"
+                },
+                "timezone_type": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "timezone": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "date",
+                "timezone_type",
+                "timezone"
+            ]
+        },
+        "Error": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "success": {
+                    "type": "boolean"
+                },
+                "message": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "code",
+                "success",
+                "message"
+            ]
+        },
+        "Confirmation": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "success": {
+                    "type": "boolean"
+                },
+                "message": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "code",
+                "message",
+                "success"
+            ]
+        }
+    }
+}

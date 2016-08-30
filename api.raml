@@ -11,6 +11,7 @@ securitySchemes:
   - oauth_2_0: !include securitySchemes/oauth_2_0.raml
 securedBy: [ oauth_2_0 ]
 
+
 /instances:
   get:
     description: Get the list of all instances
@@ -29,14 +30,7 @@ securedBy: [ oauth_2_0 ]
       200:
         body:
           application/json:
-            example: |
-              [
-                {
-                  "id": 1,
-                  "name": "MFF UK",
-                  "language": "cs"
-                }
-              ]
+            example: !include examples/instances.json
   post:
     description: Create a new instance for a separate institution
     queryParameters:
@@ -111,9 +105,9 @@ securedBy: [ oauth_2_0 ]
       description: Update the group details
     delete:
       description: Delete group
-    /users:
+    /members:
       get:
-        description: Get all users of the group
+        description: Get both students and supervisors of the group
       post:
         description: Add user to the group
       /{userId}:
@@ -121,6 +115,15 @@ securedBy: [ oauth_2_0 ]
           description: Update the role of the user in a group
         delete:
           description: Remove user from the group
+    /students:
+      get:
+        description: Get all students of the group
+    /supervisors:
+      get:
+        description: Get all supervisors of the group
+    /assignments:
+      get:
+        description: Get all assignments of the group
 
 /users:
   get:
