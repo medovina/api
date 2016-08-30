@@ -1,0 +1,736 @@
+swagger: '2.0'
+host: api.recodex.org
+basePath: "/v1"
+consumes:
+- application/json
+definitions: {}
+info:
+  title: ReCodEx REST API
+  version: v1
+  description: 
+tags:
+  - name: assignment
+    description: Everything about your Pets
+paths:
+  "/assignments":
+    get:
+      description: 'The list of all assignments througout the history of ReCodEx.
+
+'
+      parameters:
+      - description: A valid admin's token must be transfered this way.
+        in: header
+        name: Authorization
+        type: string
+    post:
+      description: Create a new assignment.
+  "/assignments/{assignmentId}":
+    delete:
+      description: Remove an assignment.
+      parameters:
+      - in: path
+        name: assignmentId
+        required: true
+        type: string
+    get:
+      description: Get details of an assignment.
+      parameters:
+      - in: path
+        name: assignmentId
+        required: true
+        type: string
+    put:
+      description: Edit assignment settings.
+      parameters:
+      - in: path
+        name: assignmentId
+        required: true
+        type: string
+  "/assignments/{assignmentId}/configuration":
+    get:
+      description: The list of all specific configurations.
+      parameters:
+      - in: path
+        name: assignmentId
+        required: true
+        type: string
+    post:
+      description: Create new configuration.
+      parameters:
+      - in: path
+        name: assignmentId
+        required: true
+        type: string
+  "/assignments/{assignmentId}/configuration/{configurationId}":
+    delete:
+      description: Delete unnecessary configuration.
+      parameters:
+      - in: path
+        name: assignmentId
+        required: true
+        type: string
+      - in: path
+        name: configurationId
+        required: true
+        type: string
+    get:
+      description: Get details of the configuration.
+      parameters:
+      - in: path
+        name: assignmentId
+        required: true
+        type: string
+      - in: path
+        name: configurationId
+        required: true
+        type: string
+    put:
+      description: Change the configuration.
+      parameters:
+      - in: path
+        name: assignmentId
+        required: true
+        type: string
+      - in: path
+        name: configurationId
+        required: true
+        type: string
+  "/assignments/{assignmentId}/instructions":
+    get:
+      description: |
+        Get the list of all available language variants of
+        the instructions and the instructions in the default language.
+      parameters:
+      - in: path
+        name: assignmentId
+        required: true
+        type: string
+    post:
+      description: Create instructions in a different language.
+      parameters:
+      - in: path
+        name: assignmentId
+        required: true
+        type: string
+  "/assignments/{assignmentId}/instructions/{lang}":
+    delete:
+      description: Delete instructions in a specific language.
+      parameters:
+      - in: path
+        name: assignmentId
+        required: true
+        type: string
+      - in: path
+        name: lang
+        required: true
+        type: string
+    get:
+      description: Get instructions for the exercise in a specific language.
+      parameters:
+      - in: path
+        name: assignmentId
+        required: true
+        type: string
+      - in: path
+        name: lang
+        required: true
+        type: string
+    put:
+      description: Edit the instructions.
+      parameters:
+      - in: path
+        name: assignmentId
+        required: true
+        type: string
+      - in: path
+        name: lang
+        required: true
+        type: string
+  "/assignments/{assignmentId}/submissions":
+    get:
+      description: The list of all submissions for this assignment.
+      parameters:
+      - in: path
+        name: assignmentId
+        required: true
+        type: string
+  "/configuration/hardware-groups":
+    delete: {}
+    get: {}
+    post: {}
+    put: {}
+  "/configuration/judges":
+    delete: {}
+    get: {}
+    post: {}
+  "/configuration/programming-languages":
+    delete: {}
+    get: {}
+    post: {}
+    put: {}
+  "/exercises":
+    get:
+      description: Get list of all available exercises.
+    post:
+      description: Create new exercise.
+  "/exercises/{exerciseId}":
+    delete:
+      description: Delete an unncessary exercise.
+      parameters:
+      - in: path
+        name: exerciseId
+        required: true
+        type: string
+    get:
+      description: Detailed information about an exercise.
+      parameters:
+      - in: path
+        name: exerciseId
+        required: true
+        type: string
+  "/exercises/{exerciseId}/configuration":
+    get:
+      description: The list of all specific configurations.
+      parameters:
+      - in: path
+        name: exerciseId
+        required: true
+        type: string
+    post:
+      description: Create new configuration.
+      parameters:
+      - in: path
+        name: exerciseId
+        required: true
+        type: string
+  "/exercises/{exerciseId}/configuration/automatic":
+    get:
+      description: |
+        List of all performed auto-configuration throughout the whole
+        lifespan of the exercise.
+      parameters:
+      - in: path
+        name: exerciseId
+        required: true
+        type: string
+    post:
+      description: Perform new auto-configuration.
+      parameters:
+      - in: path
+        name: exerciseId
+        required: true
+        type: string
+  "/exercises/{exerciseId}/configuration/automatic/{automaticConfigurationId}":
+    delete:
+      description: Remove unnecessary autoconfiguration log.
+      parameters:
+      - in: path
+        name: exerciseId
+        required: true
+        type: string
+      - in: path
+        name: automaticConfigurationId
+        required: true
+        type: string
+    get:
+      description: Auto-configuration results.
+      parameters:
+      - in: path
+        name: exerciseId
+        required: true
+        type: string
+      - in: path
+        name: automaticConfigurationId
+        required: true
+        type: string
+  "/exercises/{exerciseId}/configuration/{configurationId}":
+    delete:
+      description: Delete unnecessary configuration.
+      parameters:
+      - in: path
+        name: exerciseId
+        required: true
+        type: string
+      - in: path
+        name: configurationId
+        required: true
+        type: string
+    get:
+      description: Get details of the configuration.
+      parameters:
+      - in: path
+        name: exerciseId
+        required: true
+        type: string
+      - in: path
+        name: configurationId
+        required: true
+        type: string
+    put:
+      description: Change the configuration.
+      parameters:
+      - in: path
+        name: exerciseId
+        required: true
+        type: string
+      - in: path
+        name: configurationId
+        required: true
+        type: string
+  "/exercises/{exerciseId}/instructions":
+    get:
+      description: |
+        Get the list of all available language variants of
+        the instructions and the instructions in the default language.
+      parameters:
+      - in: path
+        name: exerciseId
+        required: true
+        type: string
+    post:
+      description: Create instructions in a different language.
+      parameters:
+      - in: path
+        name: exerciseId
+        required: true
+        type: string
+  "/exercises/{exerciseId}/instructions/{lang}":
+    delete:
+      description: Delete instructions in a specific language.
+      parameters:
+      - in: path
+        name: exerciseId
+        required: true
+        type: string
+      - in: path
+        name: lang
+        required: true
+        type: string
+    get:
+      description: Get instructions for the exercise in a specific language.
+      parameters:
+      - in: path
+        name: exerciseId
+        required: true
+        type: string
+      - in: path
+        name: lang
+        required: true
+        type: string
+    put:
+      description: Edit the instructions.
+      parameters:
+      - in: path
+        name: exerciseId
+        required: true
+        type: string
+      - in: path
+        name: lang
+        required: true
+        type: string
+  "/exercises/{exerciseId}/sample-solutions":
+    get:
+      description: The list of submitted sample solutions.
+      parameters:
+      - in: path
+        name: exerciseId
+        required: true
+        type: string
+    post:
+      description: Submit new sample solution.
+      parameters:
+      - in: path
+        name: exerciseId
+        required: true
+        type: string
+  "/exercises/{exerciseId}/sample-solutions/{sampleSolutionId}":
+    delete:
+      description: Remove unnecessary sample solution.
+      parameters:
+      - in: path
+        name: exerciseId
+        required: true
+        type: string
+      - in: path
+        name: sampleSolutionId
+        required: true
+        type: string
+    get:
+      description: Information about a sample solutoon.
+      parameters:
+      - in: path
+        name: exerciseId
+        required: true
+        type: string
+      - in: path
+        name: sampleSolutionId
+        required: true
+        type: string
+    put:
+      description: Update information about a sample solution.
+      parameters:
+      - in: path
+        name: exerciseId
+        required: true
+        type: string
+      - in: path
+        name: sampleSolutionId
+        required: true
+        type: string
+  "/groups":
+    get:
+      description: Get the list of all groups
+      parameters:
+      - description: Get only groups of the instance with given
+        in: query
+        name: instanceId
+        required: false
+        type: string
+    post:
+      description: Create new group
+      parameters:
+      - in: query
+        name: name
+        type: string
+      - in: query
+        name: instanceId
+        type: string
+      - in: query
+        name: externalId
+        type: string
+      - in: query
+        name: parentGroupId
+        type: string
+  "/groups/{groupId}":
+    delete:
+      description: Delete group
+      parameters:
+      - in: path
+        name: groupId
+        required: true
+        type: string
+    get:
+      description: Get the group details
+      parameters:
+      - in: path
+        name: groupId
+        required: true
+        type: string
+    put:
+      description: Update the group details
+      parameters:
+      - in: path
+        name: groupId
+        required: true
+        type: string
+  "/groups/{groupId}/users":
+    get:
+      description: Get all users of the group
+      parameters:
+      - in: path
+        name: groupId
+        required: true
+        type: string
+    post:
+      description: Add user to the group
+      parameters:
+      - in: path
+        name: groupId
+        required: true
+        type: string
+  "/groups/{groupId}/users/{userId}":
+    delete:
+      description: Remove user from the group
+      parameters:
+      - in: path
+        name: groupId
+        required: true
+        type: string
+      - in: path
+        name: userId
+        required: true
+        type: string
+    put:
+      description: Update the role of the user in a group
+      parameters:
+      - in: path
+        name: groupId
+        required: true
+        type: string
+      - in: path
+        name: userId
+        required: true
+        type: string
+  "/instances":
+    get:
+      description: Get the list of all instances
+      parameters:
+      - description: Get only valid or invalid instances
+        in: query
+        name: valid
+        required: false
+        type: boolean
+      - description: Get only instances with given language
+        in: query
+        maxLength: 2
+        minLength: 2
+        name: language
+        required: false
+        type: string
+      responses:
+        '200':
+          description: OK
+    post:
+      description: Create a new instance for a separate institution
+      parameters:
+      - description: Name of the instance
+        in: query
+        name: name
+        type: string
+      - description: Owner of the instance
+        in: query
+        name: userId
+        type: string
+      - description: Default app language of the instance specified by the two letter
+          standard [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1)
+        in: query
+        maxLength: 2
+        minLength: 2
+        name: language
+        type: string
+  "/instances/{instanceId}":
+    delete:
+      description: Delete the instance and its groups
+      parameters:
+      - in: path
+        name: instanceId
+        required: true
+        type: string
+    get:
+      description: Get the instance details
+      parameters:
+      - in: path
+        name: instanceId
+        required: true
+        type: string
+      responses:
+        '200':
+          description: OK
+    put:
+      description: Update the instance details
+      parameters:
+      - in: path
+        name: instanceId
+        required: true
+        type: string
+  "/instances/{instanceId}/groups":
+    get:
+      description: Get the list of all groups of the instance
+      parameters:
+      - in: path
+        name: instanceId
+        required: true
+        type: string
+  "/instances/{instanceId}/licences":
+    get:
+      description: Get the list of all licences of the instance
+      parameters:
+      - in: path
+        name: instanceId
+        required: true
+        type: string
+    post:
+      description: Add a new licence to the instance
+      parameters:
+      - in: path
+        name: instanceId
+        required: true
+        type: string
+  "/instances/{instanceId}/licences/{licenceId}":
+    delete:
+      description: Delete the given licence of the instance
+      parameters:
+      - in: path
+        name: instanceId
+        required: true
+        type: string
+      - in: path
+        name: licenceId
+        required: true
+        type: string
+    put:
+      description: Update the given licence of the instance
+      parameters:
+      - in: path
+        name: instanceId
+        required: true
+        type: string
+      - in: path
+        name: licenceId
+        required: true
+        type: string
+  "/submissions":
+    get:
+      description: The list of all submissions throughout the application.
+  "/submissions/{submissionId}":
+    delete:
+      description: Remove an unncessary submission.
+      parameters:
+      - in: path
+        name: submissionId
+        required: true
+        type: string
+      - description: A valid admin's token must be transfered this way.
+        in: header
+        name: Authorization
+        type: string
+    get:
+      description: Details of the specific submission.
+      parameters:
+      - in: path
+        name: submissionId
+        required: true
+        type: string
+  "/submissions/{submissionId}/evaluation":
+    get:
+      description: The evaluation of the submission.
+      parameters:
+      - in: path
+        name: submissionId
+        required: true
+        type: string
+    post:
+      description: Publish the evaluation results of the submission.
+      parameters:
+      - in: path
+        name: submissionId
+        required: true
+        type: string
+  "/tags":
+    delete: {}
+    get: {}
+    post: {}
+  "/users":
+    get:
+      description: Get the list of all users.
+    put:
+      description: |
+        Create new ReCodEx account or bind an existing account with
+        another authentication service.
+  "/users/{userId}":
+    delete:
+      description: Close user's account.
+      parameters:
+      - in: path
+        name: userId
+        required: true
+        type: string
+    get:
+      description: Get details of a specific user.
+      parameters:
+      - in: path
+        name: userId
+        required: true
+        type: string
+      responses:
+        '200':
+          description: The user's profile details.
+    put:
+      description: Update user's personal information.
+      parameters:
+      - in: path
+        name: userId
+        required: true
+        type: string
+  "/users/{userId}/assignments":
+    get:
+      description: The list of assignments for the user accross all groups.
+      parameters:
+      - in: path
+        name: userId
+        required: true
+        type: string
+  "/users/{userId}/groups":
+    get:
+      description: The list of groups into which the user belongs.
+      parameters:
+      - in: path
+        name: userId
+        required: true
+        type: string
+  "/users/{userId}/log":
+    get:
+      description: Get the history of user's activities.
+      parameters:
+      - in: path
+        name: userId
+        required: true
+        type: string
+  "/users/{userId}/logins":
+    get:
+      description: Get the list of user's authentication methods.
+      parameters:
+      - in: path
+        name: userId
+        required: true
+        type: string
+  "/users/{userId}/logins/{loginId}":
+    delete:
+      description: Disable an authentication method.
+      parameters:
+      - in: path
+        name: userId
+        required: true
+        type: string
+      - in: path
+        name: loginId
+        required: true
+        type: string
+    put:
+      description: Enable or disable an authentication method.
+      parameters:
+      - in: path
+        name: userId
+        required: true
+        type: string
+      - in: path
+        name: loginId
+        required: true
+        type: string
+  "/users/{userId}/settings":
+    get:
+      description: Get user's current settings.
+      parameters:
+      - in: path
+        name: userId
+        required: true
+        type: string
+    put:
+      description: Change the settings of the user.
+      parameters:
+      - in: path
+        name: userId
+        required: true
+        type: string
+  "/users/{userId}/submissions":
+    get:
+      description: The history of user's assignments' submissions.
+      parameters:
+      - in: path
+        name: userId
+        required: true
+        type: string
+produces:
+- application/json
+schemes:
+- https
+securityDefinitions:
+  oauth_2_0_undefined:
+    authorizationUrl: ''
+    description: 'ReCodEx supports OAuth 2.0 for authenticating API requests.
+
+'
+    scopes: {}
+    tokenUrl: https://api.recodex.org/v1/oauth2/token
+    type: oauth2
+swagger: '2.0'
