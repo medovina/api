@@ -3,27 +3,51 @@ host: api.recodex.org
 basePath: "/v1"
 consumes:
 - application/json
-definitions: {}
+produces:
+- application/json
+schemes:
+- https
+securityDefinitions:
+  oauth_2_0_undefined:
+    authorizationUrl: ''
+    description: 'ReCodEx supports OAuth 2.0 for authenticating API requests.'
+    scopes: {}
+    tokenUrl: https://api.recodex.org/v1/oauth2/token
+    type: oauth2
+
 info:
   title: ReCodEx REST API
   version: v1
-  description: 
+  description:
+
 tags:
   - name: assignment
+    title: Exercise Assignment
     description: Exercise assignment endpoints
+
 paths:
+
+# EXERCISE ASSIGNMENTS
   "/assignments":
     get:
       tags:
         - assignment
-      description: 'The list of all assignments througout the history of ReCodEx.
-
-'
+      description: 'The list of all assignments througout the history of ReCodEx.'
       parameters:
       - description: A valid admin's token must be transfered this way.
         in: header
         name: Authorization
         type: string
+      responses:
+        200:
+          description: List of all assignments
+          schema:
+            type: "object"
+            allOf:
+              - properties:
+                  payload:
+                    $ref: "#/definitions/Assignments"
+              - $ref: "#/definitions/DefaultResponseParams"
     post:
       tags:
         - assignment
@@ -186,20 +210,8 @@ paths:
         name: assignmentId
         required: true
         type: string
-  "/configuration/hardware-groups":
-    delete: {}
-    get: {}
-    post: {}
-    put: {}
-  "/configuration/judges":
-    delete: {}
-    get: {}
-    post: {}
-  "/configuration/programming-languages":
-    delete: {}
-    get: {}
-    post: {}
-    put: {}
+
+# EXERCISES
   "/exercises":
     get:
       description: Get list of all available exercises.
@@ -409,6 +421,8 @@ paths:
         name: sampleSolutionId
         required: true
         type: string
+
+# GROUPS
   "/groups":
     get:
       description: Get the list of all groups
@@ -493,6 +507,8 @@ paths:
         name: userId
         required: true
         type: string
+
+# INSTANCES
   "/instances":
     get:
       description: Get the list of all instances
@@ -601,6 +617,8 @@ paths:
         name: licenceId
         required: true
         type: string
+
+# SUBMISSIONS
   "/submissions":
     get:
       description: The list of all submissions throughout the application.
@@ -642,6 +660,9 @@ paths:
     delete: {}
     get: {}
     post: {}
+
+
+# USERS
   "/users":
     get:
       description: Get the list of all users.
@@ -752,16 +773,21 @@ paths:
         name: userId
         required: true
         type: string
-produces:
-- application/json
-schemes:
-- https
-securityDefinitions:
-  oauth_2_0_undefined:
-    authorizationUrl: ''
-    description: 'ReCodEx supports OAuth 2.0 for authenticating API requests.
 
-'
-    scopes: {}
-    tokenUrl: https://api.recodex.org/v1/oauth2/token
-    type: oauth2
+definitions:
+  DefaultResponseParams:
+    properties:
+      success:
+        type: boolean
+        required: true
+      code:
+        type: integer
+        required: true
+
+  Assignments:
+    type: "object"
+    properties:
+      something1:
+        type: integer
+      something2:
+        type: string
