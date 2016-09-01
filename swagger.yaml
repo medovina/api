@@ -1,5 +1,5 @@
 swagger: '2.0'
-host: api.recodex.org
+host: URL
 basePath: "/v1"
 consumes:
 - application/json
@@ -22,8 +22,9 @@ info:
 
 tags:
   - name: assignment
-    title: Exercise Assignment
     description: Exercise assignment endpoints
+  - name: exercises
+    description: Exercise endpoints
 
 paths:
 
@@ -32,7 +33,7 @@ paths:
     get:
       tags:
         - assignment
-      description: 'The list of all assignments througout the history of ReCodEx.'
+      description: The list of all assignments througout the history of ReCodEx.
       parameters:
       - description: A valid admin's token must be transfered this way.
         in: header
@@ -42,12 +43,16 @@ paths:
         200:
           description: List of all assignments
           schema:
-            type: "object"
+            type: object
             allOf:
+              - $ref: "#/responses/DefaultResponseParams"
               - properties:
                   payload:
                     $ref: "#/definitions/Assignments"
-              - $ref: "#/definitions/DefaultResponseParams"
+        400:
+          $ref: "#/responses/BadRequestResponse"
+        403:
+          $ref: "#/responses/ForbiddenResponse"
     post:
       tags:
         - assignment
@@ -214,11 +219,17 @@ paths:
 # EXERCISES
   "/exercises":
     get:
+      tags:
+        - exercises
       description: Get list of all available exercises.
     post:
+      tags:
+        - exercises
       description: Create new exercise.
   "/exercises/{exerciseId}":
     delete:
+      tags:
+        - exercises
       description: Delete an unncessary exercise.
       parameters:
       - in: path
@@ -226,6 +237,8 @@ paths:
         required: true
         type: string
     get:
+      tags:
+        - exercises
       description: Detailed information about an exercise.
       parameters:
       - in: path
@@ -234,6 +247,8 @@ paths:
         type: string
   "/exercises/{exerciseId}/configuration":
     get:
+      tags:
+        - exercises
       description: The list of all specific configurations.
       parameters:
       - in: path
@@ -241,6 +256,8 @@ paths:
         required: true
         type: string
     post:
+      tags:
+        - exercises
       description: Create new configuration.
       parameters:
       - in: path
@@ -249,6 +266,8 @@ paths:
         type: string
   "/exercises/{exerciseId}/configuration/automatic":
     get:
+      tags:
+        - exercises
       description: |
         List of all performed auto-configuration throughout the whole
         lifespan of the exercise.
@@ -258,6 +277,8 @@ paths:
         required: true
         type: string
     post:
+      tags:
+        - exercises
       description: Perform new auto-configuration.
       parameters:
       - in: path
@@ -266,6 +287,8 @@ paths:
         type: string
   "/exercises/{exerciseId}/configuration/automatic/{automaticConfigurationId}":
     delete:
+      tags:
+        - exercises
       description: Remove unnecessary autoconfiguration log.
       parameters:
       - in: path
@@ -277,6 +300,8 @@ paths:
         required: true
         type: string
     get:
+      tags:
+        - exercises
       description: Auto-configuration results.
       parameters:
       - in: path
@@ -289,6 +314,8 @@ paths:
         type: string
   "/exercises/{exerciseId}/configuration/{configurationId}":
     delete:
+      tags:
+        - exercises
       description: Delete unnecessary configuration.
       parameters:
       - in: path
@@ -300,6 +327,8 @@ paths:
         required: true
         type: string
     get:
+      tags:
+        - exercises
       description: Get details of the configuration.
       parameters:
       - in: path
@@ -311,6 +340,8 @@ paths:
         required: true
         type: string
     put:
+      tags:
+        - exercises
       description: Change the configuration.
       parameters:
       - in: path
@@ -323,6 +354,8 @@ paths:
         type: string
   "/exercises/{exerciseId}/instructions":
     get:
+      tags:
+        - exercises
       description: |
         Get the list of all available language variants of
         the instructions and the instructions in the default language.
@@ -332,6 +365,8 @@ paths:
         required: true
         type: string
     post:
+      tags:
+        - exercises
       description: Create instructions in a different language.
       parameters:
       - in: path
@@ -340,6 +375,8 @@ paths:
         type: string
   "/exercises/{exerciseId}/instructions/{lang}":
     delete:
+      tags:
+        - exercises
       description: Delete instructions in a specific language.
       parameters:
       - in: path
@@ -351,6 +388,8 @@ paths:
         required: true
         type: string
     get:
+      tags:
+        - exercises
       description: Get instructions for the exercise in a specific language.
       parameters:
       - in: path
@@ -362,6 +401,8 @@ paths:
         required: true
         type: string
     put:
+      tags:
+        - exercises
       description: Edit the instructions.
       parameters:
       - in: path
@@ -374,6 +415,8 @@ paths:
         type: string
   "/exercises/{exerciseId}/sample-solutions":
     get:
+      tags:
+        - exercises
       description: The list of submitted sample solutions.
       parameters:
       - in: path
@@ -381,6 +424,8 @@ paths:
         required: true
         type: string
     post:
+      tags:
+        - exercises
       description: Submit new sample solution.
       parameters:
       - in: path
@@ -389,6 +434,8 @@ paths:
         type: string
   "/exercises/{exerciseId}/sample-solutions/{sampleSolutionId}":
     delete:
+      tags:
+        - exercises
       description: Remove unnecessary sample solution.
       parameters:
       - in: path
@@ -400,6 +447,8 @@ paths:
         required: true
         type: string
     get:
+      tags:
+        - exercises
       description: Information about a sample solutoon.
       parameters:
       - in: path
@@ -411,6 +460,8 @@ paths:
         required: true
         type: string
     put:
+      tags:
+        - exercises
       description: Update information about a sample solution.
       parameters:
       - in: path
@@ -425,6 +476,8 @@ paths:
 # GROUPS
   "/groups":
     get:
+      tags:
+        - groups
       description: Get the list of all groups
       parameters:
       - description: Get only groups of the instance with given
@@ -433,6 +486,8 @@ paths:
         required: false
         type: string
     post:
+      tags:
+        - groups
       description: Create new group
       parameters:
       - in: query
@@ -449,6 +504,8 @@ paths:
         type: string
   "/groups/{groupId}":
     delete:
+      tags:
+        - groups
       description: Delete group
       parameters:
       - in: path
@@ -456,6 +513,8 @@ paths:
         required: true
         type: string
     get:
+      tags:
+        - groups
       description: Get the group details
       parameters:
       - in: path
@@ -463,6 +522,8 @@ paths:
         required: true
         type: string
     put:
+      tags:
+        - groups
       description: Update the group details
       parameters:
       - in: path
@@ -471,6 +532,8 @@ paths:
         type: string
   "/groups/{groupId}/users":
     get:
+      tags:
+        - groups
       description: Get all users of the group
       parameters:
       - in: path
@@ -478,6 +541,8 @@ paths:
         required: true
         type: string
     post:
+      tags:
+        - groups
       description: Add user to the group
       parameters:
       - in: path
@@ -486,6 +551,8 @@ paths:
         type: string
   "/groups/{groupId}/users/{userId}":
     delete:
+      tags:
+        - groups
       description: Remove user from the group
       parameters:
       - in: path
@@ -497,6 +564,8 @@ paths:
         required: true
         type: string
     put:
+      tags:
+        - groups
       description: Update the role of the user in a group
       parameters:
       - in: path
@@ -511,50 +580,94 @@ paths:
 # INSTANCES
   "/instances":
     get:
+      tags:
+        - instances
       description: Get the list of all instances
       parameters:
-      - description: Get only valid or invalid instances
-        in: query
-        name: valid
-        required: false
-        type: boolean
-      - description: Get only instances with given language
-        in: query
-        maxLength: 2
-        minLength: 2
-        name: language
-        required: false
-        type: string
+#      - description: Get only valid or invalid instances
+#        in: query
+#        name: valid
+#        required: false
+#        type: boolean
+#      - description: Get only instances with given language
+#        in: query
+#        maxLength: 2
+#        minLength: 2
+#        name: language
+#        required: false
+#        type: string
       responses:
-        '200':
+        200:
           description: OK
+          schema:
+            type: object
+            allOf:
+              - $ref: "#/responses/DefaultResponseParams"
+              - properties:
+                  payload:
+                    $ref: "#/definitions/Instances"
+        400:
+          $ref: "#/responses/BadRequestResponse"
+        403:
+          $ref: "#/responses/ForbiddenResponse"
     post:
+      tags:
+        - instances
       description: Create a new instance for a separate institution
       parameters:
-      - description: Name of the instance
+      - name: name
+        description: Name of the instance
         in: query
-        name: name
         type: string
-      - description: Owner of the instance
+      - name: description
+        description: Description of the instance (shown in the instance detail)
         in: query
-        name: userId
         type: string
-      - description: Default app language of the instance specified by the two letter
-          standard [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1)
+      - name: isOpen
+        description: Owner of the instance
         in: query
-        maxLength: 2
-        minLength: 2
-        name: language
-        type: string
+        type: boolean
+#      - name: language
+#        description: Default app language of the instance specified by the two letter
+#          standard [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1)
+#        in: query
+#        maxLength: 2
+#        minLength: 2
+#        type: string
+      responses:
+        201:
+          description: Created
+          schema:
+            type: object
+            allOf:
+              - $ref: "#/responses/CreatedResponseParams"
+              - properties:
+                  payload:
+                    $ref: "#/definitions/Instance"
+        400:
+          $ref: "#/responses/BadRequestResponse"
+        403:
+          $ref: "#/responses/ForbiddenResponse"
   "/instances/{instanceId}":
     delete:
+      tags:
+        - instances
       description: Delete the instance and its groups
       parameters:
       - in: path
         name: instanceId
         required: true
         type: string
+      responses:
+        200:
+          $ref: "#/responses/DeleteResponse"
+        400:
+          $ref: "#/responses/BadRequestResponse"
+        403:
+          $ref: "#/responses/ForbiddenResponse"
     get:
+      tags:
+        - instances
       description: Get the instance details
       parameters:
       - in: path
@@ -562,40 +675,117 @@ paths:
         required: true
         type: string
       responses:
-        '200':
+        200:
           description: OK
+          schema:
+            type: object
+            allOf:
+              - $ref: "#/responses/DefaultResponseParams"
+              - properties:
+                  payload:
+                    $ref: "#/definitions/Instance"
+        400:
+          $ref: "#/responses/BadRequestResponse"
+        403:
+          $ref: "#/responses/ForbiddenResponse"
     put:
+      tags:
+        - instances
       description: Update the instance details
       parameters:
       - in: path
         name: instanceId
         required: true
         type: string
+      responses:
+        200:
+          description: OK
+          schema:
+            type: object
+            allOf:
+              - $ref: "#/responses/DefaultResponseParams"
+              - properties:
+                  payload:
+                    $ref: "#/definitions/Instance"
+        400:
+          $ref: "#/responses/BadRequestResponse"
+        403:
+          $ref: "#/responses/ForbiddenResponse"
   "/instances/{instanceId}/groups":
     get:
+      tags:
+        - instances
       description: Get the list of all groups of the instance
       parameters:
       - in: path
         name: instanceId
         required: true
         type: string
+      responses:
+        200:
+          description: OK
+          schema:
+            type: object
+            allOf:
+              - $ref: "#/responses/DefaultResponseParams"
+              - properties:
+                  payload:
+                    $ref: "#/definitions/Groups"
+        400:
+          $ref: "#/responses/BadRequestResponse"
+        403:
+          $ref: "#/responses/ForbiddenResponse"
   "/instances/{instanceId}/licences":
     get:
+      tags:
+        - instances
       description: Get the list of all licences of the instance
       parameters:
       - in: path
         name: instanceId
         required: true
         type: string
+      responses:
+        200:
+          description: OK
+          schema:
+            type: object
+            allOf:
+              - $ref: "#/responses/DefaultResponseParams"
+              - properties:
+                  payload:
+                    $ref: "#/definitions/Licences"
+        400:
+          $ref: "#/responses/BadRequestResponse"
+        403:
+          $ref: "#/responses/ForbiddenResponse"
     post:
+      tags:
+        - instances
       description: Add a new licence to the instance
       parameters:
       - in: path
         name: instanceId
         required: true
         type: string
+      responses:
+        201:
+          description: Created
+          schema:
+            type: object
+            allOf:
+              - $ref: "#/responses/CreatedResponseParams"
+              - properties:
+                  payload:
+                    $ref: "#/definitions/Licence"
+        400:
+          $ref: "#/responses/BadRequestResponse"
+        403:
+          $ref: "#/responses/ForbiddenResponse"
   "/instances/{instanceId}/licences/{licenceId}":
     delete:
+      tags:
+        - instances
       description: Delete the given licence of the instance
       parameters:
       - in: path
@@ -606,7 +796,16 @@ paths:
         name: licenceId
         required: true
         type: string
+      responses:
+        200:
+          $ref: "#/responses/DeleteResponse"
+        400:
+          $ref: "#/responses/BadRequestResponse"
+        403:
+          $ref: "#/responses/ForbiddenResponse"
     put:
+      tags:
+        - instances
       description: Update the given licence of the instance
       parameters:
       - in: path
@@ -617,13 +816,31 @@ paths:
         name: licenceId
         required: true
         type: string
+      responses:
+        200:
+          description: OK
+          schema:
+            type: object
+            allOf:
+              - $ref: "#/responses/DefaultResponseParams"
+              - properties:
+                  payload:
+                    $ref: "#/definitions/Licence"
+        400:
+          $ref: "#/responses/BadRequestResponse"
+        403:
+          $ref: "#/responses/ForbiddenResponse"
 
 # SUBMISSIONS
   "/submissions":
     get:
+      tags:
+        - submissions
       description: The list of all submissions throughout the application.
   "/submissions/{submissionId}":
     delete:
+      tags:
+        - submissions
       description: Remove an unncessary submission.
       parameters:
       - in: path
@@ -635,6 +852,8 @@ paths:
         name: Authorization
         type: string
     get:
+      tags:
+        - submissions
       description: Details of the specific submission.
       parameters:
       - in: path
@@ -643,6 +862,8 @@ paths:
         type: string
   "/submissions/{submissionId}/evaluation":
     get:
+      tags:
+        - submissions
       description: The evaluation of the submission.
       parameters:
       - in: path
@@ -650,6 +871,8 @@ paths:
         required: true
         type: string
     post:
+      tags:
+        - submissions
       description: Publish the evaluation results of the submission.
       parameters:
       - in: path
@@ -657,21 +880,33 @@ paths:
         required: true
         type: string
   "/tags":
-    delete: {}
-    get: {}
-    post: {}
+    delete:
+      tags:
+        - submissions
+    get:
+      tags:
+        - submissions
+    post:
+      tags:
+        - submissions
 
 
 # USERS
   "/users":
     get:
+      tags:
+        - users
       description: Get the list of all users.
     put:
+      tags:
+        - users
       description: |
         Create new ReCodEx account or bind an existing account with
         another authentication service.
   "/users/{userId}":
     delete:
+      tags:
+        - users
       description: Close user's account.
       parameters:
       - in: path
@@ -679,6 +914,8 @@ paths:
         required: true
         type: string
     get:
+      tags:
+        - users
       description: Get details of a specific user.
       parameters:
       - in: path
@@ -689,6 +926,8 @@ paths:
         '200':
           description: The user's profile details.
     put:
+      tags:
+        - users
       description: Update user's personal information.
       parameters:
       - in: path
@@ -697,6 +936,8 @@ paths:
         type: string
   "/users/{userId}/assignments":
     get:
+      tags:
+        - users
       description: The list of assignments for the user accross all groups.
       parameters:
       - in: path
@@ -705,6 +946,8 @@ paths:
         type: string
   "/users/{userId}/groups":
     get:
+      tags:
+        - users
       description: The list of groups into which the user belongs.
       parameters:
       - in: path
@@ -713,6 +956,8 @@ paths:
         type: string
   "/users/{userId}/log":
     get:
+      tags:
+        - users
       description: Get the history of user's activities.
       parameters:
       - in: path
@@ -721,6 +966,8 @@ paths:
         type: string
   "/users/{userId}/logins":
     get:
+      tags:
+        - users
       description: Get the list of user's authentication methods.
       parameters:
       - in: path
@@ -729,6 +976,8 @@ paths:
         type: string
   "/users/{userId}/logins/{loginId}":
     delete:
+      tags:
+        - users
       description: Disable an authentication method.
       parameters:
       - in: path
@@ -740,6 +989,8 @@ paths:
         required: true
         type: string
     put:
+      tags:
+        - users
       description: Enable or disable an authentication method.
       parameters:
       - in: path
@@ -752,6 +1003,8 @@ paths:
         type: string
   "/users/{userId}/settings":
     get:
+      tags:
+        - users
       description: Get user's current settings.
       parameters:
       - in: path
@@ -759,6 +1012,8 @@ paths:
         required: true
         type: string
     put:
+      tags:
+        - users
       description: Change the settings of the user.
       parameters:
       - in: path
@@ -767,6 +1022,8 @@ paths:
         type: string
   "/users/{userId}/submissions":
     get:
+      tags:
+        - users
       description: The history of user's assignments' submissions.
       parameters:
       - in: path
@@ -774,20 +1031,218 @@ paths:
         required: true
         type: string
 
-definitions:
+responses:
   DefaultResponseParams:
     properties:
-      success:
-        type: boolean
-        required: true
       code:
         type: integer
         required: true
+        example: 200
+      success:
+        type: boolean
+        required: true
+        example: true
 
+  SuccessResponse:
+    description: Success
+    schema:
+      type: object
+      allOf:
+        - $ref: "#/responses/DefaultResponseParams"
+
+  CreatedResponseParams:
+    properties:
+      code:
+        type: integer
+        required: true
+        example: 201
+      success:
+        type: boolean
+        required: true
+        example: true
+
+  DeleteResponse:
+    description: OK
+    schema:
+      properties:
+        code:
+          type: integer
+          required: true
+        success:
+          type: boolean
+          required: true
+        payload:
+          type: array
+          description: Empty array
+          items:
+            type: boolean
+      example:
+        code: 200
+        success: true
+        payload: []
+
+  DefaultErrorParams:
+    type: object
+    allOf:
+      - $ref: "#/responses/DefaultResponseParams"
+      - properties:
+          msg:
+            type: string
+            required: true
+
+  ForbiddenResponse:
+    description: Forbidden Request - Access denied
+    schema:
+      type: object
+      allOf:
+        - $ref: "#/responses/DefaultErrorParams"
+      example:
+        msg: Forbidden Request - Access denied
+        code: 403
+        success: false
+
+  BadRequestResponse:
+    description: Bad Request
+    schema:
+      type: object
+      allOf:
+        - $ref: "#/responses/DefaultErrorParams"
+      example:
+        msg: Bad Request - Missing required POST field
+        code: 400
+        success: false
+
+definitions:
   Assignments:
-    type: "object"
+    type: object
     properties:
       something1:
         type: integer
       something2:
         type: string
+
+  Group:
+    type: object
+    properties:
+      id:
+        type: string
+        format: guid
+        example: 04df8d5f-63d9-11e6-8691-0026b9b15f19
+
+  Groups:
+    type: array
+    items:
+      $ref: "#/definitions/Group"
+
+  Instance:
+    type: object
+    properties:
+      id:
+        type: string
+        format: guid
+        example: 04df8d5f-63d9-11e6-8691-0026b9b15f19
+      name:
+        type: string
+        example: Frankenstein University, Atlantida
+      description:
+        type: string
+        example: First underwater IT university for fish and shrimps.
+      hasValidLicence:
+        type: boolean
+      isOpen:
+        type: boolean
+      createdAt:
+        type: integer
+        format: int64
+        description: UNIX timestamp
+        example: 1471369442
+      updatedAt:
+        type: integer
+        format: int64
+        description: UNIX timestamp
+        example: 1471369442
+      admin:
+        $ref: "#/definitions/User"
+      topLevelGroups:
+        type: array
+        items:
+          $ref: "#/definitions/Group"     
+
+  Instances:
+    type: array
+    items:
+      $ref: "#/definitions/Instance"
+
+  Licence:
+    type: object
+    properties:
+      id:
+        type: string
+        format: guid
+        example: fc4b5928-62fd-11e6-8fc3-0026b9b15f19
+      note:
+        type: string
+        example: Year licence for the first Fish University
+      isValid:
+        type: boolean
+        example: true
+      valideUntil:
+        type: integer
+        format: int64
+        description: UNIX timestamp
+        example: 2039535811
+
+  Licences:
+    type: array
+    items:
+      $ref: "#/definitions/Licence"
+
+  User:
+    type: object
+    properties:
+      id:
+        type: string
+        format: guid
+        example: fc4b5928-62fd-11e6-8fc3-0026b9b15f19
+      fullName:
+        type: string
+        example: RNDr. Octavianus Black, MBA
+      name:
+        type: object
+        properties:
+          degreesBeforeName:
+            type: string
+            example: RNDr.
+          firstName:
+            type: string
+            example: Octavianus
+          lastName:
+            type: string
+            example: Black
+          degreesAfterName:
+            type: string
+            example: MBA
+      instanceId:
+        type: string
+        format: guid
+        example: 04df8d5f-63d9-11e6-8691-0026b9b15f19
+      avatarUrl:
+        type: string
+        example: https://www.gravatar.com/avatar/203a57823b5139ba3a967980fe0a2b66?s=328&d=identicon&r=PG
+      isVerified:
+        description: Is the user verified by email?
+        type: boolean
+      role:
+        type: string
+        example: admin
+      groups:
+        type: object
+        properties:
+          studentOf:
+            type: array
+            items:
+              $ref: "#/definitions/Group"
+          supervisorOf:
+            type: array
+            items:
+              $ref: "#/definitions/Group"
