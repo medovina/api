@@ -1113,13 +1113,44 @@ responses:
         success: false
 
 definitions:
-  Assignments:
+  Assignment:
     type: object
     properties:
-      something1:
-        type: integer
-      something2:
+      id:
         type: string
+        format: guid
+        example: 04df8d5f-63d9-11e6-8691-0026b9b15f19
+      name:
+        type: string
+        example: Solve P?=NP
+      isPublic:
+        type: boolean
+        example: true
+      description:
+        type: string
+        example: It's time to crack this one already
+      groupId:
+        $ref: "#/definitions/Group/properties/id"
+      deadline:
+        type: object
+        properties:
+          first:
+            type: integer
+            example: 1476390421
+          second:
+            type: integer
+            example: 1476490421
+      submissionsCountLimit:
+        type: integer
+        example: 10
+      canReceiveSubmissions:
+        type: boolean
+        example: false
+
+  Assignments:
+    type: array
+    items:
+      $ref: "#/definitions/Assignment"
 
   Group:
     type: object
