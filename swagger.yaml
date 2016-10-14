@@ -56,7 +56,28 @@ paths:
     post:
       tags:
         - assignment
-      description: Create a new assignment.
+      parameters:
+        - in: formData
+          name: exerciseId
+          type: string
+          format: uuid
+          required: true
+        - in: formData
+          name: groupId
+          type: string
+          format: uuid
+          required: true
+
+      description: Assign an exercise to a group
+      responses:
+        200:
+          description: Data of the new assignment
+          schema:
+            $ref: "#/definitions/Assignment"
+        400:
+          $ref: "#/responses/BadRequestResponse"
+        403:
+          $ref: "#/responses/ForbiddenResponse"
   "/assignments/{assignmentId}":
     delete:
       tags:
@@ -76,6 +97,15 @@ paths:
         name: assignmentId
         required: true
         type: string
+      responses:
+        200:
+          description: Details of the assignment
+          schema:
+            $ref: "#/definitions/Assignment"
+        400:
+          $ref: "#/responses/BadRequestResponse"
+        403:
+          $ref: "#/responses/ForbiddenResponse"
     put:
       tags:
         - assignment
@@ -85,7 +115,16 @@ paths:
         name: assignmentId
         required: true
         type: string
-  "/assignments/{assignmentId}/configuration":
+      responses:
+        200:
+          description: No clue # TODO
+          schema:
+            type: string
+        400:
+          $ref: "#/responses/BadRequestResponse"
+        403:
+          $ref: "#/responses/ForbiddenResponse"
+  "/assignments/{assignmentId}/configuration": # TODO this seems obsolete
     get:
       tags:
         - assignment
