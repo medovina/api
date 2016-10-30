@@ -1,1076 +1,1391 @@
 swagger: '2.0'
 host: URL
-basePath: "/v1"
+basePath: /v1
 consumes:
-- application/json
+  - application/json
 produces:
-- application/json
+  - application/json
 schemes:
-- https
+  - https
 securityDefinitions:
   oauth_2_0_undefined:
     authorizationUrl: ''
     description: 'ReCodEx supports OAuth 2.0 for authenticating API requests.'
-    scopes: {}
-    tokenUrl: https://api.recodex.org/v1/oauth2/token
+    scopes: {  }
+    tokenUrl: 'https://api.recodex.org/v1/oauth2/token'
     type: oauth2
-
 info:
-  title: ReCodEx REST API
+  title: 'ReCodEx REST API'
   version: v1
-  description:
-
+  description: null
 tags:
-  - name: assignment
-    description: Exercise assignment endpoints
-  - name: exercises
-    description: Exercise endpoints
-
+  -
+    name: exercises
+    description: 'Endpoint for exercise manipulation'
+  -
+    name: broker-reports
+    description: 'Endpoints used by the backend to notify the frontend of errors and changes in job status'
+  -
+    name: login
+    description: 'Endpoints used to log a user in'
+  -
+    name: comments
+    description: 'Endpoints for comment manipulation'
+  -
+    name: assignments
+    description: 'Endpoints for exercise assignment manipulation'
+  -
+    name: groups
+    description: 'Endpoints for group manipulation'
+  -
+    name: instances
+    description: 'Endpoints for instance manipulation'
+  -
+    name: reference-exercise-solutions
+    description: 'Endpoints for manipulation of reference solutions of exercises'
+  -
+    name: submissions
+    description: 'Endpoints for manipulation of solution submissions'
+  -
+    name: uploaded-files
+    description: 'Endpoints for management of uploaded files'
+  -
+    name: users
+    description: 'User management endpoints'
+  -
+    name: forgotten-password
+    description: 'Endpoints associated with resetting forgotten passwords'
 paths:
-
-# EXERCISE ASSIGNMENTS
-  "/assignments":
-    get:
-      tags:
-        - assignment
-      description: The list of all assignments througout the history of ReCodEx.
+  /login:
+    post:
+      description: 'Log in using user credentials'
       parameters:
-      - description: A valid admin's token must be transfered this way.
-        in: header
-        name: Authorization
-        type: string
+        -
+          name: username
+          required: false
+          type: email
+          in: formData
+          description: 'User''s E-mail'
+        -
+          name: password
+          required: false
+          type: string
+          in: formData
+          description: Password
       responses:
-        200:
-          description: List of all assignments
-          schema:
-            type: object
-            allOf:
-              - $ref: "#/responses/DefaultResponseParams"
-              - properties:
-                  payload:
-                    $ref: "#/definitions/Assignments"
-        400:
-          $ref: "#/responses/BadRequestResponse"
-        403:
-          $ref: "#/responses/ForbiddenResponse"
+        200: {  }
+      tags:
+        - login
+  /login/refresh:
+    post:
+      description: 'Refresh the access token of current user'
+      parameters: [ ]
+      responses:
+        200: {  }
+        403: {  }
+      tags:
+        - login
+  '/login/{serviceId}':
+    post:
+      description: 'Log in using an external authentication service'
+      parameters:
+        -
+          name: username
+          required: false
+          type: string
+          in: formData
+          description: 'User name'
+        -
+          name: password
+          required: false
+          type: string
+          in: formData
+          description: Password
+        -
+          name: serviceId
+          required: true
+          in: path
+          type: string
+      responses:
+        200: {  }
+      tags:
+        - login
+  '/comments/{id}':
+    get:
+      description: 'Get a comment thread'
+      parameters:
+        -
+          name: id
+          required: true
+          in: path
+          type: string
+      responses:
+        200: {  }
+        403: {  }
+      tags:
+        - comments
+    post:
+      description: 'Add a comment to a thread'
+      parameters:
+        -
+          name: text
+          required: false
+          type: 'string:1..'
+          in: formData
+          description: 'Text of the comment'
+        -
+          name: isPrivate
+          required: false
+          type: string
+          in: formData
+          description: 'True if the comment is private'
+        -
+          name: id
+          required: true
+          in: path
+          type: string
+      responses:
+        200: {  }
+        403: {  }
+      tags:
+        - comments
+  '/comments/{threadId}/comment/{commentId}/toggle':
+    post:
+      description: 'Make a private comment public or vice versa'
+      parameters:
+        -
+          name: threadId
+          required: true
+          in: path
+          type: string
+        -
+          name: commentId
+          required: true
+          in: path
+          type: string
+      responses:
+        200: {  }
+        403: {  }
+      tags:
+        - comments
+  /broker-reports/error:
     post:
       tags:
-        - assignment
+        - broker-reports
+      description: 'Announce a backend error that is not related to any job (meant to be called by the backend)'
       parameters:
-        - in: formData
+        -
+          name: message
+          required: false
+          type: null
+          in: formData
+          description: 'A textual description of the error'
+      responses:
+        200: {  }
+  '/broker-reports/job-status/{jobId}':
+    post:
+      tags:
+        - broker-reports
+      description: 'Update the status of a job (meant to be called by the backend)'
+      parameters:
+        -
+          name: status
+          required: false
+          type: null
+          in: formData
+          description: 'The new status of the job'
+        -
+          name: message
+          required: false
+          type: null
+          in: formData
+          description: 'A textual explanation of the status change'
+        -
+          name: jobId
+          required: true
+          in: path
+          type: string
+      responses:
+        200: {  }
+  /exercises:
+    get:
+      description: 'Get a list of exercises with an optional filter'
+      parameters:
+        -
+          name: search
+          required: false
+          in: path
+          type: string
+      responses:
+        200: {  }
+        403: {  }
+      tags:
+        - exercises
+  '/exercises/{id}':
+    get:
+      description: 'Get details of an exercise'
+      parameters:
+        -
+          name: id
+          required: true
+          in: path
+          type: string
+      responses:
+        200: {  }
+        403: {  }
+      tags:
+        - exercises
+  /exercise-assignments:
+    get:
+      tags:
+        - assignments
+      description: 'Get a list of all assignments'
+      parameters: [ ]
+      responses:
+        200:
+          $ref: '#/responses/AssignmentListResponse'
+        403: {  }
+    post:
+      tags:
+        - assignments
+      description: 'Assign an exercise to a group'
+      parameters:
+        -
           name: exerciseId
-          type: string
-          format: uuid
-          required: true
-        - in: formData
+          required: false
+          type: null
+          in: formData
+          description: 'Identifier of the exercise'
+        -
           name: groupId
-          type: string
-          format: uuid
+          required: false
+          type: null
+          in: formData
+          description: 'Identifier of the group'
+      responses:
+        200:
+          $ref: '#/responses/AssignmentResponse'
+        403: {  }
+  '/exercise-assignments/{id}':
+    get:
+      tags:
+        - assignments
+      description: 'Get details of an assignment'
+      parameters:
+        -
+          name: id
           required: true
-
-      description: Assign an exercise to a group
+          in: path
+          type: string
       responses:
         200:
-          description: Data of the new assignment
-          schema:
-            $ref: "#/definitions/Assignment"
-        400:
-          $ref: "#/responses/BadRequestResponse"
-        403:
-          $ref: "#/responses/ForbiddenResponse"
-  "/assignments/{assignmentId}":
-    delete:
+          $ref: '#/responses/AssignmentResponse'
+        403: {  }
+    post:
       tags:
-        - assignment
-      description: Remove an assignment.
+        - assignments
+      description: 'Update details of an assignment'
       parameters:
-      - in: path
-        name: assignmentId
-        required: true
-        type: string
-    get:
-      tags:
-        - assignment
-      description: Get details of an assignment.
-      parameters:
-      - in: path
-        name: assignmentId
-        required: true
-        type: string
+        -
+          name: name
+          required: false
+          type: 'string:2..'
+          in: formData
+          description: 'Name of the assignment'
+        -
+          name: isPublic
+          required: false
+          type: bool
+          in: formData
+          description: 'Is the assignment ready to be displayed to students?'
+        -
+          name: description
+          required: false
+          type: string
+          in: formData
+          description: 'A description of the assignment'
+        -
+          name: firstDeadline
+          required: false
+          type: numericint
+          in: formData
+          description: 'First deadline for submission of the assignment'
+        -
+          name: firstMaxPoints
+          required: false
+          type: numericint
+          in: formData
+        -
+          name: submissionsLimit
+          required: false
+          type: numericint
+          in: formData
+        -
+          name: scoreConfig
+          required: false
+          type: string
+          in: formData
+          description: 'A configuration of the score calculator (the exact format depends on the calculator assigned to the exercise)'
+        -
+          name: allowSecondDeadline
+          required: false
+          type: bool
+          in: formData
+          description: 'Should there be a second deadline for students who didn''t make the first one?'
+        -
+          name: secondDeadline
+          required: false
+          type: numericint
+          in: formData
+          description: 'A second deadline for submission of the assignment (with different point award)'
+        -
+          name: secondMaxPoints
+          required: false
+          type: numericint
+          in: formData
+        -
+          name: id
+          required: true
+          in: path
+          type: string
+        -
+          name: maxPointsBeforeFirstDeadline
+          required: false
+          type: numericint
+          in: formData
+          description: 'A maximum of points that can be awarded for a submission before first deadline'
+        -
+          name: submissionsCountLimit
+          required: false
+          type: numericint
+          in: formData
+          description: 'A maximum amount of submissions by a student for the assignment'
+        -
+          name: maxPointsBeforeSecondDeadline
+          required: false
+          type: numericint
+          in: formData
+          description: 'A maximum of points that can be awarded for a late submission'
       responses:
         200:
-          description: Details of the assignment
-          schema:
-            $ref: "#/definitions/Assignment"
-        400:
-          $ref: "#/responses/BadRequestResponse"
-        403:
-          $ref: "#/responses/ForbiddenResponse"
-    put:
+          $ref: '#/responses/AssignmentResponse'
+        403: {  }
+    delete:
       tags:
-        - assignment
-      description: Edit assignment settings.
+        - assignments
+      description: 'Delete an assignment'
       parameters:
-      - in: path
-        name: assignmentId
-        required: true
-        type: string
+        -
+          name: id
+          required: true
+          in: path
+          type: string
       responses:
         200:
-          description: No clue # TODO
-          schema:
-            type: string
-        400:
-          $ref: "#/responses/BadRequestResponse"
-        403:
-          $ref: "#/responses/ForbiddenResponse"
-  "/assignments/{assignmentId}/configuration": # TODO this seems obsolete
+          $ref: '#/responses/SuccessResponse'
+        403: {  }
+  '/exercise-assignments/{id}/can-submit':
     get:
       tags:
-        - assignment
-      description: The list of all specific configurations.
+        - assignments
+      description: 'Check if the current user can submit solutions to the assignment'
       parameters:
-      - in: path
-        name: assignmentId
-        required: true
-        type: string
+        -
+          name: id
+          required: true
+          in: path
+          type: string
+      responses:
+        200:
+          $ref: '#/responses/BooleanResponse'
+        403: {  }
+  '/exercise-assignments/{id}/users/{userId}/submissions':
+    get:
+      tags:
+        - assignments
+      description: 'Get a list of submitted solutions of the assignment'
+      parameters:
+        -
+          name: id
+          required: true
+          in: path
+          type: string
+        -
+          name: userId
+          required: true
+          in: path
+          type: string
+      responses:
+        200: {  }
+        403: {  }
+  '/exercise-assignments/{id}/submit':
     post:
       tags:
-        - assignment
-      description: Create new configuration.
+        - assignments
+      description: 'Submit a solution of the assignment'
       parameters:
-      - in: path
-        name: assignmentId
-        required: true
-        type: string
-  "/assignments/{assignmentId}/configuration/{configurationId}":
-    delete:
-      tags:
-        - assignment
-      description: Delete unnecessary configuration.
-      parameters:
-      - in: path
-        name: assignmentId
-        required: true
-        type: string
-      - in: path
-        name: configurationId
-        required: true
-        type: string
+        -
+          name: note
+          required: false
+          type: null
+          in: formData
+          description: 'A private note by the author of the solution'
+        -
+          name: files
+          required: false
+          type: null
+          in: formData
+          description: 'Submitted files'
+        -
+          name: id
+          required: true
+          in: path
+          type: string
+      responses:
+        200: {  }
+        403: {  }
+  '/exercise-assignments/{id}/limits/{hardwareGroup}':
     get:
       tags:
-        - assignment
-      description: Get details of the configuration.
+        - assignments
+      description: 'Get a list of resource limits for an assignment and a hardware group'
       parameters:
-      - in: path
-        name: assignmentId
-        required: true
-        type: string
-      - in: path
-        name: configurationId
-        required: true
-        type: string
-    put:
-      tags:
-        - assignment
-      description: Change the configuration.
-      parameters:
-      - in: path
-        name: assignmentId
-        required: true
-        type: string
-      - in: path
-        name: configurationId
-        required: true
-        type: string
-  "/assignments/{assignmentId}/instructions":
-    get:
-      tags:
-        - assignment
-      description: |
-        Get the list of all available language variants of
-        the instructions and the instructions in the default language.
-      parameters:
-      - in: path
-        name: assignmentId
-        required: true
-        type: string
+        -
+          name: id
+          required: true
+          in: path
+          type: string
+        -
+          name: hardwareGroup
+          required: true
+          in: path
+          type: string
+      responses:
+        200: {  }
+        403: {  }
     post:
       tags:
-        - assignment
-      description: Create instructions in a different language.
+        - assignments
+      description: 'Set resource limits for an assignment and a hardware group'
       parameters:
-      - in: path
-        name: assignmentId
-        required: true
-        type: string
-  "/assignments/{assignmentId}/instructions/{lang}":
-    delete:
-      tags:
-        - assignment
-      description: Delete instructions in a specific language.
-      parameters:
-      - in: path
-        name: assignmentId
-        required: true
-        type: string
-      - in: path
-        name: lang
-        required: true
-        type: string
+        -
+          name: limits
+          required: false
+          type: null
+          in: formData
+          description: 'A list of resource limits'
+        -
+          name: id
+          required: true
+          in: path
+          type: string
+        -
+          name: hardwareGroup
+          required: true
+          in: path
+          type: string
+      responses:
+        200: {  }
+        403: {  }
+  /groups:
     get:
-      tags:
-        - assignment
-      description: Get instructions for the exercise in a specific language.
-      parameters:
-      - in: path
-        name: assignmentId
-        required: true
-        type: string
-      - in: path
-        name: lang
-        required: true
-        type: string
-    put:
-      tags:
-        - assignment
-      description: Edit the instructions.
-      parameters:
-      - in: path
-        name: assignmentId
-        required: true
-        type: string
-      - in: path
-        name: lang
-        required: true
-        type: string
-  "/assignments/{assignmentId}/submissions":
-    get:
-      tags:
-        - assignment
-      description: The list of all submissions for this assignment.
-      parameters:
-      - in: path
-        name: assignmentId
-        required: true
-        type: string
-
-# EXERCISES
-  "/exercises":
-    get:
-      tags:
-        - exercises
-      description: Get list of all available exercises.
-    post:
-      tags:
-        - exercises
-      description: Create new exercise.
-  "/exercises/{exerciseId}":
-    delete:
-      tags:
-        - exercises
-      description: Delete an unncessary exercise.
-      parameters:
-      - in: path
-        name: exerciseId
-        required: true
-        type: string
-    get:
-      tags:
-        - exercises
-      description: Detailed information about an exercise.
-      parameters:
-      - in: path
-        name: exerciseId
-        required: true
-        type: string
-  "/exercises/{exerciseId}/configuration":
-    get:
-      tags:
-        - exercises
-      description: The list of all specific configurations.
-      parameters:
-      - in: path
-        name: exerciseId
-        required: true
-        type: string
-    post:
-      tags:
-        - exercises
-      description: Create new configuration.
-      parameters:
-      - in: path
-        name: exerciseId
-        required: true
-        type: string
-  "/exercises/{exerciseId}/configuration/automatic":
-    get:
-      tags:
-        - exercises
-      description: |
-        List of all performed auto-configuration throughout the whole
-        lifespan of the exercise.
-      parameters:
-      - in: path
-        name: exerciseId
-        required: true
-        type: string
-    post:
-      tags:
-        - exercises
-      description: Perform new auto-configuration.
-      parameters:
-      - in: path
-        name: exerciseId
-        required: true
-        type: string
-  "/exercises/{exerciseId}/configuration/automatic/{automaticConfigurationId}":
-    delete:
-      tags:
-        - exercises
-      description: Remove unnecessary autoconfiguration log.
-      parameters:
-      - in: path
-        name: exerciseId
-        required: true
-        type: string
-      - in: path
-        name: automaticConfigurationId
-        required: true
-        type: string
-    get:
-      tags:
-        - exercises
-      description: Auto-configuration results.
-      parameters:
-      - in: path
-        name: exerciseId
-        required: true
-        type: string
-      - in: path
-        name: automaticConfigurationId
-        required: true
-        type: string
-  "/exercises/{exerciseId}/configuration/{configurationId}":
-    delete:
-      tags:
-        - exercises
-      description: Delete unnecessary configuration.
-      parameters:
-      - in: path
-        name: exerciseId
-        required: true
-        type: string
-      - in: path
-        name: configurationId
-        required: true
-        type: string
-    get:
-      tags:
-        - exercises
-      description: Get details of the configuration.
-      parameters:
-      - in: path
-        name: exerciseId
-        required: true
-        type: string
-      - in: path
-        name: configurationId
-        required: true
-        type: string
-    put:
-      tags:
-        - exercises
-      description: Change the configuration.
-      parameters:
-      - in: path
-        name: exerciseId
-        required: true
-        type: string
-      - in: path
-        name: configurationId
-        required: true
-        type: string
-  "/exercises/{exerciseId}/instructions":
-    get:
-      tags:
-        - exercises
-      description: |
-        Get the list of all available language variants of
-        the instructions and the instructions in the default language.
-      parameters:
-      - in: path
-        name: exerciseId
-        required: true
-        type: string
-    post:
-      tags:
-        - exercises
-      description: Create instructions in a different language.
-      parameters:
-      - in: path
-        name: exerciseId
-        required: true
-        type: string
-  "/exercises/{exerciseId}/instructions/{lang}":
-    delete:
-      tags:
-        - exercises
-      description: Delete instructions in a specific language.
-      parameters:
-      - in: path
-        name: exerciseId
-        required: true
-        type: string
-      - in: path
-        name: lang
-        required: true
-        type: string
-    get:
-      tags:
-        - exercises
-      description: Get instructions for the exercise in a specific language.
-      parameters:
-      - in: path
-        name: exerciseId
-        required: true
-        type: string
-      - in: path
-        name: lang
-        required: true
-        type: string
-    put:
-      tags:
-        - exercises
-      description: Edit the instructions.
-      parameters:
-      - in: path
-        name: exerciseId
-        required: true
-        type: string
-      - in: path
-        name: lang
-        required: true
-        type: string
-  "/exercises/{exerciseId}/sample-solutions":
-    get:
-      tags:
-        - exercises
-      description: The list of submitted sample solutions.
-      parameters:
-      - in: path
-        name: exerciseId
-        required: true
-        type: string
-    post:
-      tags:
-        - exercises
-      description: Submit new sample solution.
-      parameters:
-      - in: path
-        name: exerciseId
-        required: true
-        type: string
-  "/exercises/{exerciseId}/sample-solutions/{sampleSolutionId}":
-    delete:
-      tags:
-        - exercises
-      description: Remove unnecessary sample solution.
-      parameters:
-      - in: path
-        name: exerciseId
-        required: true
-        type: string
-      - in: path
-        name: sampleSolutionId
-        required: true
-        type: string
-    get:
-      tags:
-        - exercises
-      description: Information about a sample solutoon.
-      parameters:
-      - in: path
-        name: exerciseId
-        required: true
-        type: string
-      - in: path
-        name: sampleSolutionId
-        required: true
-        type: string
-    put:
-      tags:
-        - exercises
-      description: Update information about a sample solution.
-      parameters:
-      - in: path
-        name: exerciseId
-        required: true
-        type: string
-      - in: path
-        name: sampleSolutionId
-        required: true
-        type: string
-
-# GROUPS
-  "/groups":
-    get:
+      description: 'Get a list of all groups'
+      parameters: [ ]
+      responses:
+        200: {  }
+        403: {  }
       tags:
         - groups
-      description: Get the list of all groups
-      parameters:
-      - description: Get only groups of the instance with given
-        in: query
-        name: instanceId
-        required: false
-        type: string
     post:
+      description: 'Create a new group'
+      parameters:
+        -
+          name: name
+          required: false
+          type: 'string:2..'
+          in: formData
+          description: ''
+        -
+          name: description
+          required: false
+          type: null
+          in: formData
+          description: ''
+        -
+          name: instanceId
+          required: false
+          type: 'string:36'
+          in: formData
+          description: ''
+        -
+          name: parentGroupId
+          required: false
+          type: 'string:36'
+          in: formData
+          description: ''
+        -
+          name: publicStats
+          required: false
+          type: bool
+          in: formData
+          description: ''
+      responses:
+        200: {  }
+        403: {  }
       tags:
         - groups
-      description: Create new group
+  /groups/validate-add-group-data:
+    post:
+      description: 'Validate group creation data'
       parameters:
-      - in: query
-        name: name
-        type: string
-      - in: query
-        name: instanceId
-        type: string
-      - in: query
-        name: externalId
-        type: string
-      - in: query
-        name: parentGroupId
-        type: string
-  "/groups/{groupId}":
-    delete:
+        -
+          name: name
+          required: false
+          type: null
+          in: formData
+          description: 'Name of the group'
+        -
+          name: instanceId
+          required: false
+          type: null
+          in: formData
+          description: 'Identifier of the instance where the group belongs'
+        -
+          name: parentGroupId
+          required: false
+          type: null
+          in: formData
+          description: 'Identifier of the parent group'
+      responses:
+        200: {  }
+        403: {  }
       tags:
         - groups
-      description: Delete group
-      parameters:
-      - in: path
-        name: groupId
-        required: true
-        type: string
+  '/groups/{id}':
     get:
+      description: 'Get details of a group'
+      parameters:
+        -
+          name: id
+          required: true
+          in: path
+          type: string
+      responses:
+        200: {  }
+        403: {  }
       tags:
         - groups
-      description: Get the group details
+    delete:
+      description: 'Delete a group'
       parameters:
-      - in: path
-        name: groupId
-        required: true
-        type: string
+        -
+          name: id
+          required: true
+          in: path
+          type: string
+      responses:
+        200: {  }
+        403: {  }
+      tags:
+        - groups
+  '/groups/{id}/subgroups':
+    get:
+      description: 'Get a list of subgroups of a group'
+      parameters:
+        -
+          name: id
+          required: true
+          in: path
+          type: string
+      responses:
+        200: {  }
+        403: {  }
+      tags:
+        - groups
+  '/groups/{id}/members':
+    get:
+      description: 'Get a list of members of a group'
+      parameters:
+        -
+          name: id
+          required: true
+          in: path
+          type: string
+      responses:
+        200: {  }
+        403: {  }
+      tags:
+        - groups
+  '/groups/{id}/students':
+    get:
+      description: 'Get a list of students in a group'
+      parameters:
+        -
+          name: id
+          required: true
+          in: path
+          type: string
+      responses:
+        200: {  }
+        403: {  }
+      tags:
+        - groups
+  '/groups/{id}/students/stats':
+    get:
+      description: 'Get statistics of a group'
+      parameters:
+        -
+          name: id
+          required: true
+          in: path
+          type: string
+      responses:
+        200: {  }
+        403: {  }
+      tags:
+        - groups
+  '/groups/{id}/students/{userId}':
+    get:
+      description: 'Get statistics of a single student in a group'
+      parameters:
+        -
+          name: id
+          required: true
+          in: path
+          type: string
+        -
+          name: userId
+          required: true
+          in: path
+          type: string
+      responses:
+        200: {  }
+        403: {  }
+      tags:
+        - groups
+    post:
+      description: 'Add a student to a group'
+      parameters:
+        -
+          name: id
+          required: true
+          in: path
+          type: string
+        -
+          name: userId
+          required: true
+          in: path
+          type: string
+      responses:
+        200: {  }
+        403: {  }
+      tags:
+        - groups
+    delete:
+      description: 'Remove a student from a group'
+      parameters:
+        -
+          name: id
+          required: true
+          in: path
+          type: string
+        -
+          name: userId
+          required: true
+          in: path
+          type: string
+      responses:
+        200: {  }
+        403: {  }
+      tags:
+        - groups
+  '/groups/{id}/students/{userId}/best-results':
+    get:
+      description: 'Get the best solution of an assignment for a group submitted by a student'
+      parameters:
+        -
+          name: id
+          required: true
+          in: path
+          type: string
+        -
+          name: userId
+          required: true
+          in: path
+          type: string
+      responses:
+        200: {  }
+        403: {  }
+      tags:
+        - groups
+  '/groups/{id}/supervisors':
+    get:
+      description: 'Get a list of supervisors in a group'
+      parameters:
+        -
+          name: id
+          required: true
+          in: path
+          type: string
+      responses:
+        200: {  }
+        403: {  }
+      tags:
+        - groups
+  '/groups/{id}/supervisors/{userId}':
+    post:
+      description: 'Add a supervisor to a group'
+      parameters:
+        -
+          name: id
+          required: true
+          in: path
+          type: string
+        -
+          name: userId
+          required: true
+          in: path
+          type: string
+      responses:
+        200: {  }
+        403: {  }
+      tags:
+        - groups
+    delete:
+      description: 'Remove a supervisor from a group'
+      parameters:
+        -
+          name: id
+          required: true
+          in: path
+          type: string
+        -
+          name: userId
+          required: true
+          in: path
+          type: string
+      responses:
+        200: {  }
+        403: {  }
+      tags:
+        - groups
+  '/groups/{id}/admin':
+    get:
+      description: 'Get identifiers of administrators of a group'
+      parameters:
+        -
+          name: id
+          required: true
+          in: path
+          type: string
+      responses:
+        200: {  }
+        403: {  }
+      tags:
+        - groups
+    post:
+      description: 'Make a user an administrator of a group'
+      parameters:
+        -
+          name: userId
+          required: false
+          type: null
+          in: formData
+          description: 'Identifier of a user to be made administrator'
+        -
+          name: id
+          required: true
+          in: path
+          type: string
+      responses:
+        200: {  }
+        403: {  }
+      tags:
+        - groups
+  '/groups/{id}/assignments':
+    get:
+      description: 'Get all exercise assignments for a group'
+      parameters:
+        -
+          name: id
+          required: true
+          in: path
+          type: string
+      responses:
+        200: {  }
+        403: {  }
+      tags:
+        - groups
+  /instances:
+    get:
+      description: 'Get a list of all instances'
+      parameters: [ ]
+      responses:
+        200: {  }
+      tags:
+        - instances
+    post:
+      description: 'Create a new instance'
+      parameters:
+        -
+          name: name
+          required: false
+          type: 'string:2..'
+          in: formData
+          description: 'Name of the instance'
+        -
+          name: description
+          required: false
+          type: null
+          in: formData
+          description: 'Description of the instance'
+        -
+          name: isOpen
+          required: false
+          type: bool
+          in: formData
+          description: 'Should the instance be open for registration?'
+      responses:
+        200: {  }
+        403: {  }
+      tags:
+        - instances
+  '/instances/{id}':
+    get:
+      description: 'Get details of an instance'
+      parameters:
+        -
+          name: id
+          required: true
+          in: path
+          type: string
+      responses:
+        200: {  }
+      tags:
+        - instances
+    put:
+      description: 'Update an instance'
+      parameters:
+        -
+          name: name
+          required: false
+          type: 'string:2..'
+          in: formData
+          description: 'Name of the instance'
+        -
+          name: description
+          required: false
+          type: null
+          in: formData
+          description: 'Description of the instance'
+        -
+          name: isOpen
+          required: false
+          type: bool
+          in: formData
+          description: 'Should the instance be open for registration?'
+        -
+          name: id
+          required: true
+          in: path
+          type: string
+      responses:
+        200: {  }
+        403: {  }
+      tags:
+        - instances
+    delete:
+      description: 'Delete an instance'
+      parameters:
+        -
+          name: id
+          required: true
+          in: path
+          type: string
+      responses:
+        200: {  }
+        403: {  }
+      tags:
+        - instances
+  '/instances/{id}/groups':
+    get:
+      description: 'Get a list of groups in an instance'
+      parameters:
+        -
+          name: id
+          required: true
+          in: path
+          type: string
+      responses:
+        200: {  }
+        403: {  }
+      tags:
+        - instances
+  '/instances/{id}/users':
+    get:
+      description: 'Get a list of users registered in an instance'
+      parameters:
+        -
+          name: id
+          required: true
+          in: path
+          type: string
+        -
+          name: search
+          required: false
+          in: path
+          type: string
+      responses:
+        200: {  }
+        403: {  }
+      tags:
+        - instances
+  '/instances/{id}/licences':
+    get:
+      description: 'Get a list of licenses associated with an instance'
+      parameters:
+        -
+          name: id
+          required: true
+          in: path
+          type: string
+      responses:
+        200: {  }
+        403: {  }
+      tags:
+        - instances
+    post:
+      description: 'Create a new license for an instance'
+      parameters:
+        -
+          name: note
+          required: false
+          type: 'string:2..'
+          in: formData
+          description: 'A note for users or administrators'
+        -
+          name: validUntil
+          required: false
+          type: datetime
+          in: formData
+          description: 'Expiration date of the license'
+        -
+          name: id
+          required: true
+          in: path
+          type: string
+      responses:
+        200: {  }
+        403: {  }
+      tags:
+        - instances
+  '/instances/{id}/licences/{licenceId}':
     put:
       tags:
-        - groups
-      description: Update the group details
-      parameters:
-      - in: path
-        name: groupId
-        required: true
-        type: string
-  "/groups/{groupId}/users":
-    get:
-      tags:
-        - groups
-      description: Get all users of the group
-      parameters:
-      - in: path
-        name: groupId
-        required: true
-        type: string
-    post:
-      tags:
-        - groups
-      description: Add user to the group
-      parameters:
-      - in: path
-        name: groupId
-        required: true
-        type: string
-  "/groups/{groupId}/users/{userId}":
-    delete:
-      tags:
-        - groups
-      description: Remove user from the group
-      parameters:
-      - in: path
-        name: groupId
-        required: true
-        type: string
-      - in: path
-        name: userId
-        required: true
-        type: string
-    put:
-      tags:
-        - groups
-      description: Update the role of the user in a group
-      parameters:
-      - in: path
-        name: groupId
-        required: true
-        type: string
-      - in: path
-        name: userId
-        required: true
-        type: string
-
-# INSTANCES
-  "/instances":
-    get:
-      tags:
         - instances
-      description: Get the list of all instances
-      parameters:
-#      - description: Get only valid or invalid instances
-#        in: query
-#        name: valid
-#        required: false
-#        type: boolean
-#      - description: Get only instances with given language
-#        in: query
-#        maxLength: 2
-#        minLength: 2
-#        name: language
-#        required: false
-#        type: string
-      responses:
-        200:
-          description: OK
-          schema:
-            type: object
-            allOf:
-              - $ref: "#/responses/DefaultResponseParams"
-              - properties:
-                  payload:
-                    $ref: "#/definitions/Instances"
-        400:
-          $ref: "#/responses/BadRequestResponse"
-        403:
-          $ref: "#/responses/ForbiddenResponse"
-    post:
-      tags:
-        - instances
-      description: Create a new instance for a separate institution
-      parameters:
-      - name: name
-        description: Name of the instance
-        in: query
-        type: string
-      - name: description
-        description: Description of the instance (shown in the instance detail)
-        in: query
-        type: string
-      - name: isOpen
-        description: Owner of the instance
-        in: query
-        type: boolean
-#      - name: language
-#        description: Default app language of the instance specified by the two letter
-#          standard [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1)
-#        in: query
-#        maxLength: 2
-#        minLength: 2
-#        type: string
-      responses:
-        201:
-          description: Created
-          schema:
-            type: object
-            allOf:
-              - $ref: "#/responses/CreatedResponseParams"
-              - properties:
-                  payload:
-                    $ref: "#/definitions/Instance"
-        400:
-          $ref: "#/responses/BadRequestResponse"
-        403:
-          $ref: "#/responses/ForbiddenResponse"
-  "/instances/{instanceId}":
     delete:
       tags:
         - instances
-      description: Delete the instance and its groups
-      parameters:
-      - in: path
-        name: instanceId
-        required: true
-        type: string
-      responses:
-        200:
-          $ref: "#/responses/DeleteResponse"
-        400:
-          $ref: "#/responses/BadRequestResponse"
-        403:
-          $ref: "#/responses/ForbiddenResponse"
+  '/reference-solutions/{id}':
     get:
-      tags:
-        - instances
-      description: Get the instance details
+      description: 'Get reference solutions for an exercise'
       parameters:
-      - in: path
-        name: instanceId
-        required: true
-        type: string
+        -
+          name: note
+          required: false
+          type: null
+          in: formData
+          description: ''
+        -
+          name: files
+          required: false
+          type: null
+          in: formData
+          description: ''
+        -
+          name: hwGroup
+          required: false
+          type: string
+          in: formData
+          description: ''
+        -
+          name: id
+          required: true
+          in: path
+          type: string
       responses:
-        200:
-          description: OK
-          schema:
-            type: object
-            allOf:
-              - $ref: "#/responses/DefaultResponseParams"
-              - properties:
-                  payload:
-                    $ref: "#/definitions/Instance"
-        400:
-          $ref: "#/responses/BadRequestResponse"
-        403:
-          $ref: "#/responses/ForbiddenResponse"
-    put:
+        200: {  }
       tags:
-        - instances
-      description: Update the instance details
-      parameters:
-      - in: path
-        name: instanceId
-        required: true
-        type: string
-      responses:
-        200:
-          description: OK
-          schema:
-            type: object
-            allOf:
-              - $ref: "#/responses/DefaultResponseParams"
-              - properties:
-                  payload:
-                    $ref: "#/definitions/Instance"
-        400:
-          $ref: "#/responses/BadRequestResponse"
-        403:
-          $ref: "#/responses/ForbiddenResponse"
-  "/instances/{instanceId}/groups":
-    get:
-      tags:
-        - instances
-      description: Get the list of all groups of the instance
-      parameters:
-      - in: path
-        name: instanceId
-        required: true
-        type: string
-      responses:
-        200:
-          description: OK
-          schema:
-            type: object
-            allOf:
-              - $ref: "#/responses/DefaultResponseParams"
-              - properties:
-                  payload:
-                    $ref: "#/definitions/Groups"
-        400:
-          $ref: "#/responses/BadRequestResponse"
-        403:
-          $ref: "#/responses/ForbiddenResponse"
-  "/instances/{instanceId}/licences":
-    get:
-      tags:
-        - instances
-      description: Get the list of all licences of the instance
-      parameters:
-      - in: path
-        name: instanceId
-        required: true
-        type: string
-      responses:
-        200:
-          description: OK
-          schema:
-            type: object
-            allOf:
-              - $ref: "#/responses/DefaultResponseParams"
-              - properties:
-                  payload:
-                    $ref: "#/definitions/Licences"
-        400:
-          $ref: "#/responses/BadRequestResponse"
-        403:
-          $ref: "#/responses/ForbiddenResponse"
+        - reference-exercise-solutions
+  '/reference-solutions/{exerciseId}/evaluate/{id}':
     post:
-      tags:
-        - instances
-      description: Add a new licence to the instance
+      description: 'Evaluate reference solutions to an exercise for a hardware group'
       parameters:
-      - in: path
-        name: instanceId
-        required: true
-        type: string
+        -
+          name: hwGroup
+          required: false
+          type: string
+          in: formData
+          description: 'Identififer of a hardware group'
+        -
+          name: exerciseId
+          required: true
+          in: path
+          type: string
+        -
+          name: id
+          required: true
+          in: path
+          type: string
       responses:
-        201:
-          description: Created
-          schema:
-            type: object
-            allOf:
-              - $ref: "#/responses/CreatedResponseParams"
-              - properties:
-                  payload:
-                    $ref: "#/definitions/Licence"
-        400:
-          $ref: "#/responses/BadRequestResponse"
-        403:
-          $ref: "#/responses/ForbiddenResponse"
-  "/instances/{instanceId}/licences/{licenceId}":
-    delete:
+        200: {  }
       tags:
-        - instances
-      description: Delete the given licence of the instance
-      parameters:
-      - in: path
-        name: instanceId
-        required: true
-        type: string
-      - in: path
-        name: licenceId
-        required: true
-        type: string
-      responses:
-        200:
-          $ref: "#/responses/DeleteResponse"
-        400:
-          $ref: "#/responses/BadRequestResponse"
-        403:
-          $ref: "#/responses/ForbiddenResponse"
-    put:
-      tags:
-        - instances
-      description: Update the given licence of the instance
-      parameters:
-      - in: path
-        name: instanceId
-        required: true
-        type: string
-      - in: path
-        name: licenceId
-        required: true
-        type: string
-      responses:
-        200:
-          description: OK
-          schema:
-            type: object
-            allOf:
-              - $ref: "#/responses/DefaultResponseParams"
-              - properties:
-                  payload:
-                    $ref: "#/definitions/Licence"
-        400:
-          $ref: "#/responses/BadRequestResponse"
-        403:
-          $ref: "#/responses/ForbiddenResponse"
-
-# SUBMISSIONS
-  "/submissions":
+        - reference-exercise-solutions
+  /submissions:
     get:
+      description: 'Get a list of all submissions, ever'
+      parameters: [ ]
+      responses:
+        200: {  }
+        403: {  }
       tags:
         - submissions
-      description: The list of all submissions throughout the application.
-  "/submissions/{submissionId}":
-    delete:
-      tags:
-        - submissions
-      description: Remove an unncessary submission.
-      parameters:
-      - in: path
-        name: submissionId
-        required: true
-        type: string
-      - description: A valid admin's token must be transfered this way.
-        in: header
-        name: Authorization
-        type: string
+  '/submissions/{id}':
     get:
-      tags:
-        - submissions
-      description: Details of the specific submission.
+      description: 'Get information about the evaluation of a submission'
       parameters:
-      - in: path
-        name: submissionId
-        required: true
-        type: string
-  "/submissions/{submissionId}/evaluation":
-    get:
-      tags:
-        - submissions
-      description: The evaluation of the submission.
-      parameters:
-      - in: path
-        name: submissionId
-        required: true
-        type: string
-    post:
-      tags:
-        - submissions
-      description: Publish the evaluation results of the submission.
-      parameters:
-      - in: path
-        name: submissionId
-        required: true
-        type: string
-  "/tags":
-    delete:
-      tags:
-        - submissions
-    get:
-      tags:
-        - submissions
-    post:
-      tags:
-        - submissions
-
-
-# USERS
-  "/users":
-    get:
-      tags:
-        - users
-      description: Get the list of all users.
-    put:
-      tags:
-        - users
-      description: |
-        Create new ReCodEx account or bind an existing account with
-        another authentication service.
-  "/users/{userId}":
-    delete:
-      tags:
-        - users
-      description: Close user's account.
-      parameters:
-      - in: path
-        name: userId
-        required: true
-        type: string
-    get:
-      tags:
-        - users
-      description: Get details of a specific user.
-      parameters:
-      - in: path
-        name: userId
-        required: true
-        type: string
+        -
+          name: id
+          required: true
+          in: path
+          type: string
       responses:
-        '200':
-          description: The user's profile details.
-    put:
+        200: {  }
+        403: {  }
       tags:
-        - users
-      description: Update user's personal information.
-      parameters:
-      - in: path
-        name: userId
-        required: true
-        type: string
-  "/users/{userId}/assignments":
+        - submissions
+  /uploaded-files:
+    post:
+      description: 'Upload a file'
+      parameters: [ ]
+      responses:
+        200: {  }
+        403: {  }
+      tags:
+        - uploaded-files
+  '/uploaded-files/{id}':
     get:
-      tags:
-        - users
-      description: The list of assignments for the user accross all groups.
+      description: 'Get details of a file'
       parameters:
-      - in: path
-        name: userId
-        required: true
-        type: string
-  "/users/{userId}/groups":
+        -
+          name: id
+          required: true
+          in: path
+          type: string
+      responses:
+        200: {  }
+        403: {  }
+      tags:
+        - uploaded-files
+  '/uploaded-files/{id}/download':
     get:
-      tags:
-        - users
-      description: The list of groups into which the user belongs.
+      description: 'Download a file'
       parameters:
-      - in: path
-        name: userId
-        required: true
-        type: string
-  "/users/{userId}/log":
+        -
+          name: id
+          required: true
+          in: path
+          type: string
+      responses:
+        200: {  }
+        403: {  }
+      tags:
+        - uploaded-files
+  '/uploaded-files/{id}/content':
     get:
-      tags:
-        - users
-      description: Get the history of user's activities.
+      description: 'Get the contents of a file'
       parameters:
-      - in: path
-        name: userId
-        required: true
-        type: string
-  "/users/{userId}/logins":
+        -
+          name: id
+          required: true
+          in: path
+          type: string
+      responses:
+        200: {  }
+        403: {  }
+      tags:
+        - uploaded-files
+  /users:
     get:
+      description: 'Get a list of all users'
+      parameters: [ ]
+      responses:
+        200: {  }
+        403: {  }
       tags:
         - users
-      description: Get the list of user's authentication methods.
+    post:
+      description: 'Create a user account'
       parameters:
-      - in: path
-        name: userId
-        required: true
-        type: string
-  "/users/{userId}/logins/{loginId}":
-    delete:
+        -
+          name: email
+          required: false
+          type: email
+          in: formData
+          description: 'An email that will serve as a login name'
+        -
+          name: firstName
+          required: false
+          type: 'string:2..'
+          in: formData
+          description: 'First name'
+        -
+          name: lastName
+          required: false
+          type: 'string:2..'
+          in: formData
+          description: 'Last name'
+        -
+          name: password
+          required: false
+          type: 'string:1..'
+          in: formData
+          description: 'A password for authentication'
+        -
+          name: instanceId
+          required: false
+          type: 'string:1..'
+          in: formData
+          description: 'Identifier of the instance to register in'
+      responses:
+        200: {  }
       tags:
         - users
-      description: Disable an authentication method.
+  /users/ext:
+    post:
+      description: 'Create an account authenticated with an external service'
       parameters:
-      - in: path
-        name: userId
-        required: true
-        type: string
-      - in: path
-        name: loginId
-        required: true
-        type: string
-    put:
+        -
+          name: username
+          required: false
+          type: 'string:2..'
+          in: formData
+          description: 'Login name'
+        -
+          name: password
+          required: false
+          type: 'string:1..'
+          in: formData
+          description: 'Authentication password'
+        -
+          name: instanceId
+          required: false
+          type: 'string:1..'
+          in: formData
+          description: 'Identifier of the instance to register in'
+        -
+          name: serviceId
+          required: false
+          type: 'string:1..'
+          in: formData
+          description: 'Identifier of the authentication service'
+      responses:
+        200: {  }
       tags:
         - users
-      description: Enable or disable an authentication method.
+  /users/validate-registration-data:
+    post:
+      description: 'Check if the registered E-mail isn''t already used and if the password is strong enough'
       parameters:
-      - in: path
-        name: userId
-        required: true
-        type: string
-      - in: path
-        name: loginId
-        required: true
-        type: string
-  "/users/{userId}/settings":
+        -
+          name: email
+          required: false
+          type: null
+          in: formData
+          description: 'E-mail address (login name)'
+        -
+          name: password
+          required: false
+          type: null
+          in: formData
+          description: 'Authentication password'
+      responses:
+        200: {  }
+      tags:
+        - users
+  '/users/{id}':
     get:
+      description: 'Get details of a user account'
+      parameters:
+        -
+          name: id
+          required: true
+          in: path
+          type: string
+      responses:
+        200: {  }
+        403: {  }
       tags:
         - users
-      description: Get user's current settings.
-      parameters:
-      - in: path
-        name: userId
-        required: true
-        type: string
-    put:
-      tags:
-        - users
-      description: Change the settings of the user.
-      parameters:
-      - in: path
-        name: userId
-        required: true
-        type: string
-  "/users/{userId}/submissions":
+  '/users/{id}/groups':
     get:
+      description: ''
+      parameters:
+        -
+          name: id
+          required: true
+          in: path
+          type: string
+      responses:
+        200: {  }
+        403: {  }
       tags:
         - users
-      description: The history of user's assignments' submissions.
+  '/users/{id}/instances':
+    get:
+      description: 'Get a list of instances where a user is registered'
       parameters:
-      - in: path
-        name: userId
-        required: true
-        type: string
-
+        -
+          name: id
+          required: true
+          in: path
+          type: string
+      responses:
+        200: {  }
+        403: {  }
+      tags:
+        - users
+  '/users/{id}/exercises':
+    get:
+      description: 'Get a list of exercises authored by a user'
+      parameters:
+        -
+          name: id
+          required: true
+          in: path
+          type: string
+      responses:
+        200: {  }
+        403: {  }
+      tags:
+        - users
+  /users/detail:
+    post:
+      description: 'Update the profile associated with a user account'
+      parameters:
+        -
+          name: email
+          required: false
+          type: email
+          in: formData
+          description: 'E-mail address'
+        -
+          name: firstName
+          required: false
+          type: 'string:2..'
+          in: formData
+          description: 'First name'
+        -
+          name: lastName
+          required: false
+          type: 'string:2..'
+          in: formData
+          description: 'Last name'
+        -
+          name: degreesBeforeName
+          required: false
+          type: 'string:1..'
+          in: formData
+          description: 'Degrees before name'
+        -
+          name: degreesAfterName
+          required: false
+          type: 'string:1..'
+          in: formData
+          description: 'Degrees after name'
+      responses:
+        200: {  }
+        403: {  }
+      tags:
+        - users
+  /forgotten-password:
+    post:
+      description: 'Request a password reset (user will receive an e-mail that prompts them to reset their password)'
+      parameters:
+        -
+          name: username
+          required: false
+          type: 'string:2..'
+          in: formData
+          description: 'An identifier of the user whose password should be reset'
+      responses:
+        200: {  }
+      tags:
+        - forgotten-password
+  /forgotten-password/change:
+    post:
+      description: 'Change the user''s password'
+      parameters:
+        -
+          name: password
+          required: false
+          type: 'string:2..'
+          in: formData
+          description: 'The new password'
+      responses:
+        200: {  }
+        403: {  }
+      tags:
+        - forgotten-password
+  /forgotten-password/validate-password-strength:
+    post:
+      description: 'Check if a password is strong enough'
+      parameters:
+        -
+          name: password
+          required: false
+          type: null
+          in: formData
+          description: 'the password to be checked'
+      responses:
+        200: {  }
+      tags:
+        - forgotten-password
 responses:
+  BooleanResponse:
+    description: 'A boolean value'
+    schema:
+      allOf:
+        -
+          $ref: '#/responses/DefaultResponseParams'
+        -
+          type: object
+          properties:
+            payload:
+              type: boolean
+              example: true
+  AssignmentListResponse:
+    description: 'A list of assignments'
+    schema:
+      allOf:
+        -
+          $ref: '#/responses/DefaultResponseParams'
+        -
+          type: object
+          properties:
+            payload:
+              $ref: '#/definitions/Assignments'
+  AssignmentResponse:
+    description: 'An assignment object'
+    schema:
+      allOf:
+        -
+          $ref: '#/responses/DefaultResponseParams'
+        -
+          type: object
+          properties:
+            payload:
+              $ref: '#/definitions/Assignment'
   DefaultResponseParams:
     properties:
       code:
@@ -1081,14 +1396,19 @@ responses:
         type: boolean
         required: true
         example: true
-
   SuccessResponse:
     description: Success
     schema:
       type: object
       allOf:
-        - $ref: "#/responses/DefaultResponseParams"
-
+        -
+          $ref: '#/responses/DefaultResponseParams'
+        -
+          type: object
+          properties:
+            payload:
+              type: string
+              example: OK
   CreatedResponseParams:
     properties:
       code:
@@ -1099,7 +1419,6 @@ responses:
         type: boolean
         required: true
         example: true
-
   DeleteResponse:
     description: OK
     schema:
@@ -1111,46 +1430,44 @@ responses:
           type: boolean
           required: true
         payload:
-          type: array
-          description: Empty array
-          items:
-            type: boolean
+          type: string
+          example: OK
       example:
         code: 200
         success: true
-        payload: []
-
+        payload: {  }
   DefaultErrorParams:
     type: object
     allOf:
-      - $ref: "#/responses/DefaultResponseParams"
-      - properties:
+      -
+        $ref: '#/responses/DefaultResponseParams'
+      -
+        properties:
           msg:
             type: string
             required: true
-
   ForbiddenResponse:
-    description: Forbidden Request - Access denied
+    description: 'Forbidden Request - Access denied'
     schema:
       type: object
       allOf:
-        - $ref: "#/responses/DefaultErrorParams"
+        -
+          $ref: '#/responses/DefaultErrorParams'
       example:
-        msg: Forbidden Request - Access denied
+        msg: 'Forbidden Request - Access denied'
         code: 403
         success: false
-
   BadRequestResponse:
-    description: Bad Request
+    description: 'Bad Request'
     schema:
       type: object
       allOf:
-        - $ref: "#/responses/DefaultErrorParams"
+        -
+          $ref: '#/responses/DefaultErrorParams'
       example:
-        msg: Bad Request - Missing required POST field
+        msg: 'Bad Request - Missing required POST field'
         code: 400
         success: false
-
 definitions:
   Assignment:
     type: object
@@ -1161,15 +1478,15 @@ definitions:
         example: 04df8d5f-63d9-11e6-8691-0026b9b15f19
       name:
         type: string
-        example: Solve P?=NP
+        example: 'Solve P?=NP'
       isPublic:
         type: boolean
         example: true
       description:
         type: string
-        example: It's time to crack this one already
+        example: 'It''s time to crack this one already'
       groupId:
-        $ref: "#/definitions/Group/properties/id"
+        $ref: '#/definitions/Group/properties/id'
       deadline:
         type: object
         properties:
@@ -1185,12 +1502,10 @@ definitions:
       canReceiveSubmissions:
         type: boolean
         example: false
-
   Assignments:
     type: array
     items:
-      $ref: "#/definitions/Assignment"
-
+      $ref: '#/definitions/Assignment'
   Group:
     type: object
     properties:
@@ -1198,12 +1513,10 @@ definitions:
         type: string
         format: guid
         example: 04df8d5f-63d9-11e6-8691-0026b9b15f19
-
   Groups:
     type: array
     items:
-      $ref: "#/definitions/Group"
-
+      $ref: '#/definitions/Group'
   Instance:
     type: object
     properties:
@@ -1213,10 +1526,10 @@ definitions:
         example: 04df8d5f-63d9-11e6-8691-0026b9b15f19
       name:
         type: string
-        example: Frankenstein University, Atlantida
+        example: 'Frankenstein University, Atlantida'
       description:
         type: string
-        example: First underwater IT university for fish and shrimps.
+        example: 'First underwater IT university for fish and shrimps.'
       hasValidLicence:
         type: boolean
       isOpen:
@@ -1224,25 +1537,23 @@ definitions:
       createdAt:
         type: integer
         format: int64
-        description: UNIX timestamp
+        description: 'UNIX timestamp'
         example: 1471369442
       updatedAt:
         type: integer
         format: int64
-        description: UNIX timestamp
+        description: 'UNIX timestamp'
         example: 1471369442
       admin:
-        $ref: "#/definitions/User"
+        $ref: '#/definitions/User'
       topLevelGroups:
         type: array
         items:
-          $ref: "#/definitions/Group"     
-
+          $ref: '#/definitions/Group'
   Instances:
     type: array
     items:
-      $ref: "#/definitions/Instance"
-
+      $ref: '#/definitions/Instance'
   Licence:
     type: object
     properties:
@@ -1252,21 +1563,19 @@ definitions:
         example: fc4b5928-62fd-11e6-8fc3-0026b9b15f19
       note:
         type: string
-        example: Year licence for the first Fish University
+        example: 'Year licence for the first Fish University'
       isValid:
         type: boolean
         example: true
       valideUntil:
         type: integer
         format: int64
-        description: UNIX timestamp
+        description: 'UNIX timestamp'
         example: 2039535811
-
   Licences:
     type: array
     items:
-      $ref: "#/definitions/Licence"
-
+      $ref: '#/definitions/Licence'
   User:
     type: object
     properties:
@@ -1276,7 +1585,7 @@ definitions:
         example: fc4b5928-62fd-11e6-8fc3-0026b9b15f19
       fullName:
         type: string
-        example: RNDr. Octavianus Black, MBA
+        example: 'RNDr. Octavianus Black, MBA'
       name:
         type: object
         properties:
@@ -1298,9 +1607,9 @@ definitions:
         example: 04df8d5f-63d9-11e6-8691-0026b9b15f19
       avatarUrl:
         type: string
-        example: https://www.gravatar.com/avatar/203a57823b5139ba3a967980fe0a2b66?s=328&d=identicon&r=PG
+        example: 'https://www.gravatar.com/avatar/203a57823b5139ba3a967980fe0a2b66?s=328&d=identicon&r=PG'
       isVerified:
-        description: Is the user verified by email?
+        description: 'Is the user verified by email?'
         type: boolean
       role:
         type: string
@@ -1311,8 +1620,8 @@ definitions:
           studentOf:
             type: array
             items:
-              $ref: "#/definitions/Group"
+              $ref: '#/definitions/Group'
           supervisorOf:
             type: array
             items:
-              $ref: "#/definitions/Group"
+              $ref: '#/definitions/Group'
