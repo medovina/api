@@ -417,6 +417,12 @@ paths:
           type: numericint
           in: formData
           description: 'A maximum of points that can be awarded for a late submission'
+        -
+          name: localizedAssignments
+          required: false
+          type: null
+          in: formData
+          description: 'A description of the assignment'
       responses:
         200:
           $ref: '#/responses/AssignmentResponse'
@@ -512,6 +518,12 @@ paths:
           required: true
           in: path
           type: string
+        -
+          name: runtimeConfigurationId
+          required: false
+          type: null
+          in: formData
+          description: ''
       responses:
         200: {  }
         403:
@@ -1658,6 +1670,45 @@ paths:
         200: {  }
       tags:
         - forgotten-password
+  '/exercise-assignments/{id}/limits':
+    get:
+      description: 'Get a list of resource limits for an assignment and a hardware group'
+      parameters:
+        -
+          name: id
+          required: true
+          in: path
+          type: string
+      responses:
+        200: {  }
+        401: {  }
+        403: {  }
+      security:
+        WebToken: [ ]
+      tags:
+        - assignments
+    post:
+      description: 'Set resource limits for an assignment and a hardware group'
+      parameters:
+        -
+          name: limits
+          required: false
+          type: null
+          in: formData
+          description: 'A list of resource limits'
+        -
+          name: id
+          required: true
+          in: path
+          type: string
+      responses:
+        200: {  }
+        401: {  }
+        403: {  }
+      security:
+        WebToken: [ ]
+      tags:
+        - assignments
 responses:
   BooleanResponse:
     description: 'A boolean value'
@@ -1957,6 +2008,24 @@ definitions:
       scoreConfig:
         type: string
         example: ''
+      localizedAssignments:
+        type: array
+        items: {  }
+      firstDeadline:
+        type: integer
+        example: 1530198080
+      secondDeadline:
+        type: integer
+        example: 1627100350
+      maxPointsBeforeFirstDeadline:
+        type: integer
+        example: 0
+      maxPointsBeforeSecondDeadline:
+        type: integer
+        example: 0
+      solutionRuntimeConfigs:
+        type: array
+        items: {  }
   Group:
     type: object
     properties:
@@ -2005,7 +2074,7 @@ definitions:
         example: null
       childGroups:
         type: array
-        items: [ ]
+        items: {  }
       assignments:
         type: array
         items:
@@ -2038,12 +2107,12 @@ definitions:
         type: integer
         format: int64
         description: 'UNIX timestamp'
-        example: 1478117975
+        example: 1478120802
       updatedAt:
         type: integer
         format: int64
         description: 'UNIX timestamp'
-        example: 1478117975
+        example: 1478120802
       admin:
         $ref: '#/definitions/User'
       topLevelGroups:
@@ -2070,7 +2139,7 @@ definitions:
         type: integer
         format: int64
         description: 'UNIX timestamp'
-        example: 1605759278
+        example: 1605762105
   User:
     type: object
     properties:
@@ -2134,7 +2203,7 @@ definitions:
         example: 'P ?= NP'
       version:
         type: integer
-        example: 1
+        example: 2
       authorId:
         type: string
         format: guid
@@ -2156,7 +2225,7 @@ definitions:
         properties:
           date:
             type: string
-            example: '2016-11-02 21:19:35.000000'
+            example: '2016-11-02 22:06:42.000000'
           timezone_type:
             type: integer
             example: 3
@@ -2168,13 +2237,19 @@ definitions:
         properties:
           date:
             type: string
-            example: '2016-11-02 21:19:35.000000'
+            example: '2016-11-02 22:06:42.000000'
           timezone_type:
             type: integer
             example: 3
           timezone:
             type: string
             example: Europe/Prague
+      localizedAssignments:
+        type: array
+        items: {  }
+      solutionRuntimeConfigs:
+        type: array
+        items: {  }
   Role:
     type: string
     example: 2908b74a-e051-360f-bd62-b5e703116218
@@ -2191,10 +2266,10 @@ definitions:
       resource:
         type: string
         format: guid
-        example: dc762e91-5f10-3e67-8539-fd0bead8d0a2
+        example: 339e3a66-59a3-33a3-af86-80a60ca04a36
       action:
         type: string
-        example: view-users
+        example: update
       isAllowed:
         type: integer
         example: 1
