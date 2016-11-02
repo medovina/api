@@ -2013,10 +2013,10 @@ definitions:
         items: {  }
       firstDeadline:
         type: integer
-        example: 1530198080
+        example: 1530200972
       secondDeadline:
         type: integer
-        example: 1627100350
+        example: 1627103242
       maxPointsBeforeFirstDeadline:
         type: integer
         example: 0
@@ -2107,21 +2107,24 @@ definitions:
         type: integer
         format: int64
         description: 'UNIX timestamp'
-        example: 1478120802
+        example: 1478123694
       updatedAt:
         type: integer
         format: int64
         description: 'UNIX timestamp'
-        example: 1478120802
-      admin:
-        $ref: '#/definitions/User'
-      topLevelGroups:
-        type: array
-        items:
-          $ref: '#/definitions/Group'
+        example: 1478123694
       isAllowed:
         type: boolean
         example: true
+      admin:
+        type: string
+        format: guid
+        example: null
+      topLevelGroups:
+        type: array
+        items:
+          type: string
+          example: 6c241f8f-1a0a-34dc-8042-591352a764ea
   Licence:
     type: object
     properties:
@@ -2139,7 +2142,7 @@ definitions:
         type: integer
         format: int64
         description: 'UNIX timestamp'
-        example: 1605762105
+        example: 1605764997
   User:
     type: object
     properties:
@@ -2186,11 +2189,13 @@ definitions:
           studentOf:
             type: array
             items:
-              $ref: '#/definitions/Group'
+              type: string
+              example: 6c241f8f-1a0a-34dc-8042-591352a764ea
           supervisorOf:
             type: array
             items:
-              $ref: '#/definitions/Group'
+              type: string
+              example: 6c241f8f-1a0a-34dc-8042-591352a764ea
   Exercise:
     type: object
     properties:
@@ -2225,7 +2230,7 @@ definitions:
         properties:
           date:
             type: string
-            example: '2016-11-02 22:06:42.000000'
+            example: '2016-11-02 22:54:54.000000'
           timezone_type:
             type: integer
             example: 3
@@ -2237,7 +2242,7 @@ definitions:
         properties:
           date:
             type: string
-            example: '2016-11-02 22:06:42.000000'
+            example: '2016-11-02 22:54:54.000000'
           timezone_type:
             type: integer
             example: 3
