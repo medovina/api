@@ -1,5 +1,5 @@
 swagger: '2.0'
-host: URL
+host: recodex.projekty.ms.mff.cuni.cz
 basePath: /v1
 consumes:
   - application/json
@@ -8,12 +8,12 @@ produces:
 schemes:
   - https
 securityDefinitions:
-  oauth_2_0_undefined:
-    authorizationUrl: ''
-    description: 'ReCodEx supports OAuth 2.0 for authenticating API requests.'
-    scopes: {  }
-    tokenUrl: 'https://api.recodex.org/v1/oauth2/token'
-    type: oauth2
+  WebToken:
+    type: apiKey
+    in: header
+    name: Authorization
+  BackendAuth:
+    type: basic
 info:
   title: 'ReCodEx REST API'
   version: v1
@@ -84,8 +84,12 @@ paths:
         200: {  }
         403:
           $ref: '#/responses/ForbiddenResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
       tags:
         - login
+      security:
+        WebToken: [ ]
   '/login/{serviceId}':
     post:
       description: 'Log in using an external authentication service'
@@ -124,8 +128,12 @@ paths:
         200: {  }
         403:
           $ref: '#/responses/ForbiddenResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
       tags:
         - comments
+      security:
+        WebToken: [ ]
     post:
       description: 'Add a comment to a thread'
       parameters:
@@ -150,8 +158,12 @@ paths:
         200: {  }
         403:
           $ref: '#/responses/ForbiddenResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
       tags:
         - comments
+      security:
+        WebToken: [ ]
   '/comments/{threadId}/comment/{commentId}/toggle':
     post:
       description: 'Make a private comment public or vice versa'
@@ -170,8 +182,12 @@ paths:
         200: {  }
         403:
           $ref: '#/responses/ForbiddenResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
       tags:
         - comments
+      security:
+        WebToken: [ ]
   /broker-reports/error:
     post:
       tags:
@@ -186,6 +202,8 @@ paths:
           description: 'A textual description of the error'
       responses:
         200: {  }
+      security:
+        BackendAuth: [ ]
   '/broker-reports/job-status/{jobId}':
     post:
       tags:
@@ -211,6 +229,8 @@ paths:
           type: string
       responses:
         200: {  }
+      security:
+        BackendAuth: [ ]
   /exercises:
     get:
       description: 'Get a list of exercises with an optional filter'
@@ -225,8 +245,12 @@ paths:
           $ref: '#/responses/ExerciseListResponse'
         403:
           $ref: '#/responses/ForbiddenResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
       tags:
         - exercises
+      security:
+        WebToken: [ ]
   '/exercises/{id}':
     get:
       description: 'Get details of an exercise'
@@ -241,8 +265,12 @@ paths:
           $ref: '#/responses/ExerciseResponse'
         403:
           $ref: '#/responses/ForbiddenResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
       tags:
         - exercises
+      security:
+        WebToken: [ ]
   /exercise-assignments:
     get:
       tags:
@@ -254,6 +282,10 @@ paths:
           $ref: '#/responses/AssignmentListResponse'
         403:
           $ref: '#/responses/ForbiddenResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+      security:
+        WebToken: [ ]
     post:
       tags:
         - assignments
@@ -276,6 +308,10 @@ paths:
           $ref: '#/responses/AssignmentResponse'
         403:
           $ref: '#/responses/ForbiddenResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+      security:
+        WebToken: [ ]
   '/exercise-assignments/{id}':
     get:
       tags:
@@ -292,6 +328,10 @@ paths:
           $ref: '#/responses/AssignmentResponse'
         403:
           $ref: '#/responses/ForbiddenResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+      security:
+        WebToken: [ ]
     post:
       tags:
         - assignments
@@ -382,6 +422,10 @@ paths:
           $ref: '#/responses/AssignmentResponse'
         403:
           $ref: '#/responses/ForbiddenResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+      security:
+        WebToken: [ ]
     delete:
       tags:
         - assignments
@@ -397,6 +441,10 @@ paths:
           $ref: '#/responses/SuccessResponse'
         403:
           $ref: '#/responses/ForbiddenResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+      security:
+        WebToken: [ ]
   '/exercise-assignments/{id}/can-submit':
     get:
       tags:
@@ -413,6 +461,10 @@ paths:
           $ref: '#/responses/BooleanResponse'
         403:
           $ref: '#/responses/ForbiddenResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+      security:
+        WebToken: [ ]
   '/exercise-assignments/{id}/users/{userId}/submissions':
     get:
       tags:
@@ -433,6 +485,10 @@ paths:
         200: {  }
         403:
           $ref: '#/responses/ForbiddenResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+      security:
+        WebToken: [ ]
   '/exercise-assignments/{id}/submit':
     post:
       tags:
@@ -460,6 +516,10 @@ paths:
         200: {  }
         403:
           $ref: '#/responses/ForbiddenResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+      security:
+        WebToken: [ ]
   '/exercise-assignments/{id}/limits/{hardwareGroup}':
     get:
       tags:
@@ -480,6 +540,10 @@ paths:
         200: {  }
         403:
           $ref: '#/responses/ForbiddenResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+      security:
+        WebToken: [ ]
     post:
       tags:
         - assignments
@@ -505,6 +569,10 @@ paths:
         200: {  }
         403:
           $ref: '#/responses/ForbiddenResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+      security:
+        WebToken: [ ]
   /groups:
     get:
       description: 'Get a list of all groups'
@@ -514,8 +582,12 @@ paths:
           $ref: '#/responses/GroupListResponse'
         403:
           $ref: '#/responses/ForbiddenResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
       tags:
         - groups
+      security:
+        WebToken: [ ]
     post:
       description: 'Create a new group'
       parameters:
@@ -554,8 +626,12 @@ paths:
           $ref: '#/responses/GroupResponse'
         403:
           $ref: '#/responses/ForbiddenResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
       tags:
         - groups
+      security:
+        WebToken: [ ]
   /groups/validate-add-group-data:
     post:
       description: 'Validate group creation data'
@@ -582,8 +658,12 @@ paths:
         200: {  }
         403:
           $ref: '#/responses/ForbiddenResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
       tags:
         - groups
+      security:
+        WebToken: [ ]
   '/groups/{id}':
     get:
       description: 'Get details of a group'
@@ -597,8 +677,12 @@ paths:
         200: {  }
         403:
           $ref: '#/responses/ForbiddenResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
       tags:
         - groups
+      security:
+        WebToken: [ ]
     delete:
       description: 'Delete a group'
       parameters:
@@ -612,8 +696,12 @@ paths:
           $ref: '#/responses/GroupResponse'
         403:
           $ref: '#/responses/ForbiddenResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
       tags:
         - groups
+      security:
+        WebToken: [ ]
   '/groups/{id}/subgroups':
     get:
       description: 'Get a list of subgroups of a group'
@@ -628,8 +716,12 @@ paths:
           $ref: '#/responses/GroupListResponse'
         403:
           $ref: '#/responses/ForbiddenResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
       tags:
         - groups
+      security:
+        WebToken: [ ]
   '/groups/{id}/members':
     get:
       description: 'Get a list of members of a group'
@@ -644,8 +736,12 @@ paths:
           $ref: '#/responses/UserListResponse'
         403:
           $ref: '#/responses/ForbiddenResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
       tags:
         - groups
+      security:
+        WebToken: [ ]
   '/groups/{id}/students':
     get:
       description: 'Get a list of students in a group'
@@ -660,8 +756,12 @@ paths:
           $ref: '#/responses/UserListResponse'
         403:
           $ref: '#/responses/ForbiddenResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
       tags:
         - groups
+      security:
+        WebToken: [ ]
   '/groups/{id}/students/stats':
     get:
       description: 'Get statistics of a group'
@@ -675,8 +775,12 @@ paths:
         200: {  }
         403:
           $ref: '#/responses/ForbiddenResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
       tags:
         - groups
+      security:
+        WebToken: [ ]
   '/groups/{id}/students/{userId}':
     get:
       description: 'Get statistics of a single student in a group'
@@ -695,8 +799,12 @@ paths:
         200: {  }
         403:
           $ref: '#/responses/ForbiddenResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
       tags:
         - groups
+      security:
+        WebToken: [ ]
     post:
       description: 'Add a student to a group'
       parameters:
@@ -715,8 +823,12 @@ paths:
           $ref: '#/responses/GroupResponse'
         403:
           $ref: '#/responses/ForbiddenResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
       tags:
         - groups
+      security:
+        WebToken: [ ]
     delete:
       description: 'Remove a student from a group'
       parameters:
@@ -735,8 +847,12 @@ paths:
           $ref: '#/responses/GroupResponse'
         403:
           $ref: '#/responses/ForbiddenResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
       tags:
         - groups
+      security:
+        WebToken: [ ]
   '/groups/{id}/students/{userId}/best-results':
     get:
       description: 'Get the best solution of an assignment for a group submitted by a student'
@@ -755,8 +871,12 @@ paths:
         200: {  }
         403:
           $ref: '#/responses/ForbiddenResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
       tags:
         - groups
+      security:
+        WebToken: [ ]
   '/groups/{id}/supervisors':
     get:
       description: 'Get a list of supervisors in a group'
@@ -771,8 +891,12 @@ paths:
           $ref: '#/responses/UserListResponse'
         403:
           $ref: '#/responses/ForbiddenResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
       tags:
         - groups
+      security:
+        WebToken: [ ]
   '/groups/{id}/supervisors/{userId}':
     post:
       description: 'Add a supervisor to a group'
@@ -792,8 +916,12 @@ paths:
           $ref: '#/responses/GroupResponse'
         403:
           $ref: '#/responses/ForbiddenResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
       tags:
         - groups
+      security:
+        WebToken: [ ]
     delete:
       description: 'Remove a supervisor from a group'
       parameters:
@@ -812,8 +940,12 @@ paths:
           $ref: '#/responses/GroupResponse'
         403:
           $ref: '#/responses/ForbiddenResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
       tags:
         - groups
+      security:
+        WebToken: [ ]
   '/groups/{id}/admin':
     get:
       description: 'Get identifiers of administrators of a group'
@@ -827,8 +959,12 @@ paths:
         200: {  }
         403:
           $ref: '#/responses/ForbiddenResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
       tags:
         - groups
+      security:
+        WebToken: [ ]
     post:
       description: 'Make a user an administrator of a group'
       parameters:
@@ -848,8 +984,12 @@ paths:
           $ref: '#/responses/GroupResponse'
         403:
           $ref: '#/responses/ForbiddenResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
       tags:
         - groups
+      security:
+        WebToken: [ ]
   '/groups/{id}/assignments':
     get:
       description: 'Get all exercise assignments for a group'
@@ -864,8 +1004,12 @@ paths:
           $ref: '#/responses/AssignmentListResponse'
         403:
           $ref: '#/responses/ForbiddenResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
       tags:
         - groups
+      security:
+        WebToken: [ ]
   /instances:
     get:
       description: 'Get a list of all instances'
@@ -901,8 +1045,12 @@ paths:
           $ref: '#/responses/InstanceResponse'
         403:
           $ref: '#/responses/ForbiddenResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
       tags:
         - instances
+      security:
+        WebToken: [ ]
   '/instances/{id}':
     get:
       description: 'Get details of an instance'
@@ -948,8 +1096,12 @@ paths:
           $ref: '#/responses/InstanceResponse'
         403:
           $ref: '#/responses/ForbiddenResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
       tags:
         - instances
+      security:
+        WebToken: [ ]
     delete:
       description: 'Delete an instance'
       parameters:
@@ -962,8 +1114,12 @@ paths:
         200: {  }
         403:
           $ref: '#/responses/ForbiddenResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
       tags:
         - instances
+      security:
+        WebToken: [ ]
   '/instances/{id}/groups':
     get:
       description: 'Get a list of groups in an instance'
@@ -978,8 +1134,12 @@ paths:
           $ref: '#/responses/GroupListResponse'
         403:
           $ref: '#/responses/ForbiddenResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
       tags:
         - instances
+      security:
+        WebToken: [ ]
   '/instances/{id}/users':
     get:
       description: 'Get a list of users registered in an instance'
@@ -999,8 +1159,12 @@ paths:
           $ref: '#/responses/UserListResponse'
         403:
           $ref: '#/responses/ForbiddenResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
       tags:
         - instances
+      security:
+        WebToken: [ ]
   '/instances/{id}/licences':
     get:
       description: 'Get a list of licenses associated with an instance'
@@ -1015,8 +1179,12 @@ paths:
           $ref: '#/responses/LicenceListResponse'
         403:
           $ref: '#/responses/ForbiddenResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
       tags:
         - instances
+      security:
+        WebToken: [ ]
     post:
       description: 'Create a new license for an instance'
       parameters:
@@ -1042,8 +1210,12 @@ paths:
           $ref: '#/responses/LicenceResponse'
         403:
           $ref: '#/responses/ForbiddenResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
       tags:
         - instances
+      security:
+        WebToken: [ ]
   '/instances/{id}/licences/{licenceId}':
     put:
       tags:
@@ -1114,8 +1286,12 @@ paths:
         200: {  }
         403:
           $ref: '#/responses/ForbiddenResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
       tags:
         - submissions
+      security:
+        WebToken: [ ]
   '/submissions/{id}':
     get:
       description: 'Get information about the evaluation of a submission'
@@ -1129,8 +1305,12 @@ paths:
         200: {  }
         403:
           $ref: '#/responses/ForbiddenResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
       tags:
         - submissions
+      security:
+        WebToken: [ ]
   /uploaded-files:
     post:
       description: 'Upload a file'
@@ -1139,8 +1319,12 @@ paths:
         200: {  }
         403:
           $ref: '#/responses/ForbiddenResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
       tags:
         - uploaded-files
+      security:
+        WebToken: [ ]
   '/uploaded-files/{id}':
     get:
       description: 'Get details of a file'
@@ -1154,8 +1338,12 @@ paths:
         200: {  }
         403:
           $ref: '#/responses/ForbiddenResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
       tags:
         - uploaded-files
+      security:
+        WebToken: [ ]
   '/uploaded-files/{id}/download':
     get:
       description: 'Download a file'
@@ -1169,8 +1357,12 @@ paths:
         200: {  }
         403:
           $ref: '#/responses/ForbiddenResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
       tags:
         - uploaded-files
+      security:
+        WebToken: [ ]
   '/uploaded-files/{id}/content':
     get:
       description: 'Get the contents of a file'
@@ -1184,8 +1376,12 @@ paths:
         200: {  }
         403:
           $ref: '#/responses/ForbiddenResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
       tags:
         - uploaded-files
+      security:
+        WebToken: [ ]
   /users:
     get:
       description: 'Get a list of all users'
@@ -1302,8 +1498,12 @@ paths:
           $ref: '#/responses/UserResponse'
         403:
           $ref: '#/responses/ForbiddenResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
       tags:
         - users
+      security:
+        WebToken: [ ]
   '/users/{id}/groups':
     get:
       description: ''
@@ -1318,8 +1518,12 @@ paths:
           $ref: '#/responses/GroupListResponse'
         403:
           $ref: '#/responses/ForbiddenResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
       tags:
         - users
+      security:
+        WebToken: [ ]
   '/users/{id}/instances':
     get:
       description: 'Get a list of instances where a user is registered'
@@ -1334,8 +1538,12 @@ paths:
           $ref: '#/responses/InstanceListResponse'
         403:
           $ref: '#/responses/ForbiddenResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
       tags:
         - users
+      security:
+        WebToken: [ ]
   '/users/{id}/exercises':
     get:
       description: 'Get a list of exercises authored by a user'
@@ -1350,8 +1558,12 @@ paths:
           $ref: '#/responses/ExerciseListResponse'
         403:
           $ref: '#/responses/ForbiddenResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
       tags:
         - users
+      security:
+        WebToken: [ ]
   /users/detail:
     post:
       description: 'Update the profile associated with a user account'
@@ -1391,8 +1603,12 @@ paths:
           $ref: '#/responses/UserResponse'
         403:
           $ref: '#/responses/ForbiddenResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
       tags:
         - users
+      security:
+        WebToken: [ ]
   /forgotten-password:
     post:
       description: 'Request a password reset (user will receive an e-mail that prompts them to reset their password)'
@@ -1422,8 +1638,12 @@ paths:
           $ref: '#/responses/SuccessResponse'
         403:
           $ref: '#/responses/ForbiddenResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
       tags:
         - forgotten-password
+      security:
+        WebToken: [ ]
   /forgotten-password/validate-password-strength:
     post:
       description: 'Check if a password is strong enough'
@@ -1655,6 +1875,17 @@ responses:
           msg:
             type: string
             required: true
+  UnauthorizedResponse:
+    description: 'Login required'
+    schema:
+      type: object
+      allOf:
+        -
+          $ref: '#/responses/DefaultErrorParams'
+      example:
+        msg: 'Forbidden Request - Login required'
+        code: 401
+        success: false
   ForbiddenResponse:
     description: 'Forbidden Request - Access denied'
     schema:
@@ -1701,10 +1932,10 @@ definitions:
         properties:
           first:
             type: integer
-            example: 1530171492
+            example: 1530195253
           second:
             type: integer
-            example: 1627073762
+            example: 1627097523
       submissionsCountLimit:
         type: integer
         example: 50
@@ -1807,12 +2038,12 @@ definitions:
         type: integer
         format: int64
         description: 'UNIX timestamp'
-        example: 1478094214
+        example: 1478117975
       updatedAt:
         type: integer
         format: int64
         description: 'UNIX timestamp'
-        example: 1478094214
+        example: 1478117975
       admin:
         $ref: '#/definitions/User'
       topLevelGroups:
@@ -1839,7 +2070,7 @@ definitions:
         type: integer
         format: int64
         description: 'UNIX timestamp'
-        example: 1605735517
+        example: 1605759278
   User:
     type: object
     properties:
@@ -1925,7 +2156,7 @@ definitions:
         properties:
           date:
             type: string
-            example: '2016-11-02 14:43:34.000000'
+            example: '2016-11-02 21:19:35.000000'
           timezone_type:
             type: integer
             example: 3
@@ -1937,7 +2168,7 @@ definitions:
         properties:
           date:
             type: string
-            example: '2016-11-02 14:43:34.000000'
+            example: '2016-11-02 21:19:35.000000'
           timezone_type:
             type: integer
             example: 3
