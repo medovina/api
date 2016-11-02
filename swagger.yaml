@@ -82,7 +82,8 @@ paths:
       parameters: [ ]
       responses:
         200: {  }
-        403: {  }
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       tags:
         - login
   '/login/{serviceId}':
@@ -121,7 +122,8 @@ paths:
           type: string
       responses:
         200: {  }
-        403: {  }
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       tags:
         - comments
     post:
@@ -146,7 +148,8 @@ paths:
           type: string
       responses:
         200: {  }
-        403: {  }
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       tags:
         - comments
   '/comments/{threadId}/comment/{commentId}/toggle':
@@ -165,7 +168,8 @@ paths:
           type: string
       responses:
         200: {  }
-        403: {  }
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       tags:
         - comments
   /broker-reports/error:
@@ -217,8 +221,10 @@ paths:
           in: path
           type: string
       responses:
-        200: {  }
-        403: {  }
+        200:
+          $ref: '#/responses/ExerciseListResponse'
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       tags:
         - exercises
   '/exercises/{id}':
@@ -231,8 +237,10 @@ paths:
           in: path
           type: string
       responses:
-        200: {  }
-        403: {  }
+        200:
+          $ref: '#/responses/ExerciseResponse'
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       tags:
         - exercises
   /exercise-assignments:
@@ -244,7 +252,8 @@ paths:
       responses:
         200:
           $ref: '#/responses/AssignmentListResponse'
-        403: {  }
+        403:
+          $ref: '#/responses/ForbiddenResponse'
     post:
       tags:
         - assignments
@@ -265,7 +274,8 @@ paths:
       responses:
         200:
           $ref: '#/responses/AssignmentResponse'
-        403: {  }
+        403:
+          $ref: '#/responses/ForbiddenResponse'
   '/exercise-assignments/{id}':
     get:
       tags:
@@ -280,7 +290,8 @@ paths:
       responses:
         200:
           $ref: '#/responses/AssignmentResponse'
-        403: {  }
+        403:
+          $ref: '#/responses/ForbiddenResponse'
     post:
       tags:
         - assignments
@@ -369,7 +380,8 @@ paths:
       responses:
         200:
           $ref: '#/responses/AssignmentResponse'
-        403: {  }
+        403:
+          $ref: '#/responses/ForbiddenResponse'
     delete:
       tags:
         - assignments
@@ -383,7 +395,8 @@ paths:
       responses:
         200:
           $ref: '#/responses/SuccessResponse'
-        403: {  }
+        403:
+          $ref: '#/responses/ForbiddenResponse'
   '/exercise-assignments/{id}/can-submit':
     get:
       tags:
@@ -398,7 +411,8 @@ paths:
       responses:
         200:
           $ref: '#/responses/BooleanResponse'
-        403: {  }
+        403:
+          $ref: '#/responses/ForbiddenResponse'
   '/exercise-assignments/{id}/users/{userId}/submissions':
     get:
       tags:
@@ -417,7 +431,8 @@ paths:
           type: string
       responses:
         200: {  }
-        403: {  }
+        403:
+          $ref: '#/responses/ForbiddenResponse'
   '/exercise-assignments/{id}/submit':
     post:
       tags:
@@ -443,7 +458,8 @@ paths:
           type: string
       responses:
         200: {  }
-        403: {  }
+        403:
+          $ref: '#/responses/ForbiddenResponse'
   '/exercise-assignments/{id}/limits/{hardwareGroup}':
     get:
       tags:
@@ -462,7 +478,8 @@ paths:
           type: string
       responses:
         200: {  }
-        403: {  }
+        403:
+          $ref: '#/responses/ForbiddenResponse'
     post:
       tags:
         - assignments
@@ -486,14 +503,17 @@ paths:
           type: string
       responses:
         200: {  }
-        403: {  }
+        403:
+          $ref: '#/responses/ForbiddenResponse'
   /groups:
     get:
       description: 'Get a list of all groups'
       parameters: [ ]
       responses:
-        200: {  }
-        403: {  }
+        200:
+          $ref: '#/responses/GroupListResponse'
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       tags:
         - groups
     post:
@@ -530,8 +550,10 @@ paths:
           in: formData
           description: ''
       responses:
-        200: {  }
-        403: {  }
+        200:
+          $ref: '#/responses/GroupResponse'
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       tags:
         - groups
   /groups/validate-add-group-data:
@@ -558,7 +580,8 @@ paths:
           description: 'Identifier of the parent group'
       responses:
         200: {  }
-        403: {  }
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       tags:
         - groups
   '/groups/{id}':
@@ -572,7 +595,8 @@ paths:
           type: string
       responses:
         200: {  }
-        403: {  }
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       tags:
         - groups
     delete:
@@ -584,8 +608,10 @@ paths:
           in: path
           type: string
       responses:
-        200: {  }
-        403: {  }
+        200:
+          $ref: '#/responses/GroupResponse'
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       tags:
         - groups
   '/groups/{id}/subgroups':
@@ -598,8 +624,10 @@ paths:
           in: path
           type: string
       responses:
-        200: {  }
-        403: {  }
+        200:
+          $ref: '#/responses/GroupListResponse'
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       tags:
         - groups
   '/groups/{id}/members':
@@ -612,8 +640,10 @@ paths:
           in: path
           type: string
       responses:
-        200: {  }
-        403: {  }
+        200:
+          $ref: '#/responses/UserListResponse'
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       tags:
         - groups
   '/groups/{id}/students':
@@ -626,8 +656,10 @@ paths:
           in: path
           type: string
       responses:
-        200: {  }
-        403: {  }
+        200:
+          $ref: '#/responses/UserListResponse'
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       tags:
         - groups
   '/groups/{id}/students/stats':
@@ -641,7 +673,8 @@ paths:
           type: string
       responses:
         200: {  }
-        403: {  }
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       tags:
         - groups
   '/groups/{id}/students/{userId}':
@@ -660,7 +693,8 @@ paths:
           type: string
       responses:
         200: {  }
-        403: {  }
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       tags:
         - groups
     post:
@@ -677,8 +711,10 @@ paths:
           in: path
           type: string
       responses:
-        200: {  }
-        403: {  }
+        200:
+          $ref: '#/responses/GroupResponse'
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       tags:
         - groups
     delete:
@@ -695,8 +731,10 @@ paths:
           in: path
           type: string
       responses:
-        200: {  }
-        403: {  }
+        200:
+          $ref: '#/responses/GroupResponse'
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       tags:
         - groups
   '/groups/{id}/students/{userId}/best-results':
@@ -715,7 +753,8 @@ paths:
           type: string
       responses:
         200: {  }
-        403: {  }
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       tags:
         - groups
   '/groups/{id}/supervisors':
@@ -728,8 +767,10 @@ paths:
           in: path
           type: string
       responses:
-        200: {  }
-        403: {  }
+        200:
+          $ref: '#/responses/UserListResponse'
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       tags:
         - groups
   '/groups/{id}/supervisors/{userId}':
@@ -747,8 +788,10 @@ paths:
           in: path
           type: string
       responses:
-        200: {  }
-        403: {  }
+        200:
+          $ref: '#/responses/GroupResponse'
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       tags:
         - groups
     delete:
@@ -765,8 +808,10 @@ paths:
           in: path
           type: string
       responses:
-        200: {  }
-        403: {  }
+        200:
+          $ref: '#/responses/GroupResponse'
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       tags:
         - groups
   '/groups/{id}/admin':
@@ -780,7 +825,8 @@ paths:
           type: string
       responses:
         200: {  }
-        403: {  }
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       tags:
         - groups
     post:
@@ -798,8 +844,10 @@ paths:
           in: path
           type: string
       responses:
-        200: {  }
-        403: {  }
+        200:
+          $ref: '#/responses/GroupResponse'
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       tags:
         - groups
   '/groups/{id}/assignments':
@@ -812,8 +860,10 @@ paths:
           in: path
           type: string
       responses:
-        200: {  }
-        403: {  }
+        200:
+          $ref: '#/responses/AssignmentListResponse'
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       tags:
         - groups
   /instances:
@@ -821,7 +871,8 @@ paths:
       description: 'Get a list of all instances'
       parameters: [ ]
       responses:
-        200: {  }
+        200:
+          $ref: '#/responses/InstanceListResponse'
       tags:
         - instances
     post:
@@ -846,8 +897,10 @@ paths:
           in: formData
           description: 'Should the instance be open for registration?'
       responses:
-        200: {  }
-        403: {  }
+        200:
+          $ref: '#/responses/InstanceResponse'
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       tags:
         - instances
   '/instances/{id}':
@@ -860,7 +913,8 @@ paths:
           in: path
           type: string
       responses:
-        200: {  }
+        200:
+          $ref: '#/responses/InstanceResponse'
       tags:
         - instances
     put:
@@ -890,8 +944,10 @@ paths:
           in: path
           type: string
       responses:
-        200: {  }
-        403: {  }
+        200:
+          $ref: '#/responses/InstanceResponse'
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       tags:
         - instances
     delete:
@@ -904,7 +960,8 @@ paths:
           type: string
       responses:
         200: {  }
-        403: {  }
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       tags:
         - instances
   '/instances/{id}/groups':
@@ -917,8 +974,10 @@ paths:
           in: path
           type: string
       responses:
-        200: {  }
-        403: {  }
+        200:
+          $ref: '#/responses/GroupListResponse'
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       tags:
         - instances
   '/instances/{id}/users':
@@ -936,8 +995,10 @@ paths:
           in: path
           type: string
       responses:
-        200: {  }
-        403: {  }
+        200:
+          $ref: '#/responses/UserListResponse'
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       tags:
         - instances
   '/instances/{id}/licences':
@@ -950,8 +1011,10 @@ paths:
           in: path
           type: string
       responses:
-        200: {  }
-        403: {  }
+        200:
+          $ref: '#/responses/LicenceListResponse'
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       tags:
         - instances
     post:
@@ -975,8 +1038,10 @@ paths:
           in: path
           type: string
       responses:
-        200: {  }
-        403: {  }
+        200:
+          $ref: '#/responses/LicenceResponse'
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       tags:
         - instances
   '/instances/{id}/licences/{licenceId}':
@@ -1047,7 +1112,8 @@ paths:
       parameters: [ ]
       responses:
         200: {  }
-        403: {  }
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       tags:
         - submissions
   '/submissions/{id}':
@@ -1061,7 +1127,8 @@ paths:
           type: string
       responses:
         200: {  }
-        403: {  }
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       tags:
         - submissions
   /uploaded-files:
@@ -1070,7 +1137,8 @@ paths:
       parameters: [ ]
       responses:
         200: {  }
-        403: {  }
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       tags:
         - uploaded-files
   '/uploaded-files/{id}':
@@ -1084,7 +1152,8 @@ paths:
           type: string
       responses:
         200: {  }
-        403: {  }
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       tags:
         - uploaded-files
   '/uploaded-files/{id}/download':
@@ -1098,7 +1167,8 @@ paths:
           type: string
       responses:
         200: {  }
-        403: {  }
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       tags:
         - uploaded-files
   '/uploaded-files/{id}/content':
@@ -1112,7 +1182,8 @@ paths:
           type: string
       responses:
         200: {  }
-        403: {  }
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       tags:
         - uploaded-files
   /users:
@@ -1120,8 +1191,10 @@ paths:
       description: 'Get a list of all users'
       parameters: [ ]
       responses:
-        200: {  }
-        403: {  }
+        200:
+          $ref: '#/responses/UserListResponse'
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       tags:
         - users
     post:
@@ -1158,7 +1231,8 @@ paths:
           in: formData
           description: 'Identifier of the instance to register in'
       responses:
-        200: {  }
+        200:
+          $ref: '#/responses/UserResponse'
       tags:
         - users
   /users/ext:
@@ -1190,7 +1264,8 @@ paths:
           in: formData
           description: 'Identifier of the authentication service'
       responses:
-        200: {  }
+        200:
+          $ref: '#/responses/UserResponse'
       tags:
         - users
   /users/validate-registration-data:
@@ -1223,8 +1298,10 @@ paths:
           in: path
           type: string
       responses:
-        200: {  }
-        403: {  }
+        200:
+          $ref: '#/responses/UserResponse'
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       tags:
         - users
   '/users/{id}/groups':
@@ -1237,8 +1314,10 @@ paths:
           in: path
           type: string
       responses:
-        200: {  }
-        403: {  }
+        200:
+          $ref: '#/responses/GroupListResponse'
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       tags:
         - users
   '/users/{id}/instances':
@@ -1251,8 +1330,10 @@ paths:
           in: path
           type: string
       responses:
-        200: {  }
-        403: {  }
+        200:
+          $ref: '#/responses/InstanceListResponse'
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       tags:
         - users
   '/users/{id}/exercises':
@@ -1265,8 +1346,10 @@ paths:
           in: path
           type: string
       responses:
-        200: {  }
-        403: {  }
+        200:
+          $ref: '#/responses/ExerciseListResponse'
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       tags:
         - users
   /users/detail:
@@ -1304,8 +1387,10 @@ paths:
           in: formData
           description: 'Degrees after name'
       responses:
-        200: {  }
-        403: {  }
+        200:
+          $ref: '#/responses/UserResponse'
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       tags:
         - users
   /forgotten-password:
@@ -1333,8 +1418,10 @@ paths:
           in: formData
           description: 'The new password'
       responses:
-        200: {  }
-        403: {  }
+        200:
+          $ref: '#/responses/SuccessResponse'
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       tags:
         - forgotten-password
   /forgotten-password/validate-password-strength:
@@ -1364,6 +1451,126 @@ responses:
             payload:
               type: boolean
               example: true
+  InstanceResponse:
+    description: 'An instance object'
+    schema:
+      allOf:
+        -
+          $ref: '#/responses/DefaultResponseParams'
+        -
+          type: object
+          properties:
+            payload:
+              $ref: '#/definitions/Instance'
+  InstanceListResponse:
+    description: 'A list of assignments'
+    schema:
+      allOf:
+        -
+          $ref: '#/responses/DefaultResponseParams'
+        -
+          type: object
+          properties:
+            payload:
+              type: array
+              items:
+                $ref: '#/definitions/Instance'
+  LicenceResponse:
+    description: 'A licence object'
+    schema:
+      allOf:
+        -
+          $ref: '#/responses/DefaultResponseParams'
+        -
+          type: object
+          properties:
+            payload:
+              $ref: '#/definitions/Licence'
+  LicenceListResponse:
+    description: 'A list of licences'
+    schema:
+      allOf:
+        -
+          $ref: '#/responses/DefaultResponseParams'
+        -
+          type: object
+          properties:
+            payload:
+              type: array
+              items:
+                $ref: '#/definitions/Licence'
+  UserResponse:
+    description: 'Details of a user'
+    schema:
+      allOf:
+        -
+          $ref: '#/responses/DefaultResponseParams'
+        -
+          type: object
+          properties:
+            payload:
+              $ref: '#/definitions/User'
+  UserListResponse:
+    description: 'A list of users'
+    schema:
+      allOf:
+        -
+          $ref: '#/responses/DefaultResponseParams'
+        -
+          type: object
+          properties:
+            payload:
+              type: array
+              items:
+                $ref: '#/definitions/User'
+  GroupResponse:
+    description: 'A group object'
+    schema:
+      allOf:
+        -
+          $ref: '#/responses/DefaultResponseParams'
+        -
+          type: object
+          properties:
+            payload:
+              $ref: '#/definitions/Group'
+  GroupListResponse:
+    description: 'A list of groups'
+    schema:
+      allOf:
+        -
+          $ref: '#/responses/DefaultResponseParams'
+        -
+          type: object
+          properties:
+            payload:
+              type: array
+              items:
+                $ref: '#/definitions/Group'
+  ExerciseResponse:
+    description: 'An exercise object'
+    schema:
+      allOf:
+        -
+          $ref: '#/responses/DefaultResponseParams'
+        -
+          type: object
+          properties:
+            payload:
+              $ref: '#/definitions/Exercise'
+  ExerciseListResponse:
+    description: 'A list of exercises'
+    schema:
+      allOf:
+        -
+          $ref: '#/responses/DefaultResponseParams'
+        -
+          type: object
+          properties:
+            payload:
+              type: array
+              items:
+                $ref: '#/definitions/Exercise'
   AssignmentListResponse:
     description: 'A list of assignments'
     schema:
@@ -1374,7 +1581,9 @@ responses:
           type: object
           properties:
             payload:
-              $ref: '#/definitions/Assignments'
+              type: array
+              items:
+                $ref: '#/definitions/Assignment'
   AssignmentResponse:
     description: 'An assignment object'
     schema:
@@ -1475,16 +1684,16 @@ definitions:
       id:
         type: string
         format: guid
-        example: 04df8d5f-63d9-11e6-8691-0026b9b15f19
+        example: 0cf3b440-5531-3122-b091-4de13f15652d
       name:
         type: string
-        example: 'Solve P?=NP'
+        example: 'P ?= NP'
       isPublic:
         type: boolean
         example: true
       description:
         type: string
-        example: 'It''s time to crack this one already'
+        example: 'Decide if P equals NP'
       groupId:
         $ref: '#/definitions/Group/properties/id'
       deadline:
@@ -1492,38 +1701,96 @@ definitions:
         properties:
           first:
             type: integer
-            example: 1476390421
+            example: 1530171492
           second:
             type: integer
-            example: 1476490421
+            example: 1627073762
       submissionsCountLimit:
         type: integer
-        example: 10
+        example: 50
       canReceiveSubmissions:
         type: boolean
         example: false
-  Assignments:
-    type: array
-    items:
-      $ref: '#/definitions/Assignment'
+      allowSecondDeadline:
+        type: boolean
+        example: false
+      maxPoints:
+        type: object
+        properties:
+          first:
+            type: integer
+            example: 0
+          second:
+            type: integer
+            example: 0
+      scoreConfig:
+        type: string
+        example: ''
   Group:
     type: object
     properties:
       id:
         type: string
         format: guid
-        example: 04df8d5f-63d9-11e6-8691-0026b9b15f19
-  Groups:
-    type: array
-    items:
-      $ref: '#/definitions/Group'
+        example: 6c241f8f-1a0a-34dc-8042-591352a764ea
+      name:
+        type: string
+        example: 'Demo group'
+      description:
+        type: string
+        example: 'A group meant solely for the purpose of demonstration'
+      adminId:
+        type: string
+        format: guid
+        example: ed6eef24-6b1f-3781-b9d3-625d82830ec1
+      admins:
+        type: array
+        items:
+          type: string
+          format: guid
+          example: ed6eef24-6b1f-3781-b9d3-625d82830ec1
+      supervisors:
+        type: array
+        items:
+          type: string
+          format: guid
+          example: ed6eef24-6b1f-3781-b9d3-625d82830ec1
+      students:
+        type: array
+        items:
+          type: string
+          format: guid
+          example: c07d10d7-333f-327a-ab32-201209127b7a
+      instanceId:
+        type: string
+        format: guid
+        example: ea2debaa-dd19-3e79-ad09-5e4831a94be4
+      hasValidLicence:
+        type: boolean
+        example: true
+      parentGroupId:
+        type: string
+        format: guid
+        example: null
+      childGroups:
+        type: array
+        items: [ ]
+      assignments:
+        type: array
+        items:
+          type: string
+          format: guid
+          example: 0cf3b440-5531-3122-b091-4de13f15652d
+      publicStats:
+        type: boolean
+        example: true
   Instance:
     type: object
     properties:
       id:
         type: string
         format: guid
-        example: 04df8d5f-63d9-11e6-8691-0026b9b15f19
+        example: ea2debaa-dd19-3e79-ad09-5e4831a94be4
       name:
         type: string
         example: 'Frankenstein University, Atlantida'
@@ -1532,88 +1799,87 @@ definitions:
         example: 'First underwater IT university for fish and shrimps.'
       hasValidLicence:
         type: boolean
+        example: true
       isOpen:
         type: boolean
+        example: true
       createdAt:
         type: integer
         format: int64
         description: 'UNIX timestamp'
-        example: 1471369442
+        example: 1478094214
       updatedAt:
         type: integer
         format: int64
         description: 'UNIX timestamp'
-        example: 1471369442
+        example: 1478094214
       admin:
         $ref: '#/definitions/User'
       topLevelGroups:
         type: array
         items:
           $ref: '#/definitions/Group'
-  Instances:
-    type: array
-    items:
-      $ref: '#/definitions/Instance'
+      isAllowed:
+        type: boolean
+        example: true
   Licence:
     type: object
     properties:
       id:
         type: string
         format: guid
-        example: fc4b5928-62fd-11e6-8fc3-0026b9b15f19
+        example: d620463d-3ea8-3d3d-b65a-3830529ddeb5
       note:
         type: string
         example: 'Year licence for the first Fish University'
       isValid:
         type: boolean
         example: true
-      valideUntil:
+      validUntil:
         type: integer
         format: int64
         description: 'UNIX timestamp'
-        example: 2039535811
-  Licences:
-    type: array
-    items:
-      $ref: '#/definitions/Licence'
+        example: 1605735517
   User:
     type: object
     properties:
       id:
         type: string
         format: guid
-        example: fc4b5928-62fd-11e6-8fc3-0026b9b15f19
+        example: ed6eef24-6b1f-3781-b9d3-625d82830ec1
       fullName:
         type: string
-        example: 'RNDr. Octavianus Black, MBA'
+        example: 'Zora Steuber'
       name:
         type: object
         properties:
           degreesBeforeName:
             type: string
-            example: RNDr.
+            example: ''
           firstName:
             type: string
-            example: Octavianus
+            example: Zora
           lastName:
             type: string
-            example: Black
+            example: Steuber
           degreesAfterName:
             type: string
-            example: MBA
+            example: ''
       instanceId:
         type: string
         format: guid
-        example: 04df8d5f-63d9-11e6-8691-0026b9b15f19
+        example: ea2debaa-dd19-3e79-ad09-5e4831a94be4
       avatarUrl:
         type: string
-        example: 'https://www.gravatar.com/avatar/203a57823b5139ba3a967980fe0a2b66?s=328&d=identicon&r=PG'
+        example: 'https://secure.gravatar.com/avatar/543bccf838d0f210906f5fc963c90e4e.png?s=200&amp;d=retro&amp;r=g'
       isVerified:
         description: 'Is the user verified by email?'
         type: boolean
+        example: false
       role:
         type: string
-        example: admin
+        format: guid
+        example: 2908b74a-e051-360f-bd62-b5e703116218
       groups:
         type: object
         properties:
@@ -1625,3 +1891,79 @@ definitions:
             type: array
             items:
               $ref: '#/definitions/Group'
+  Exercise:
+    type: object
+    properties:
+      id:
+        type: string
+        format: guid
+        example: 8a7b76a1-5f0c-31ff-a93a-ca478598682b
+      name:
+        type: string
+        example: 'P ?= NP'
+      version:
+        type: integer
+        example: 1
+      authorId:
+        type: string
+        format: guid
+        example: ed6eef24-6b1f-3781-b9d3-625d82830ec1
+      forkedFrom:
+        type: 'NULL'
+        example: null
+      description:
+        type: string
+        example: 'It''s time to crack this one already'
+      assignment:
+        type: string
+        example: 'Decide if P equals NP'
+      difficulty:
+        type: string
+        example: moderate
+      createdAt:
+        type: object
+        properties:
+          date:
+            type: string
+            example: '2016-11-02 14:43:34.000000'
+          timezone_type:
+            type: integer
+            example: 3
+          timezone:
+            type: string
+            example: Europe/Prague
+      updatedAt:
+        type: object
+        properties:
+          date:
+            type: string
+            example: '2016-11-02 14:43:34.000000'
+          timezone_type:
+            type: integer
+            example: 3
+          timezone:
+            type: string
+            example: Europe/Prague
+  Role:
+    type: string
+    example: 2908b74a-e051-360f-bd62-b5e703116218
+  Resource:
+    type: string
+    example: 695ecef7-526e-301e-86cb-bd33b16a22b2
+  Permission:
+    type: object
+    properties:
+      role:
+        type: string
+        format: guid
+        example: 1c3cb532-cf00-3c22-acfd-20f75d3c64fd
+      resource:
+        type: string
+        format: guid
+        example: dc762e91-5f10-3e67-8539-fd0bead8d0a2
+      action:
+        type: string
+        example: view-users
+      isAllowed:
+        type: integer
+        example: 1
