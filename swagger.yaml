@@ -1734,7 +1734,7 @@ responses:
             payload:
               $ref: '#/definitions/Instance'
   InstanceListResponse:
-    description: 'A list of assignments'
+    description: 'A list of instances'
     schema:
       allOf:
         -
@@ -1867,6 +1867,7 @@ responses:
             payload:
               $ref: '#/definitions/Assignment'
   DefaultResponseParams:
+    type: object
     properties:
       code:
         type: integer
