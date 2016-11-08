@@ -2082,6 +2082,11 @@ responses:
       allOf:
         -
           $ref: '#/definitions/DefaultResponseParams'
+        -
+          type: object
+          properties:
+            msg:
+              type: string
       example:
         msg: 'Forbidden Request - Login required'
         code: 401
@@ -2093,6 +2098,11 @@ responses:
       allOf:
         -
           $ref: '#/definitions/DefaultResponseParams'
+        -
+          type: object
+          properties:
+            msg:
+              type: string
       example:
         msg: 'Forbidden Request - Access denied'
         code: 403
@@ -2104,6 +2114,11 @@ responses:
       allOf:
         -
           $ref: '#/definitions/DefaultResponseParams'
+        -
+          type: object
+          properties:
+            msg:
+              type: string
       example:
         msg: 'Bad Request - Missing required POST field'
         code: 400
@@ -2114,11 +2129,9 @@ definitions:
     properties:
       code:
         type: integer
-        required: true
         example: 200
       success:
         type: boolean
-        required: true
         example: true
   Assignment:
     type: object
