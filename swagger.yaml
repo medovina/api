@@ -17,7 +17,7 @@ securityDefinitions:
 info:
   title: 'ReCodEx REST API'
   version: v1
-  description: null
+  description: Provides access to user/group management and submission evaluation
 tags:
   -
     name: exercises
@@ -197,7 +197,7 @@ paths:
         -
           name: message
           required: false
-          type: null
+          type: string
           in: formData
           description: 'A textual description of the error'
       responses:
@@ -213,13 +213,13 @@ paths:
         -
           name: status
           required: false
-          type: null
+          type: string
           in: formData
           description: 'The new status of the job'
         -
           name: message
           required: false
-          type: null
+          type: string
           in: formData
           description: 'A textual explanation of the status change'
         -
@@ -294,13 +294,14 @@ paths:
         -
           name: exerciseId
           required: false
-          type: null
+          type: string
           in: formData
           description: 'Identifier of the exercise'
         -
           name: groupId
           required: false
-          type: null
+          type: string
+          format: uuid
           in: formData
           description: 'Identifier of the group'
       responses:
@@ -420,7 +421,9 @@ paths:
         -
           name: localizedAssignments
           required: false
-          type: null
+          type: array
+          items:
+            $ref: '#/definitions/LocalizedAssignmentParam'
           in: formData
           description: 'A description of the assignment'
       responses:
@@ -504,13 +507,15 @@ paths:
         -
           name: note
           required: false
-          type: null
+          type: string
           in: formData
           description: 'A private note by the author of the solution'
         -
           name: files
           required: false
-          type: null
+          type: array
+          items:
+            type: file
           in: formData
           description: 'Submitted files'
         -
@@ -521,7 +526,8 @@ paths:
         -
           name: runtimeConfigurationId
           required: false
-          type: null
+          type: string
+          format: guid
           in: formData
           description: ''
       responses:
@@ -564,7 +570,9 @@ paths:
         -
           name: limits
           required: false
-          type: null
+          type: array
+          items:
+            type: string # TODO
           in: formData
           description: 'A list of resource limits'
         -
@@ -612,7 +620,7 @@ paths:
         -
           name: description
           required: false
-          type: null
+          type: string
           in: formData
           description: ''
         -
@@ -651,19 +659,21 @@ paths:
         -
           name: name
           required: false
-          type: null
+          type: string
           in: formData
           description: 'Name of the group'
         -
           name: instanceId
           required: false
-          type: null
+          type: string
+          format: guid
           in: formData
           description: 'Identifier of the instance where the group belongs'
         -
           name: parentGroupId
           required: false
-          type: null
+          type: string
+          format: guid
           in: formData
           description: 'Identifier of the parent group'
       responses:
@@ -983,7 +993,8 @@ paths:
         -
           name: userId
           required: false
-          type: null
+          type: string
+          format: guid
           in: formData
           description: 'Identifier of a user to be made administrator'
         -
@@ -1043,7 +1054,7 @@ paths:
         -
           name: description
           required: false
-          type: null
+          type: string
           in: formData
           description: 'Description of the instance'
         -
@@ -1089,7 +1100,7 @@ paths:
         -
           name: description
           required: false
-          type: null
+          type: string
           in: formData
           description: 'Description of the instance'
         -
@@ -1242,13 +1253,13 @@ paths:
         -
           name: note
           required: false
-          type: null
+          type: string
           in: formData
           description: ''
         -
           name: files
           required: false
-          type: null
+          type: string
           in: formData
           description: ''
         -
@@ -1483,13 +1494,15 @@ paths:
         -
           name: email
           required: false
-          type: null
+          type: string
+          format: email
           in: formData
           description: 'E-mail address (login name)'
         -
           name: password
           required: false
-          type: null
+          type: string
+          format: password
           in: formData
           description: 'Authentication password'
       responses:
@@ -1663,7 +1676,8 @@ paths:
         -
           name: password
           required: false
-          type: null
+          type: string
+          format: password
           in: formData
           description: 'the password to be checked'
       responses:
@@ -1693,7 +1707,9 @@ paths:
         -
           name: limits
           required: false
-          type: null
+          type: array
+          items:
+            type: string # TODO
           in: formData
           description: 'A list of resource limits'
         -
@@ -2072,7 +2088,7 @@ definitions:
       parentGroupId:
         type: string
         format: guid
-        example: null
+        example: 0cf3b440-5531-3122-b091-4de13f15652d
       childGroups:
         type: array
         items: {  }
@@ -2120,7 +2136,7 @@ definitions:
       admin:
         type: string
         format: guid
-        example: null
+        example: 6c241f8f-1a0a-34dc-8042-591352a764ea
       topLevelGroups:
         type: array
         items:
@@ -2215,8 +2231,9 @@ definitions:
         format: guid
         example: ed6eef24-6b1f-3781-b9d3-625d82830ec1
       forkedFrom:
-        type: 'NULL'
-        example: null
+        type: string
+        format: guid
+        example: ed6eef24-6b1f-3781-b9d3-625d82830ec1
       description:
         type: string
         example: 'It''s time to crack this one already'
@@ -2279,3 +2296,15 @@ definitions:
       isAllowed:
         type: integer
         example: 1
+  LocalizedAssignmentParam:
+    type: object
+    properties:
+      locale:
+        type: string
+        example: en_US
+      name:
+        type: string
+        example: Your assignment
+      description:
+        type: string
+        example: This is your assignment!
