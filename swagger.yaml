@@ -1884,7 +1884,7 @@ responses:
     schema:
       allOf:
         -
-          $ref: '#/responses/DefaultResponseParams'
+          $ref: '#/definitions/DefaultResponseParams'
         -
           type: object
           properties:
@@ -1896,7 +1896,7 @@ responses:
     schema:
       allOf:
         -
-          $ref: '#/responses/DefaultResponseParams'
+          $ref: '#/definitions/DefaultResponseParams'
         -
           type: object
           properties:
@@ -1907,7 +1907,7 @@ responses:
     schema:
       allOf:
         -
-          $ref: '#/responses/DefaultResponseParams'
+          $ref: '#/definitions/DefaultResponseParams'
         -
           type: object
           properties:
@@ -1920,7 +1920,7 @@ responses:
     schema:
       allOf:
         -
-          $ref: '#/responses/DefaultResponseParams'
+          $ref: '#/definitions/DefaultResponseParams'
         -
           type: object
           properties:
@@ -1931,7 +1931,7 @@ responses:
     schema:
       allOf:
         -
-          $ref: '#/responses/DefaultResponseParams'
+          $ref: '#/definitions/DefaultResponseParams'
         -
           type: object
           properties:
@@ -1944,7 +1944,7 @@ responses:
     schema:
       allOf:
         -
-          $ref: '#/responses/DefaultResponseParams'
+          $ref: '#/definitions/DefaultResponseParams'
         -
           type: object
           properties:
@@ -1955,7 +1955,7 @@ responses:
     schema:
       allOf:
         -
-          $ref: '#/responses/DefaultResponseParams'
+          $ref: '#/definitions/DefaultResponseParams'
         -
           type: object
           properties:
@@ -1968,7 +1968,7 @@ responses:
     schema:
       allOf:
         -
-          $ref: '#/responses/DefaultResponseParams'
+          $ref: '#/definitions/DefaultResponseParams'
         -
           type: object
           properties:
@@ -1979,7 +1979,7 @@ responses:
     schema:
       allOf:
         -
-          $ref: '#/responses/DefaultResponseParams'
+          $ref: '#/definitions/DefaultResponseParams'
         -
           type: object
           properties:
@@ -1992,7 +1992,7 @@ responses:
     schema:
       allOf:
         -
-          $ref: '#/responses/DefaultResponseParams'
+          $ref: '#/definitions/DefaultResponseParams'
         -
           type: object
           properties:
@@ -2003,7 +2003,7 @@ responses:
     schema:
       allOf:
         -
-          $ref: '#/responses/DefaultResponseParams'
+          $ref: '#/definitions/DefaultResponseParams'
         -
           type: object
           properties:
@@ -2016,7 +2016,7 @@ responses:
     schema:
       allOf:
         -
-          $ref: '#/responses/DefaultResponseParams'
+          $ref: '#/definitions/DefaultResponseParams'
         -
           type: object
           properties:
@@ -2029,30 +2029,19 @@ responses:
     schema:
       allOf:
         -
-          $ref: '#/responses/DefaultResponseParams'
+          $ref: '#/definitions/DefaultResponseParams'
         -
           type: object
           properties:
             payload:
               $ref: '#/definitions/Assignment'
-  DefaultResponseParams:
-    type: object
-    properties:
-      code:
-        type: integer
-        required: true
-        example: 200
-      success:
-        type: boolean
-        required: true
-        example: true
   SuccessResponse:
     description: Success
     schema:
       type: object
       allOf:
         -
-          $ref: '#/responses/DefaultResponseParams'
+          $ref: '#/definitions/DefaultResponseParams'
         -
           type: object
           properties:
@@ -2086,23 +2075,13 @@ responses:
         code: 200
         success: true
         payload: {  }
-  DefaultErrorParams:
-    type: object
-    allOf:
-      -
-        $ref: '#/responses/DefaultResponseParams'
-      -
-        properties:
-          msg:
-            type: string
-            required: true
   UnauthorizedResponse:
     description: 'Login required'
     schema:
       type: object
       allOf:
         -
-          $ref: '#/responses/DefaultErrorParams'
+          $ref: '#/definitions/DefaultResponseParams'
       example:
         msg: 'Forbidden Request - Login required'
         code: 401
@@ -2113,7 +2092,7 @@ responses:
       type: object
       allOf:
         -
-          $ref: '#/responses/DefaultErrorParams'
+          $ref: '#/definitions/DefaultResponseParams'
       example:
         msg: 'Forbidden Request - Access denied'
         code: 403
@@ -2124,12 +2103,23 @@ responses:
       type: object
       allOf:
         -
-          $ref: '#/responses/DefaultErrorParams'
+          $ref: '#/definitions/DefaultResponseParams'
       example:
         msg: 'Bad Request - Missing required POST field'
         code: 400
         success: false
 definitions:
+  DefaultResponseParams:
+    type: object
+    properties:
+      code:
+        type: integer
+        required: true
+        example: 200
+      success:
+        type: boolean
+        required: true
+        example: true
   Assignment:
     type: object
     properties:
