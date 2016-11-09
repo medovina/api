@@ -90,7 +90,8 @@ paths:
       tags:
         - login
       security:
-        WebToken: [ ]
+        -
+          WebToken: [ ]
   '/login/{serviceId}':
     post:
       description: 'Log in using an external authentication service'
@@ -136,7 +137,8 @@ paths:
       tags:
         - comments
       security:
-        WebToken: [ ]
+        -
+          WebToken: [ ]
     post:
       description: 'Add a comment to a thread'
       parameters:
@@ -168,7 +170,8 @@ paths:
       tags:
         - comments
       security:
-        WebToken: [ ]
+        -
+          WebToken: [ ]
   '/comments/{threadId}/comment/{commentId}/toggle':
     post:
       description: 'Make a private comment public or vice versa'
@@ -194,7 +197,8 @@ paths:
       tags:
         - comments
       security:
-        WebToken: [ ]
+        -
+          WebToken: [ ]
   /broker-reports/error:
     post:
       tags:
@@ -210,7 +214,8 @@ paths:
       responses:
         200: {  }
       security:
-        BackendAuth: [ ]
+        -
+          BackendAuth: [ ]
   '/broker-reports/job-status/{jobId}':
     post:
       tags:
@@ -238,7 +243,8 @@ paths:
       responses:
         200: {  }
       security:
-        BackendAuth: [ ]
+        -
+          BackendAuth: [ ]
   /exercises:
     get:
       description: 'Get a list of exercises with an optional filter'
@@ -259,7 +265,20 @@ paths:
       tags:
         - exercises
       security:
-        WebToken: [ ]
+        -
+          WebToken: [ ]
+    post:
+      description: ''
+      parameters: [ ]
+      responses:
+        200: {  }
+        401: {  }
+        403: {  }
+      security:
+        -
+          WebToken: [ ]
+      tags:
+        - exercises
   '/exercises/{id}':
     get:
       description: 'Get details of an exercise'
@@ -280,7 +299,41 @@ paths:
       tags:
         - exercises
       security:
-        WebToken: [ ]
+        -
+          WebToken: [ ]
+    post:
+      description: ''
+      parameters:
+        -
+          name: name
+          required: false
+          in: formData
+          description: ''
+        -
+          name: difficulty
+          required: false
+          in: formData
+          description: ''
+        -
+          name: localizedAssignments
+          required: false
+          in: formData
+          description: 'A description of the assignment'
+        -
+          name: id
+          in: path
+          required: true
+          type: string
+          description: ''
+      responses:
+        200: {  }
+        401: {  }
+        403: {  }
+      security:
+        -
+          WebToken: [ ]
+      tags:
+        - exercises
   /exercise-assignments:
     get:
       tags:
@@ -295,7 +348,8 @@ paths:
         401:
           $ref: '#/responses/UnauthorizedResponse'
       security:
-        WebToken: [ ]
+        -
+          WebToken: [ ]
     post:
       tags:
         - assignments
@@ -322,7 +376,8 @@ paths:
         401:
           $ref: '#/responses/UnauthorizedResponse'
       security:
-        WebToken: [ ]
+        -
+          WebToken: [ ]
   '/exercise-assignments/{id}':
     get:
       tags:
@@ -343,7 +398,8 @@ paths:
         401:
           $ref: '#/responses/UnauthorizedResponse'
       security:
-        WebToken: [ ]
+        -
+          WebToken: [ ]
     post:
       tags:
         - assignments
@@ -424,6 +480,12 @@ paths:
             $ref: '#/definitions/LocalizedAssignmentParam'
           in: formData
           description: 'A description of the assignment'
+        -
+          name: canViewLimitRatios
+          required: false
+          type: boolean
+          in: formData
+          description: 'Can user view ratio of his solution memory and time usages and assignment limits?'
       responses:
         200:
           $ref: '#/responses/AssignmentResponse'
@@ -432,7 +494,8 @@ paths:
         401:
           $ref: '#/responses/UnauthorizedResponse'
       security:
-        WebToken: [ ]
+        -
+          WebToken: [ ]
     delete:
       tags:
         - assignments
@@ -452,7 +515,8 @@ paths:
         401:
           $ref: '#/responses/UnauthorizedResponse'
       security:
-        WebToken: [ ]
+        -
+          WebToken: [ ]
   '/exercise-assignments/{id}/can-submit':
     get:
       tags:
@@ -473,7 +537,8 @@ paths:
         401:
           $ref: '#/responses/UnauthorizedResponse'
       security:
-        WebToken: [ ]
+        -
+          WebToken: [ ]
   '/exercise-assignments/{id}/users/{userId}/submissions':
     get:
       tags:
@@ -499,7 +564,8 @@ paths:
         401:
           $ref: '#/responses/UnauthorizedResponse'
       security:
-        WebToken: [ ]
+        -
+          WebToken: [ ]
   '/exercise-assignments/{id}/submit':
     post:
       tags:
@@ -540,7 +606,8 @@ paths:
         401:
           $ref: '#/responses/UnauthorizedResponse'
       security:
-        WebToken: [ ]
+        -
+          WebToken: [ ]
   '/exercise-assignments/{id}/limits/{hardwareGroup}':
     get:
       tags:
@@ -563,8 +630,6 @@ paths:
           $ref: '#/responses/ForbiddenResponse'
         401:
           $ref: '#/responses/UnauthorizedResponse'
-      security:
-        WebToken: [ ]
     post:
       tags:
         - assignments
@@ -594,8 +659,6 @@ paths:
           $ref: '#/responses/ForbiddenResponse'
         401:
           $ref: '#/responses/UnauthorizedResponse'
-      security:
-        WebToken: [ ]
   /groups:
     get:
       description: 'Get a list of all groups'
@@ -610,7 +673,8 @@ paths:
       tags:
         - groups
       security:
-        WebToken: [ ]
+        -
+          WebToken: [ ]
     post:
       description: 'Create a new group'
       parameters:
@@ -651,6 +715,12 @@ paths:
           type: boolean
           in: formData
           description: ''
+        -
+          name: isPublic
+          required: false
+          type: boolean
+          in: formData
+          description: ''
       responses:
         200:
           $ref: '#/responses/GroupResponse'
@@ -661,7 +731,8 @@ paths:
       tags:
         - groups
       security:
-        WebToken: [ ]
+        -
+          WebToken: [ ]
   /groups/validate-add-group-data:
     post:
       description: 'Validate group creation data'
@@ -695,7 +766,8 @@ paths:
       tags:
         - groups
       security:
-        WebToken: [ ]
+        -
+          WebToken: [ ]
   '/groups/{id}':
     get:
       description: 'Get details of a group'
@@ -715,7 +787,8 @@ paths:
       tags:
         - groups
       security:
-        WebToken: [ ]
+        -
+          WebToken: [ ]
     delete:
       description: 'Delete a group'
       parameters:
@@ -735,7 +808,8 @@ paths:
       tags:
         - groups
       security:
-        WebToken: [ ]
+        -
+          WebToken: [ ]
   '/groups/{id}/subgroups':
     get:
       description: 'Get a list of subgroups of a group'
@@ -756,7 +830,8 @@ paths:
       tags:
         - groups
       security:
-        WebToken: [ ]
+        -
+          WebToken: [ ]
   '/groups/{id}/members':
     get:
       description: 'Get a list of members of a group'
@@ -777,7 +852,8 @@ paths:
       tags:
         - groups
       security:
-        WebToken: [ ]
+        -
+          WebToken: [ ]
   '/groups/{id}/students':
     get:
       description: 'Get a list of students in a group'
@@ -798,7 +874,8 @@ paths:
       tags:
         - groups
       security:
-        WebToken: [ ]
+        -
+          WebToken: [ ]
   '/groups/{id}/students/stats':
     get:
       description: 'Get statistics of a group'
@@ -818,7 +895,8 @@ paths:
       tags:
         - groups
       security:
-        WebToken: [ ]
+        -
+          WebToken: [ ]
   '/groups/{id}/students/{userId}':
     get:
       description: 'Get statistics of a single student in a group'
@@ -844,7 +922,8 @@ paths:
       tags:
         - groups
       security:
-        WebToken: [ ]
+        -
+          WebToken: [ ]
     post:
       description: 'Add a student to a group'
       parameters:
@@ -870,7 +949,8 @@ paths:
       tags:
         - groups
       security:
-        WebToken: [ ]
+        -
+          WebToken: [ ]
     delete:
       description: 'Remove a student from a group'
       parameters:
@@ -896,7 +976,8 @@ paths:
       tags:
         - groups
       security:
-        WebToken: [ ]
+        -
+          WebToken: [ ]
   '/groups/{id}/students/{userId}/best-results':
     get:
       description: 'Get the best solution of an assignment for a group submitted by a student'
@@ -922,7 +1003,8 @@ paths:
       tags:
         - groups
       security:
-        WebToken: [ ]
+        -
+          WebToken: [ ]
   '/groups/{id}/supervisors':
     get:
       description: 'Get a list of supervisors in a group'
@@ -943,7 +1025,8 @@ paths:
       tags:
         - groups
       security:
-        WebToken: [ ]
+        -
+          WebToken: [ ]
   '/groups/{id}/supervisors/{userId}':
     post:
       description: 'Add a supervisor to a group'
@@ -970,7 +1053,8 @@ paths:
       tags:
         - groups
       security:
-        WebToken: [ ]
+        -
+          WebToken: [ ]
     delete:
       description: 'Remove a supervisor from a group'
       parameters:
@@ -996,7 +1080,8 @@ paths:
       tags:
         - groups
       security:
-        WebToken: [ ]
+        -
+          WebToken: [ ]
   '/groups/{id}/admin':
     get:
       description: 'Get identifiers of administrators of a group'
@@ -1016,7 +1101,8 @@ paths:
       tags:
         - groups
       security:
-        WebToken: [ ]
+        -
+          WebToken: [ ]
     post:
       description: 'Make a user an administrator of a group'
       parameters:
@@ -1043,7 +1129,8 @@ paths:
       tags:
         - groups
       security:
-        WebToken: [ ]
+        -
+          WebToken: [ ]
   '/groups/{id}/assignments':
     get:
       description: 'Get all exercise assignments for a group'
@@ -1064,7 +1151,8 @@ paths:
       tags:
         - groups
       security:
-        WebToken: [ ]
+        -
+          WebToken: [ ]
   /instances:
     get:
       description: 'Get a list of all instances'
@@ -1106,7 +1194,8 @@ paths:
       tags:
         - instances
       security:
-        WebToken: [ ]
+        -
+          WebToken: [ ]
   '/instances/{id}':
     get:
       description: 'Get details of an instance'
@@ -1140,7 +1229,8 @@ paths:
       tags:
         - instances
       security:
-        WebToken: [ ]
+        -
+          WebToken: [ ]
     post:
       description: 'Update an instance'
       parameters:
@@ -1172,10 +1262,11 @@ paths:
         200: {  }
         401: {  }
         403: {  }
-      security:
-        WebToken: [ ]
       tags:
         - instances
+      security:
+        -
+          WebToken: [ ]
   '/instances/{id}/groups':
     get:
       description: 'Get a list of groups in an instance'
@@ -1196,7 +1287,8 @@ paths:
       tags:
         - instances
       security:
-        WebToken: [ ]
+        -
+          WebToken: [ ]
   '/instances/{id}/users':
     get:
       description: 'Get a list of users registered in an instance'
@@ -1223,7 +1315,8 @@ paths:
       tags:
         - instances
       security:
-        WebToken: [ ]
+        -
+          WebToken: [ ]
   '/instances/{id}/licences':
     get:
       description: 'Get a list of licenses associated with an instance'
@@ -1244,7 +1337,8 @@ paths:
       tags:
         - instances
       security:
-        WebToken: [ ]
+        -
+          WebToken: [ ]
     post:
       description: 'Create a new license for an instance'
       parameters:
@@ -1277,7 +1371,8 @@ paths:
       tags:
         - instances
       security:
-        WebToken: [ ]
+        -
+          WebToken: [ ]
   '/instances/{id}/licences/{licenceId}':
     put:
       tags:
@@ -1315,6 +1410,37 @@ paths:
           description: ''
       responses:
         200: {  }
+        403: {  }
+      tags:
+        - reference-exercise-solutions
+    post:
+      description: 'Add new reference solution to existing exercise'
+      parameters:
+        -
+          name: note
+          required: false
+          type: string
+          in: formData
+          description: 'Description of this particular reference solution, for example used algorithm'
+        -
+          name: files
+          required: false
+          in: formData
+          description: 'Files of the reference solution'
+        -
+          name: runtime
+          required: false
+          in: formData
+          description: 'ID of runtime for this solution'
+        -
+          name: id
+          in: path
+          required: true
+          type: string
+          description: ''
+      responses:
+        200: {  }
+        403: {  }
       tags:
         - reference-exercise-solutions
   '/reference-solutions/{exerciseId}/evaluate/{id}':
@@ -1341,6 +1467,7 @@ paths:
           description: ''
       responses:
         200: {  }
+        403: {  }
       tags:
         - reference-exercise-solutions
   /submissions:
@@ -1356,7 +1483,8 @@ paths:
       tags:
         - submissions
       security:
-        WebToken: [ ]
+        -
+          WebToken: [ ]
   '/submissions/{id}':
     get:
       description: 'Get information about the evaluation of a submission'
@@ -1376,7 +1504,8 @@ paths:
       tags:
         - submissions
       security:
-        WebToken: [ ]
+        -
+          WebToken: [ ]
   /uploaded-files:
     post:
       description: 'Upload a file'
@@ -1390,7 +1519,8 @@ paths:
       tags:
         - uploaded-files
       security:
-        WebToken: [ ]
+        -
+          WebToken: [ ]
   '/uploaded-files/{id}':
     get:
       description: 'Get details of a file'
@@ -1410,7 +1540,8 @@ paths:
       tags:
         - uploaded-files
       security:
-        WebToken: [ ]
+        -
+          WebToken: [ ]
   '/uploaded-files/{id}/download':
     get:
       description: 'Download a file'
@@ -1430,7 +1561,8 @@ paths:
       tags:
         - uploaded-files
       security:
-        WebToken: [ ]
+        -
+          WebToken: [ ]
   '/uploaded-files/{id}/content':
     get:
       description: 'Get the contents of a file'
@@ -1450,7 +1582,8 @@ paths:
       tags:
         - uploaded-files
       security:
-        WebToken: [ ]
+        -
+          WebToken: [ ]
   /users:
     get:
       description: 'Get a list of all users'
@@ -1598,7 +1731,8 @@ paths:
       tags:
         - users
       security:
-        WebToken: [ ]
+        -
+          WebToken: [ ]
   '/users/{id}/groups':
     get:
       description: ''
@@ -1619,7 +1753,8 @@ paths:
       tags:
         - users
       security:
-        WebToken: [ ]
+        -
+          WebToken: [ ]
   '/users/{id}/instances':
     get:
       description: 'Get a list of instances where a user is registered'
@@ -1640,7 +1775,8 @@ paths:
       tags:
         - users
       security:
-        WebToken: [ ]
+        -
+          WebToken: [ ]
   '/users/{id}/exercises':
     get:
       description: 'Get a list of exercises authored by a user'
@@ -1661,7 +1797,8 @@ paths:
       tags:
         - users
       security:
-        WebToken: [ ]
+        -
+          WebToken: [ ]
   /users/detail:
     post:
       description: 'Update the profile associated with a user account'
@@ -1727,7 +1864,8 @@ paths:
       tags:
         - users
       security:
-        WebToken: [ ]
+        -
+          WebToken: [ ]
   /forgotten-password:
     post:
       description: 'Request a password reset (user will receive an e-mail that prompts them to reset their password)'
@@ -1765,7 +1903,8 @@ paths:
       tags:
         - forgotten-password
       security:
-        WebToken: [ ]
+        -
+          WebToken: [ ]
   /forgotten-password/validate-password-strength:
     post:
       description: 'Check if a password is strong enough'
@@ -1795,10 +1934,11 @@ paths:
         200: {  }
         401: {  }
         403: {  }
-      security:
-        WebToken: [ ]
       tags:
         - assignments
+      security:
+        -
+          WebToken: [ ]
     post:
       description: 'Set resource limits for an assignment and a hardware group'
       parameters:
@@ -1816,14 +1956,20 @@ paths:
           in: path
           type: string
           description: ''
+        -
+          name: environments
+          required: false
+          in: formData
+          description: 'A list of resource limits for the environments and hardware groups'
       responses:
         200: {  }
         401: {  }
         403: {  }
-      security:
-        WebToken: [ ]
       tags:
         - assignments
+      security:
+        -
+          WebToken: [ ]
   '/instances/licences/{licenceId}':
     post:
       description: 'Update existing license for an instance'
@@ -1857,10 +2003,11 @@ paths:
         200: {  }
         401: {  }
         403: {  }
-      security:
-        WebToken: [ ]
       tags:
         - instances
+      security:
+        -
+          WebToken: [ ]
     delete:
       description: 'Remove existing license for an instance'
       parameters:
@@ -1874,10 +2021,78 @@ paths:
         200: {  }
         401: {  }
         403: {  }
-      security:
-        WebToken: [ ]
       tags:
         - instances
+      security:
+        -
+          WebToken: [ ]
+  '/exercises/{id}/supplementary-files':
+    post:
+      description: ''
+      parameters:
+        -
+          name: files
+          required: false
+          in: formData
+          description: 'Identifiers of uploaded files'
+        -
+          name: id
+          in: path
+          required: true
+          type: string
+          description: ''
+      responses:
+        200: {  }
+        401: {  }
+        403: {  }
+      security:
+        -
+          WebToken: [ ]
+      tags:
+        - exercises
+  '/exercises/{id}/runtime-configs':
+    post:
+      description: ''
+      parameters:
+        -
+          name: runtimeConfigs
+          required: false
+          in: formData
+          description: 'A description of the assignment'
+        -
+          name: id
+          in: path
+          required: true
+          type: string
+          description: ''
+      responses:
+        200: {  }
+        401: {  }
+        403: {  }
+      security:
+        -
+          WebToken: [ ]
+      tags:
+        - exercises
+  '/exercises/{id}/fork':
+    post:
+      description: ''
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          type: string
+          description: ''
+      responses:
+        200: {  }
+        401: {  }
+        403: {  }
+      security:
+        -
+          WebToken: [ ]
+      tags:
+        - exercises
 responses:
   BooleanResponse:
     description: 'A boolean value'
@@ -2183,10 +2398,10 @@ definitions:
         items: {  }
       firstDeadline:
         type: integer
-        example: 1522724566
+        example: 1522851646
       secondDeadline:
         type: integer
-        example: 1600264122
+        example: 1600391202
       maxPointsBeforeFirstDeadline:
         type: integer
         example: 0
@@ -2197,7 +2412,10 @@ definitions:
         type: array
         items:
           type: string
-          example: 1394432e-f41e-315b-a3c3-456c2f702765
+          example: dd2a7c4f-68ed-3b61-85ae-13dd1de31671
+      canViewLimitRatios:
+        type: boolean
+        example: false
   Group:
     type: object
     properties:
@@ -2256,6 +2474,9 @@ definitions:
       publicStats:
         type: boolean
         example: true
+      isPublic:
+        type: boolean
+        example: true
   Instance:
     type: object
     properties:
@@ -2279,12 +2500,12 @@ definitions:
         type: integer
         format: int64
         description: 'UNIX timestamp'
-        example: 1478601850
+        example: 1478728930
       updatedAt:
         type: integer
         format: int64
         description: 'UNIX timestamp'
-        example: 1478601850
+        example: 1478728930
       isAllowed:
         type: boolean
         example: true
@@ -2314,7 +2535,7 @@ definitions:
         type: integer
         format: int64
         description: 'UNIX timestamp'
-        example: 1606243153
+        example: 1606370233
   User:
     type: object
     properties:
@@ -2354,7 +2575,7 @@ definitions:
       role:
         type: string
         format: guid
-        example: 4d7f7706-355a-3c0f-93df-c5b36be501cc
+        example: b89af1b9-13a6-3fe6-bfea-29f2b6a9eef5
       groups:
         type: object
         properties:
@@ -2380,7 +2601,7 @@ definitions:
         example: 'aloha exercise'
       version:
         type: integer
-        example: 2
+        example: 1
       authorId:
         type: string
         format: guid
@@ -2400,7 +2621,7 @@ definitions:
         properties:
           date:
             type: string
-            example: '2016-11-08 11:44:10.000000'
+            example: '2016-11-09 23:02:10.000000'
           timezone_type:
             type: integer
             example: 3
@@ -2412,7 +2633,7 @@ definitions:
         properties:
           date:
             type: string
-            example: '2016-11-08 11:44:10.000000'
+            example: '2016-11-09 23:02:10.000000'
           timezone_type:
             type: integer
             example: 3
@@ -2421,29 +2642,31 @@ definitions:
             example: Europe/Prague
       localizedAssignments:
         type: array
-        items: {  }
+        items:
+          type: string
+          example: 1394432e-f41e-315b-a3c3-456c2f702765
       solutionRuntimeConfigs:
         type: array
         items:
           type: string
-          example: 1394432e-f41e-315b-a3c3-456c2f702765
+          example: dd2a7c4f-68ed-3b61-85ae-13dd1de31671
   Role:
     type: string
-    example: 524f4d0a-5db7-359a-8544-fbf177687fce
+    example: ccffd565-a79f-32b5-a62f-4a28685ee814
   Resource:
     type: string
-    example: 311b982f-9e9e-3f81-8ef7-952744df4c82
+    example: 5562b312-9be7-3915-b616-b977dd28d741
   Permission:
     type: object
     properties:
       role:
         type: string
         format: guid
-        example: 758d24cc-3be3-3bcd-96a7-1dbc0077d638
+        example: d4d77b2c-6afe-3a26-aeb1-8b7c83953e89
       resource:
         type: string
         format: guid
-        example: b89af1b9-13a6-3fe6-bfea-29f2b6a9eef5
+        example: 311b982f-9e9e-3f81-8ef7-952744df4c82
       action:
         type: string
         example: update
@@ -2496,7 +2719,7 @@ definitions:
             example: 'https://secure.gravatar.com/avatar/111d68d06e2d317b5a59c2c6c5bad808.png?s=200&amp;d=retro&amp;r=g'
       postedAt:
         type: integer
-        example: 1478601851
+        example: 1478728931
       isPrivate:
         type: boolean
         example: false
@@ -2508,28 +2731,28 @@ definitions:
     properties:
       id:
         type: string
-        example: 4521fc64-fa24-35a0-af37-f66897df5c0a
+        example: 7203b9e1-f406-3701-8a5e-ea0c926cc67d
       name:
         type: string
-        example: 'C (GCC)'
+        example: 'Java 8'
       language:
         type: string
-        example: C
+        example: 'Java 8'
       extensions:
         type: string
-        example: '[c, h]'
+        example: '[java]'
       platform:
         type: string
         example: GNU/Linux
       description:
         type: string
-        example: 'Good ol'' C'
+        example: 'Java 8'
   HardwareGroup:
     type: object
     properties:
       id:
         type: string
-        example: dd2a7c4f-68ed-3b61-85ae-13dd1de31671
+        example: 4521fc64-fa24-35a0-af37-f66897df5c0a
       description:
         type: string
         example: 'Our only hardware group'
@@ -2538,7 +2761,7 @@ definitions:
     properties:
       id:
         type: string
-        example: 1394432e-f41e-315b-a3c3-456c2f702765
+        example: dd2a7c4f-68ed-3b61-85ae-13dd1de31671
       name:
         type: string
         example: 'A demo runtime config'
@@ -2565,7 +2788,7 @@ definitions:
         example: 69f0f87c-3158-3a33-941f-e4b1ec4a0a93
       submittedAt:
         type: integer
-        example: 1478601851
+        example: 1478728931
       evaluationStatus:
         type: string
         example: evaluation-failed
@@ -2578,3 +2801,22 @@ definitions:
       maxPoints:
         type: integer
         example: 0
+  LocalizedAssignment:
+    type: object
+    properties:
+      id:
+        type: string
+        example: 1394432e-f41e-315b-a3c3-456c2f702765
+      name:
+        type: string
+        example: 'Convex hull - desc'
+      locale:
+        type: string
+        example: en
+      description:
+        type: string
+        example: 'A true classic'
+      createdFrom:
+        type: string
+        format: guid
+        example: 1394432e-f41e-315b-a3c3-456c2f702765
