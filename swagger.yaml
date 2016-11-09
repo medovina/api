@@ -1,5 +1,5 @@
 swagger: '2.0'
-host: recodex.projekty.ms.mff.cuni.cz
+host: recodex.projekty.ms.mff.cuni.cz:4000
 basePath: /v1
 consumes:
   - application/json
