@@ -40,6 +40,13 @@
         url = "https://recodex.github.io/api/swagger.yaml";
       }
 
+      var host = window.location.search.match(/host=([^&]+)/);
+      if (host && host.length > 1) {
+        host = decodeURIComponent(host[1]);
+      } else {
+        host = null;
+      }
+
       hljs.configure({
         highlightSizeThreshold: 5000
       });
@@ -67,6 +74,10 @@
           if(window.SwaggerTranslator) {
             window.SwaggerTranslator.translate();
           }
+
+	  if (host !== null) {
+            window.swaggerUi.api.setHost(host);
+	  }
         },
         onFailure: function(data) {
           log("Unable to Load SwaggerUI");
