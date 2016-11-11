@@ -1,5 +1,5 @@
 swagger: '2.0'
-host: recodex.projekty.ms.mff.cuni.cz:4000
+host: 'recodex.projekty.ms.mff.cuni.cz:4000'
 basePath: /v1
 consumes:
   - application/json
@@ -583,7 +583,8 @@ paths:
           required: false
           type: array
           items:
-            type: string # TODO
+            type: string
+            format: guid
           in: formData
           description: 'Submitted files'
         -
@@ -608,57 +609,6 @@ paths:
       security:
         -
           WebToken: [ ]
-  '/exercise-assignments/{id}/limits/{hardwareGroup}':
-    get:
-      tags:
-        - assignments
-      description: 'Get a list of resource limits for an assignment and a hardware group'
-      parameters:
-        -
-          name: id
-          required: true
-          in: path
-          type: string
-        -
-          name: hardwareGroup
-          required: true
-          in: path
-          type: string
-      responses:
-        200: {  }
-        403:
-          $ref: '#/responses/ForbiddenResponse'
-        401:
-          $ref: '#/responses/UnauthorizedResponse'
-    post:
-      tags:
-        - assignments
-      description: 'Set resource limits for an assignment and a hardware group'
-      parameters:
-        -
-          name: limits
-          required: false
-          type: array
-          items:
-            type: string # TODO
-          in: formData
-          description: 'A list of resource limits'
-        -
-          name: id
-          required: true
-          in: path
-          type: string
-        -
-          name: hardwareGroup
-          required: true
-          in: path
-          type: string
-      responses:
-        200: {  }
-        403:
-          $ref: '#/responses/ForbiddenResponse'
-        401:
-          $ref: '#/responses/UnauthorizedResponse'
   /groups:
     get:
       description: 'Get a list of all groups'
@@ -1943,14 +1893,6 @@ paths:
       description: 'Set resource limits for an assignment and a hardware group'
       parameters:
         -
-          name: limits
-          required: false
-          type: array
-          items:
-            type: string # TODO
-          in: formData
-          description: 'A list of resource limits'
-        -
           name: id
           required: true
           in: path
@@ -1961,6 +1903,9 @@ paths:
           required: false
           in: formData
           description: 'A list of resource limits for the environments and hardware groups'
+          type: array
+          items:
+            type: string
       responses:
         200: {  }
         401: {  }
@@ -2398,10 +2343,10 @@ definitions:
         items: {  }
       firstDeadline:
         type: integer
-        example: 1522851646
+        example: 1522984437
       secondDeadline:
         type: integer
-        example: 1600391202
+        example: 1600523993
       maxPointsBeforeFirstDeadline:
         type: integer
         example: 0
@@ -2500,12 +2445,12 @@ definitions:
         type: integer
         format: int64
         description: 'UNIX timestamp'
-        example: 1478728930
+        example: 1478861721
       updatedAt:
         type: integer
         format: int64
         description: 'UNIX timestamp'
-        example: 1478728930
+        example: 1478861721
       isAllowed:
         type: boolean
         example: true
@@ -2535,7 +2480,7 @@ definitions:
         type: integer
         format: int64
         description: 'UNIX timestamp'
-        example: 1606370233
+        example: 1606503024
   User:
     type: object
     properties:
@@ -2621,7 +2566,7 @@ definitions:
         properties:
           date:
             type: string
-            example: '2016-11-09 23:02:10.000000'
+            example: '2016-11-11 11:55:21.000000'
           timezone_type:
             type: integer
             example: 3
@@ -2633,7 +2578,7 @@ definitions:
         properties:
           date:
             type: string
-            example: '2016-11-09 23:02:10.000000'
+            example: '2016-11-11 11:55:21.000000'
           timezone_type:
             type: integer
             example: 3
@@ -2719,7 +2664,7 @@ definitions:
             example: 'https://secure.gravatar.com/avatar/111d68d06e2d317b5a59c2c6c5bad808.png?s=200&amp;d=retro&amp;r=g'
       postedAt:
         type: integer
-        example: 1478728931
+        example: 1478861722
       isPrivate:
         type: boolean
         example: false
@@ -2788,7 +2733,7 @@ definitions:
         example: 69f0f87c-3158-3a33-941f-e4b1ec4a0a93
       submittedAt:
         type: integer
-        example: 1478728931
+        example: 1478861722
       evaluationStatus:
         type: string
         example: evaluation-failed
