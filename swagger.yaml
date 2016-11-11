@@ -2299,7 +2299,7 @@ definitions:
       id:
         type: string
         format: guid
-        example: 69f0f87c-3158-3a33-941f-e4b1ec4a0a93
+        example: 3E2A7CE3-AA73-4D32-9B7A-66C7E97AC401
       name:
         type: string
         example: 'Convex hull'
@@ -2338,15 +2338,12 @@ definitions:
       scoreConfig:
         type: string
         example: ''
-      localizedAssignments:
-        type: array
-        items: {  }
       firstDeadline:
         type: integer
-        example: 1522984437
+        example: 1522990855
       secondDeadline:
         type: integer
-        example: 1600523993
+        example: 1600530411
       maxPointsBeforeFirstDeadline:
         type: integer
         example: 0
@@ -2357,17 +2354,37 @@ definitions:
         type: array
         items:
           type: string
-          example: dd2a7c4f-68ed-3b61-85ae-13dd1de31671
+          example: 8CD78B71-F741-448F-8D35-A75DF89F50F3
       canViewLimitRatios:
         type: boolean
         example: false
+      localizedAssignments:
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: string
+              example: 6791E583-AA2D-4CFA-8E2E-E4B1AF8C04A6
+            name:
+              type: string
+              example: 'Convex hull - desc'
+            locale:
+              type: string
+              example: en
+            description:
+              type: string
+              example: 'A true classic'
+            createdFrom:
+              type: string
+              example: ''
   Group:
     type: object
     properties:
       id:
         type: string
         format: guid
-        example: aa07c86a-df37-327b-8bd9-b97fdfd66161
+        example: 9291A2E8-04ED-4695-9A54-5BB19E98BAE4
       name:
         type: string
         example: 'Demo group'
@@ -2377,29 +2394,29 @@ definitions:
       adminId:
         type: string
         format: guid
-        example: 20160692-b8e3-3be2-9ead-f99a706acbb1
+        example: 0EDE24C1-D8C1-43FC-8F5B-C3D271CAB272
       admins:
         type: array
         items:
           type: string
           format: guid
-          example: 20160692-b8e3-3be2-9ead-f99a706acbb1
+          example: 0EDE24C1-D8C1-43FC-8F5B-C3D271CAB272
       supervisors:
         type: array
         items:
           type: string
           format: guid
-          example: 20160692-b8e3-3be2-9ead-f99a706acbb1
+          example: 0EDE24C1-D8C1-43FC-8F5B-C3D271CAB272
       students:
         type: array
         items:
           type: string
           format: guid
-          example: 67021098-abc0-32c4-8889-060a2d8cb536
+          example: 96A1BB08-9F17-45CB-BE2E-E8215A7A8FB6
       instanceId:
         type: string
         format: guid
-        example: 54a4eed2-9608-3fca-ac16-bdb51b5bc348
+        example: 05595E84-1404-4A32-9FC1-87F7D3D299EC
       hasValidLicence:
         type: boolean
         example: true
@@ -2407,28 +2424,30 @@ definitions:
         type: string
         format: guid
         example: 0cf3b440-5531-3122-b091-4de13f15652d
-      childGroups:
-        type: array
-        items: {  }
       assignments:
         type: array
         items:
           type: string
           format: guid
-          example: 69f0f87c-3158-3a33-941f-e4b1ec4a0a93
+          example: 3E2A7CE3-AA73-4D32-9B7A-66C7E97AC401
       publicStats:
         type: boolean
         example: true
       isPublic:
         type: boolean
         example: true
+      childGroups:
+        type: array
+        items:
+          type: string
+          example: B2160429-C3C9-42D5-A026-00BB5ADF3FB5
   Instance:
     type: object
     properties:
       id:
         type: string
         format: guid
-        example: 54a4eed2-9608-3fca-ac16-bdb51b5bc348
+        example: 05595E84-1404-4A32-9FC1-87F7D3D299EC
       name:
         type: string
         example: 'Frankenstein University, Atlantida'
@@ -2445,31 +2464,31 @@ definitions:
         type: integer
         format: int64
         description: 'UNIX timestamp'
-        example: 1478861721
+        example: 1478868139
       updatedAt:
         type: integer
         format: int64
         description: 'UNIX timestamp'
-        example: 1478861721
+        example: 1478868139
       isAllowed:
         type: boolean
         example: true
       admin:
         type: string
         format: guid
-        example: 6c241f8f-1a0a-34dc-8042-591352a764ea
+        example: 0EDE24C1-D8C1-43FC-8F5B-C3D271CAB272
       topLevelGroups:
         type: array
         items:
           type: string
-          example: aa07c86a-df37-327b-8bd9-b97fdfd66161
+          example: 9291A2E8-04ED-4695-9A54-5BB19E98BAE4
   Licence:
     type: object
     properties:
       id:
         type: string
         format: guid
-        example: b0b8ab07-e4b1-33d1-b7e0-43442c3e01fe
+        example: F67BB8E1-2C57-483C-8D52-38A1A553A68D
       note:
         type: string
         example: 'Year licence for the first Fish University'
@@ -2480,17 +2499,17 @@ definitions:
         type: integer
         format: int64
         description: 'UNIX timestamp'
-        example: 1606503024
+        example: 1606509442
   User:
     type: object
     properties:
       id:
         type: string
         format: guid
-        example: 58be5bd7-2453-3d08-9e4f-5d22158b0230
+        example: 0EDE24C1-D8C1-43FC-8F5B-C3D271CAB272
       fullName:
         type: string
-        example: 'Zora Steuber'
+        example: 'Adah Reichel'
       name:
         type: object
         properties:
@@ -2499,20 +2518,20 @@ definitions:
             example: ''
           firstName:
             type: string
-            example: Zora
+            example: Adah
           lastName:
             type: string
-            example: Steuber
+            example: Reichel
           degreesAfterName:
             type: string
             example: ''
       instanceId:
         type: string
         format: guid
-        example: 54a4eed2-9608-3fca-ac16-bdb51b5bc348
+        example: 05595E84-1404-4A32-9FC1-87F7D3D299EC
       avatarUrl:
         type: string
-        example: 'https://secure.gravatar.com/avatar/ab53a2911ddf9b4817ac01ddcd3d975f.png?s=200&amp;d=retro&amp;r=g'
+        example: 'https://secure.gravatar.com/avatar/64e1b8d34f425d19e1ee2ea7236d3028.png?s=200&amp;d=retro&amp;r=g'
       isVerified:
         description: 'Is the user verified by email?'
         type: boolean
@@ -2520,7 +2539,7 @@ definitions:
       role:
         type: string
         format: guid
-        example: b89af1b9-13a6-3fe6-bfea-29f2b6a9eef5
+        example: superadmin
       groups:
         type: object
         properties:
@@ -2533,24 +2552,24 @@ definitions:
             type: array
             items:
               type: string
-              example: aa07c86a-df37-327b-8bd9-b97fdfd66161
+              example: 9291A2E8-04ED-4695-9A54-5BB19E98BAE4
   Exercise:
     type: object
     properties:
       id:
         type: string
         format: guid
-        example: b9d85cfa-3c46-33c1-8750-53be1c281111
+        example: 98296099-4FFD-41C0-BCD5-2FB8A71E8DAD
       name:
         type: string
-        example: 'aloha exercise'
+        example: 'Convex hull'
       version:
         type: integer
         example: 1
       authorId:
         type: string
         format: guid
-        example: 20160692-b8e3-3be2-9ead-f99a706acbb1
+        example: 0EDE24C1-D8C1-43FC-8F5B-C3D271CAB272
       forkedFrom:
         type: string
         format: guid
@@ -2560,13 +2579,13 @@ definitions:
         example: 'A true classic'
       difficulty:
         type: string
-        example: easy
+        example: moderate
       createdAt:
         type: object
         properties:
           date:
             type: string
-            example: '2016-11-11 11:55:21.000000'
+            example: '2016-11-11 13:42:19.000000'
           timezone_type:
             type: integer
             example: 3
@@ -2578,7 +2597,7 @@ definitions:
         properties:
           date:
             type: string
-            example: '2016-11-11 11:55:21.000000'
+            example: '2016-11-11 13:42:19.000000'
           timezone_type:
             type: integer
             example: 3
@@ -2588,33 +2607,48 @@ definitions:
       localizedAssignments:
         type: array
         items:
-          type: string
-          example: 1394432e-f41e-315b-a3c3-456c2f702765
+          type: object
+          properties:
+            id:
+              type: string
+              example: 6791E583-AA2D-4CFA-8E2E-E4B1AF8C04A6
+            name:
+              type: string
+              example: 'Convex hull - desc'
+            locale:
+              type: string
+              example: en
+            description:
+              type: string
+              example: 'A true classic'
+            createdFrom:
+              type: string
+              example: ''
       solutionRuntimeConfigs:
         type: array
         items:
           type: string
-          example: dd2a7c4f-68ed-3b61-85ae-13dd1de31671
+          example: 8CD78B71-F741-448F-8D35-A75DF89F50F3
   Role:
     type: string
-    example: ccffd565-a79f-32b5-a62f-4a28685ee814
+    example: student
   Resource:
     type: string
-    example: 5562b312-9be7-3915-b616-b977dd28d741
+    example: assignments
   Permission:
     type: object
     properties:
       role:
         type: string
         format: guid
-        example: d4d77b2c-6afe-3a26-aeb1-8b7c83953e89
+        example: superadmin
       resource:
         type: string
         format: guid
-        example: 311b982f-9e9e-3f81-8ef7-952744df4c82
+        example: assignments
       action:
         type: string
-        example: update
+        example: '*'
       isAllowed:
         type: integer
         example: 1
@@ -2635,27 +2669,54 @@ definitions:
     properties:
       id:
         type: string
-        example: 69755e0c-c2d6-3f73-a8a8-421b42bd6d83
+        example: mainThread
       comments:
         type: array
         items:
           type: object
-          properties: {  }
+          properties:
+            id:
+              type: string
+              example: FDB3AB2E-0C73-43AB-8F60-AEE243090285
+            commentThreadId:
+              type: string
+              example: mainThread
+            user:
+              type: object
+              properties:
+                id:
+                  type: string
+                  example: 8F75B65E-9A62-4FCD-8FC2-EC174AF94661
+                name:
+                  type: string
+                  example: 'Zetta Stroman'
+                avatarUrl:
+                  type: string
+                  example: 'https://secure.gravatar.com/avatar/111d68d06e2d317b5a59c2c6c5bad808.png?s=200&amp;d=retro&amp;r=g'
+            postedAt:
+              type: integer
+              example: 1478868140
+            isPrivate:
+              type: boolean
+              example: true
+            text:
+              type: string
+              example: 'comment text'
   Comment:
     type: object
     properties:
       id:
         type: string
-        example: ea698fac-33e1-38b8-908a-d20729a2d314
+        example: FDB3AB2E-0C73-43AB-8F60-AEE243090285
       commentThreadId:
         type: string
-        example: 2ebb1cff-2101-37f5-9cbb-64a1bc0aab92
+        example: mainThread
       user:
         type: object
         properties:
           id:
             type: string
-            example: eca95c9b-78e2-3237-870e-beb09a9e59db
+            example: 8F75B65E-9A62-4FCD-8FC2-EC174AF94661
           name:
             type: string
             example: 'Zetta Stroman'
@@ -2664,40 +2725,40 @@ definitions:
             example: 'https://secure.gravatar.com/avatar/111d68d06e2d317b5a59c2c6c5bad808.png?s=200&amp;d=retro&amp;r=g'
       postedAt:
         type: integer
-        example: 1478861722
+        example: 1478868140
       isPrivate:
         type: boolean
-        example: false
+        example: true
       text:
         type: string
-        example: 'public text in main thread'
+        example: 'comment text'
   RuntimeEnvironment:
     type: object
     properties:
       id:
         type: string
-        example: 7203b9e1-f406-3701-8a5e-ea0c926cc67d
+        example: c-gcc-linux
       name:
         type: string
-        example: 'Java 8'
+        example: 'C (GCC)'
       language:
         type: string
-        example: 'Java 8'
+        example: C
       extensions:
         type: string
-        example: '[java]'
+        example: '[c, h]'
       platform:
         type: string
         example: GNU/Linux
       description:
         type: string
-        example: 'Java 8'
+        example: 'C compiled with GCC'
   HardwareGroup:
     type: object
     properties:
       id:
         type: string
-        example: 4521fc64-fa24-35a0-af37-f66897df5c0a
+        example: group1
       description:
         type: string
         example: 'Our only hardware group'
@@ -2706,52 +2767,72 @@ definitions:
     properties:
       id:
         type: string
-        example: dd2a7c4f-68ed-3b61-85ae-13dd1de31671
+        example: 8CD78B71-F741-448F-8D35-A75DF89F50F3
       name:
         type: string
         example: 'A demo runtime config'
-      runtimeEnvironment:
-        type: object
-        properties: {  }
       hardwareGroup:
         type: string
         example: dd2a7c4f-68ed-3b61-85ae-13dd1de31671
+      runtimeEnvironment:
+        type: object
+        properties:
+          id:
+            type: string
+            example: c-gcc-linux
+          name:
+            type: string
+            example: 'C (GCC)'
+          language:
+            type: string
+            example: C
+          extensions:
+            type: string
+            example: '[c, h]'
+          platform:
+            type: string
+            example: GNU/Linux
+          description:
+            type: string
+            example: 'C compiled with GCC'
   Submission:
     type: object
     properties:
       id:
         type: string
-        example: 895733d3-5b21-3d6b-bc5d-2f442a0a7fed
+        example: 5617FF30-63EA-4654-AD55-C9B7A5AC6122
       userId:
         type: string
-        example: 4912f6b4-d9fc-3126-9cee-b23683c46045
+        example: 2876BDA0-F971-4657-A0B3-04D682AE7E61
       note:
         type: string
         example: 'Random note'
       exerciseAssignmentId:
         type: string
-        example: 69f0f87c-3158-3a33-941f-e4b1ec4a0a93
+        example: 3E2A7CE3-AA73-4D32-9B7A-66C7E97AC401
       submittedAt:
         type: integer
-        example: 1478861722
+        example: 1478868140
       evaluationStatus:
         type: string
         example: evaluation-failed
       evaluation:
         type: string
         example: 69f0f87c-3158-3a33-941f-e4b1ec4a0a93
-      files:
-        type: array
-        items: {  }
       maxPoints:
         type: integer
         example: 0
+      files:
+        type: array
+        items:
+          type: string
+          example: 69f0f87c-3158-3a33-941f-e4b1ec4a0a93
   LocalizedAssignment:
     type: object
     properties:
       id:
         type: string
-        example: 1394432e-f41e-315b-a3c3-456c2f702765
+        example: 6791E583-AA2D-4CFA-8E2E-E4B1AF8C04A6
       name:
         type: string
         example: 'Convex hull - desc'
@@ -2764,4 +2845,4 @@ definitions:
       createdFrom:
         type: string
         format: guid
-        example: 1394432e-f41e-315b-a3c3-456c2f702765
+        example: ''
