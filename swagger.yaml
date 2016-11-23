@@ -119,7 +119,7 @@ paths:
           required: true
           in: path
           type: string
-          description: ''
+          description: 'Identifier of the login service'
       responses:
         200: {  }
       tags:
@@ -133,7 +133,7 @@ paths:
           required: true
           in: path
           type: string
-          description: ''
+          description: 'Identifier of the comment thread'
       responses:
         200: {  }
         403:
@@ -166,7 +166,7 @@ paths:
           required: true
           in: path
           type: string
-          description: ''
+          description: 'Identifier of the comment thread'
       responses:
         200: {  }
         403:
@@ -187,13 +187,13 @@ paths:
           required: true
           in: path
           type: string
-          description: ''
+          description: 'Identifier of the comment thread'
         -
           name: commentId
           required: true
           in: path
           type: string
-          description: ''
+          description: 'Identifier of the comment'
       responses:
         200: {  }
         403:
@@ -245,7 +245,7 @@ paths:
           required: true
           in: path
           type: string
-          description: ''
+          description: 'Identifier of the job whose status is being reported'
       responses:
         200: {  }
       security:
@@ -401,7 +401,7 @@ paths:
           required: true
           in: path
           type: string
-          description: ''
+          description: 'Identifier of the assignment'
       responses:
         200:
           $ref: '#/responses/AssignmentResponse'
@@ -465,7 +465,7 @@ paths:
           required: true
           in: path
           type: string
-          description: ''
+          description: 'Identifier of the updated assignment'
         -
           name: maxPointsBeforeFirstDeadline
           required: false
@@ -518,7 +518,7 @@ paths:
           required: true
           in: path
           type: string
-          description: ''
+          description: 'Identifier of the assignment to be removed'
       responses:
         200:
           $ref: '#/responses/SuccessResponse'
@@ -540,7 +540,7 @@ paths:
           required: true
           in: path
           type: string
-          description: ''
+          description: 'Identifier of the assignment'
       responses:
         200:
           $ref: '#/responses/BooleanResponse'
@@ -555,20 +555,20 @@ paths:
     get:
       tags:
         - assignments
-      description: 'Get a list of submitted solutions of the assignment'
+      description: 'Get a list of solutions submitted by a user of an assignment'
       parameters:
         -
           name: id
           required: true
           in: path
           type: string
-          description: ''
+          description: 'Identifier of the assignment'
         -
           name: userId
           required: true
           in: path
           type: string
-          description: ''
+          description: 'Identifier of the user'
       responses:
         200: {  }
         403:
@@ -582,7 +582,7 @@ paths:
     post:
       tags:
         - assignments
-      description: 'Submit a solution of the assignment'
+      description: 'Submit a solution of an assignment'
       parameters:
         -
           name: note
@@ -604,14 +604,14 @@ paths:
           required: true
           in: path
           type: string
-          description: ''
+          description: 'Identifier of the assignment'
         -
           name: runtimeConfigurationId
           required: false
           type: string
           format: guid
           in: formData
-          description: ''
+          description: 'Identifier of the runtime configuration used for evaluation'
         -
           name: userId
           in: formData
@@ -650,21 +650,21 @@ paths:
           required: false
           type: string
           in: formData
-          description: ''
+          description: 'Name of the group'
           minLength: 2
         -
           name: description
           required: false
           type: string
           in: formData
-          description: ''
+          description: 'Description of the group'
         -
           name: instanceId
           required: false
           type: string
           format: guid
           in: formData
-          description: ''
+          description: 'An identifier of the instance where the group should be created'
           minLength: 36
           maxLength: 36
         -
@@ -673,7 +673,7 @@ paths:
           type: string
           format: guid
           in: formData
-          description: ''
+          description: 'Identifier of the parent group (if none is given, a top-level group is created)'
           minLength: 36
           maxLength: 36
         -
@@ -681,18 +681,18 @@ paths:
           required: false
           type: boolean
           in: formData
-          description: ''
+          description: 'Should students be able to see each other''s results?'
         -
           name: isPublic
           required: false
           type: boolean
           in: formData
-          description: ''
+          description: 'Should the group be visible to all student?'
         -
           name: externalId
           in: formData
           required: false
-          description: ''
+          description: 'An informative, human readable indentifier of the group'
       responses:
         200:
           $ref: '#/responses/GroupResponse'
@@ -749,7 +749,7 @@ paths:
           required: true
           in: path
           type: string
-          description: ''
+          description: 'Identifier of the group'
       responses:
         200: {  }
         403:
@@ -769,7 +769,7 @@ paths:
           required: true
           in: path
           type: string
-          description: ''
+          description: 'Identifier of the group'
       responses:
         200:
           $ref: '#/responses/GroupResponse'
@@ -791,44 +791,44 @@ paths:
           required: false
           type: string
           minLength: 2
-          description: ''
+          description: 'Name of the group'
         -
           name: description
           in: formData
           required: false
           type: string
-          description: ''
+          description: 'Description of the group'
         -
           name: publicStats
           in: formData
           required: false
           type: boolean
-          description: ''
+          description: 'Should students be able to see each other''s results?'
         -
           name: isPublic
           in: formData
           required: false
           type: boolean
-          description: ''
+          description: 'Should the group be visible to all student?'
         -
           name: threshold
           in: formData
           required: false
           type: integer
-          description: ''
+          description: 'A minimum percentage of points needed to pass the course'
         -
           name: id
           in: path
           required: true
           type: string
-          description: ''
+          description: 'An identifier of the updated group'
         -
           name: externalId
           in: formData
           required: false
           type: string
           minLength: 1
-          description: ''
+          description: 'An informative, human readable indentifier of the group'
       responses:
         200: {  }
         401: {  }
@@ -847,7 +847,7 @@ paths:
           required: true
           in: path
           type: string
-          description: ''
+          description: 'Identifier of the group'
       responses:
         200:
           $ref: '#/responses/GroupListResponse'
@@ -869,7 +869,7 @@ paths:
           required: true
           in: path
           type: string
-          description: ''
+          description: 'Identifier of the group'
       responses:
         200:
           $ref: '#/responses/UserListResponse'
@@ -891,7 +891,7 @@ paths:
           required: true
           in: path
           type: string
-          description: ''
+          description: 'Identifier of the group'
       responses:
         200:
           $ref: '#/responses/UserListResponse'
@@ -913,7 +913,7 @@ paths:
           required: true
           in: path
           type: string
-          description: ''
+          description: 'Identifier of the group'
       responses:
         200: {  }
         403:
@@ -934,13 +934,13 @@ paths:
           required: true
           in: path
           type: string
-          description: ''
+          description: 'Identifier of the group'
         -
           name: userId
           required: true
           in: path
           type: string
-          description: ''
+          description: 'Identifier of the student'
       responses:
         200: {  }
         403:
@@ -960,13 +960,13 @@ paths:
           required: true
           in: path
           type: string
-          description: ''
+          description: 'Identifier of the group'
         -
           name: userId
           required: true
           in: path
           type: string
-          description: ''
+          description: 'Identifier of the student'
       responses:
         200:
           $ref: '#/responses/GroupResponse'
@@ -987,13 +987,13 @@ paths:
           required: true
           in: path
           type: string
-          description: ''
+          description: 'Identifier of the group'
         -
           name: userId
           required: true
           in: path
           type: string
-          description: ''
+          description: 'Identifier of the student'
       responses:
         200:
           $ref: '#/responses/GroupResponse'
@@ -1015,13 +1015,13 @@ paths:
           required: true
           in: path
           type: string
-          description: ''
+          description: 'Identifier of the group'
         -
           name: userId
           required: true
           in: path
           type: string
-          description: ''
+          description: 'Identifier of the student'
       responses:
         200: {  }
         403:
@@ -1042,7 +1042,7 @@ paths:
           required: true
           in: path
           type: string
-          description: ''
+          description: 'Identifier of the group'
       responses:
         200:
           $ref: '#/responses/UserListResponse'
@@ -1064,13 +1064,13 @@ paths:
           required: true
           in: path
           type: string
-          description: ''
+          description: 'Identifier of the group'
         -
           name: userId
           required: true
           in: path
           type: string
-          description: ''
+          description: 'Identifier of the supervisor'
       responses:
         200:
           $ref: '#/responses/GroupResponse'
@@ -1091,13 +1091,13 @@ paths:
           required: true
           in: path
           type: string
-          description: ''
+          description: 'Identifier of the group'
         -
           name: userId
           required: true
           in: path
           type: string
-          description: ''
+          description: 'Identifier of the supervisor'
       responses:
         200:
           $ref: '#/responses/GroupResponse'
@@ -1119,7 +1119,7 @@ paths:
           required: true
           in: path
           type: string
-          description: ''
+          description: 'Identifier of the group'
       responses:
         200: {  }
         403:
@@ -1146,7 +1146,7 @@ paths:
           required: true
           in: path
           type: string
-          description: ''
+          description: 'Identifier of the group'
       responses:
         200:
           $ref: '#/responses/GroupResponse'
@@ -1168,7 +1168,7 @@ paths:
           required: true
           in: path
           type: string
-          description: ''
+          description: 'Identifier of the group'
       responses:
         200:
           $ref: '#/responses/AssignmentListResponse'
@@ -1233,7 +1233,7 @@ paths:
           required: true
           in: path
           type: string
-          description: ''
+          description: 'An identifier of the instance'
       responses:
         200:
           $ref: '#/responses/InstanceResponse'
@@ -1247,7 +1247,7 @@ paths:
           required: true
           in: path
           type: string
-          description: ''
+          description: 'An identifier of the instance to be deleted'
       responses:
         200: {  }
         403:
@@ -1285,7 +1285,7 @@ paths:
           required: true
           in: path
           type: string
-          description: ''
+          description: 'An identifier of the updated instance'
       responses:
         200: {  }
         401: {  }
@@ -1304,7 +1304,7 @@ paths:
           required: true
           in: path
           type: string
-          description: ''
+          description: 'An identifier of the instance'
       responses:
         200:
           $ref: '#/responses/GroupListResponse'
@@ -1326,13 +1326,13 @@ paths:
           required: true
           in: path
           type: string
-          description: ''
+          description: 'An identifier of the instance'
         -
           name: search
           required: false
           in: query
           type: string
-          description: ''
+          description: 'A result filter'
       responses:
         200:
           $ref: '#/responses/UserListResponse'
@@ -1354,7 +1354,7 @@ paths:
           required: true
           in: path
           type: string
-          description: ''
+          description: 'An identifier of the instance'
       responses:
         200:
           $ref: '#/responses/LicenceListResponse'
@@ -1388,7 +1388,7 @@ paths:
           required: true
           in: path
           type: string
-          description: ''
+          description: 'An identifier of the instance'
       responses:
         200:
           $ref: '#/responses/LicenceResponse'
@@ -1413,36 +1413,18 @@ paths:
       description: 'Get reference solutions for an exercise'
       parameters:
         -
-          name: note
-          required: false
-          type: string
-          in: formData
-          description: ''
-        -
-          name: files
-          required: false
-          type: string
-          in: formData
-          description: ''
-        -
-          name: hwGroup
-          required: false
-          type: string
-          in: formData
-          description: ''
-        -
           name: id
           required: true
           in: path
           type: string
-          description: ''
+          description: 'Identifier of the exercise'
       responses:
         200: {  }
         403: {  }
       tags:
         - reference-exercise-solutions
     post:
-      description: 'Add new reference solution to existing exercise'
+      description: 'Add new reference solution to an exercise'
       parameters:
         -
           name: note
@@ -1465,7 +1447,7 @@ paths:
           in: path
           required: true
           type: string
-          description: ''
+          description: 'Identifier of the exercise'
       responses:
         200: {  }
         403: {  }
@@ -1486,13 +1468,13 @@ paths:
           required: true
           in: path
           type: string
-          description: ''
+          description: 'Identifier of the exercise'
         -
           name: id
           required: true
           in: path
           type: string
-          description: ''
+          description: 'Identifier of the reference solution'
       responses:
         200: {  }
         403: {  }
@@ -1522,7 +1504,7 @@ paths:
           required: true
           in: path
           type: string
-          description: ''
+          description: 'Identifier of the submission'
       responses:
         200: {  }
         403:
@@ -1535,7 +1517,7 @@ paths:
         -
           WebToken: [ ]
     post:
-      description: 'Set new amount of bonus points for this submission'
+      description: 'Set new amount of bonus points for a submission'
       parameters:
         -
           name: bonusPoints
@@ -1548,7 +1530,7 @@ paths:
           in: path
           required: true
           type: string
-          description: ''
+          description: 'Identifier of the submission'
       responses:
         200: {  }
         401: {  }
@@ -1582,7 +1564,7 @@ paths:
           required: true
           in: path
           type: string
-          description: ''
+          description: 'Identifier of the uploaded file'
       responses:
         200: {  }
         403:
@@ -1603,7 +1585,7 @@ paths:
           required: true
           in: path
           type: string
-          description: ''
+          description: 'Identifier of the file'
       responses:
         200: {  }
         403:
@@ -1624,7 +1606,7 @@ paths:
           required: true
           in: path
           type: string
-          description: ''
+          description: 'Identifier of the file'
       responses:
         200: {  }
         403:
@@ -1772,7 +1754,7 @@ paths:
           required: true
           in: path
           type: string
-          description: ''
+          description: 'Identifier of the user'
       responses:
         200:
           $ref: '#/responses/UserResponse'
@@ -1843,14 +1825,14 @@ paths:
         - users
   '/users/{id}/groups':
     get:
-      description: ''
+      description: 'Get a list of groups for a user'
       parameters:
         -
           name: id
           required: true
           in: path
           type: string
-          description: ''
+          description: 'Identifier of the user'
       responses:
         200:
           $ref: '#/responses/GroupListResponse'
@@ -1872,7 +1854,7 @@ paths:
           required: true
           in: path
           type: string
-          description: ''
+          description: 'Identifier of the user'
       responses:
         200:
           $ref: '#/responses/InstanceListResponse'
@@ -1894,7 +1876,7 @@ paths:
           required: true
           in: path
           type: string
-          description: ''
+          description: 'Identifier of the user'
       responses:
         200:
           $ref: '#/responses/ExerciseListResponse'
@@ -2030,14 +2012,14 @@ paths:
         - forgotten-password
   '/exercise-assignments/{id}/limits':
     get:
-      description: 'Get a list of resource limits for an assignment and a hardware group'
+      description: 'Get a description of resource limits for an assignment'
       parameters:
         -
           name: id
           required: true
           in: path
           type: string
-          description: ''
+          description: 'Identifier of the exercise'
       responses:
         200: {  }
         401: {  }
@@ -2048,14 +2030,14 @@ paths:
         -
           WebToken: [ ]
     post:
-      description: 'Set resource limits for an assignment and a hardware group'
+      description: 'Set resource limits for an assignment'
       parameters:
         -
           name: id
           required: true
           in: path
           type: string
-          description: ''
+          description: 'Identifier of the assignment'
         -
           name: environments
           required: false
@@ -2075,7 +2057,7 @@ paths:
           WebToken: [ ]
   '/instances/licences/{licenceId}':
     post:
-      description: 'Update existing license for an instance'
+      description: 'Update an existing license for an instance'
       parameters:
         -
           name: note
@@ -2101,7 +2083,7 @@ paths:
           required: true
           in: path
           type: string
-          description: ''
+          description: 'Identifier of the licence'
       responses:
         200: {  }
         401: {  }
@@ -2119,7 +2101,7 @@ paths:
           required: true
           in: path
           type: string
-          description: ''
+          description: 'Identifier of the licence'
       responses:
         200: {  }
         401: {  }
@@ -2585,7 +2567,7 @@ definitions:
       id:
         type: string
         format: guid
-        example: 3691738E-3B69-4C30-85CF-6E9FF61D85C9
+        example: EB72CB88-ECAE-4C22-9685-6A5460475A3E
       name:
         type: string
         example: 'Convex hull'
@@ -2626,10 +2608,10 @@ definitions:
         example: ''
       firstDeadline:
         type: integer
-        example: 1555098657
+        example: 1555102264
       secondDeadline:
         type: integer
-        example: 1597879522
+        example: 1597883129
       maxPointsBeforeFirstDeadline:
         type: integer
         example: 0
@@ -2640,7 +2622,7 @@ definitions:
         type: array
         items:
           type: string
-          example: 2F58F950-6B3D-4773-B07B-10D218713F42
+          example: 729FDFC2-86E6-40E0-ACC7-FECF808133BB
       canViewLimitRatios:
         type: boolean
         example: false
@@ -2651,7 +2633,7 @@ definitions:
           properties:
             id:
               type: string
-              example: 7B3086D1-AA0D-4E2C-812E-BF87E0A7E00E
+              example: 74FB998A-E01F-467A-AA69-99EB2C7881D8
             name:
               type: string
               example: 'Convex hull - desc'
@@ -2682,7 +2664,7 @@ definitions:
       id:
         type: string
         format: guid
-        example: 823BF84D-9E2C-43B6-A55D-077E67F892CC
+        example: 0C24074F-CCFA-44EE-BEFF-DFB47B9E3D83
       name:
         type: string
         example: 'Demo group'
@@ -2692,29 +2674,29 @@ definitions:
       adminId:
         type: string
         format: guid
-        example: 3E5A6DEE-D479-4211-89A3-F7897790B740
+        example: E5DCBFAC-CA15-491D-A809-EF01227CB2C5
       admins:
         type: array
         items:
           type: string
           format: guid
-          example: 3E5A6DEE-D479-4211-89A3-F7897790B740
+          example: E5DCBFAC-CA15-491D-A809-EF01227CB2C5
       supervisors:
         type: array
         items:
           type: string
           format: guid
-          example: 3E5A6DEE-D479-4211-89A3-F7897790B740
+          example: E5DCBFAC-CA15-491D-A809-EF01227CB2C5
       students:
         type: array
         items:
           type: string
           format: guid
-          example: 2FD39867-A74E-493C-935B-B3AE4CB819F6
+          example: D39BC309-908B-424E-9862-B0A75D20409E
       instanceId:
         type: string
         format: guid
-        example: 100B6B58-E1B3-4943-86ED-BB6B606FF0C9
+        example: 3AFADADF-7CAE-4549-B540-3945A1B948F4
       hasValidLicence:
         type: boolean
         example: true
@@ -2733,12 +2715,12 @@ definitions:
             type: array
             items:
               type: string
-              example: 3691738E-3B69-4C30-85CF-6E9FF61D85C9
+              example: EB72CB88-ECAE-4C22-9685-6A5460475A3E
           public:
             type: array
             items:
               type: string
-              example: 3691738E-3B69-4C30-85CF-6E9FF61D85C9
+              example: EB72CB88-ECAE-4C22-9685-6A5460475A3E
       publicStats:
         type: boolean
         example: true
@@ -2755,12 +2737,12 @@ definitions:
             type: array
             items:
               type: string
-              example: 70485F7A-644C-4C09-BF31-5D2ABF2515ED
+              example: 2723F51F-FC17-44FD-A90C-47D6F9E7DE79
           public:
             type: array
             items:
               type: string
-              example: 70485F7A-644C-4C09-BF31-5D2ABF2515ED
+              example: 2723F51F-FC17-44FD-A90C-47D6F9E7DE79
       threshold:
         type: float
         example: 0.75
@@ -2773,7 +2755,7 @@ definitions:
       id:
         type: string
         format: guid
-        example: 100B6B58-E1B3-4943-86ED-BB6B606FF0C9
+        example: 3AFADADF-7CAE-4549-B540-3945A1B948F4
       name:
         type: string
         example: 'Frankenstein University, Atlantida'
@@ -2790,24 +2772,24 @@ definitions:
         type: integer
         format: int64
         description: 'UNIX timestamp'
-        example: 1479896484
+        example: 1479900091
       updatedAt:
         type: integer
         format: int64
         description: 'UNIX timestamp'
-        example: 1479896484
+        example: 1479900091
       isAllowed:
         type: boolean
         example: true
       admin:
         type: string
         format: guid
-        example: 3E5A6DEE-D479-4211-89A3-F7897790B740
+        example: E5DCBFAC-CA15-491D-A809-EF01227CB2C5
       topLevelGroups:
         type: array
         items:
           type: string
-          example: 823BF84D-9E2C-43B6-A55D-077E67F892CC
+          example: 0C24074F-CCFA-44EE-BEFF-DFB47B9E3D83
       deletedAt:
         type: integer
         format: int64
@@ -2819,7 +2801,7 @@ definitions:
       id:
         type: string
         format: guid
-        example: C4EBAC9F-A4F0-45F3-99B8-6B72C8BEC1E0
+        example: 384BF629-E3F5-49C9-9B0C-AFADE318FB86
       note:
         type: string
         example: 'Year licence for the first Fish University'
@@ -2830,14 +2812,14 @@ definitions:
         type: integer
         format: int64
         description: 'UNIX timestamp'
-        example: 1607537788
+        example: 1607541395
   User:
     type: object
     properties:
       id:
         type: string
         format: guid
-        example: 3E5A6DEE-D479-4211-89A3-F7897790B740
+        example: E5DCBFAC-CA15-491D-A809-EF01227CB2C5
       fullName:
         type: string
         example: 'Adah Reichel'
@@ -2859,7 +2841,7 @@ definitions:
       instanceId:
         type: string
         format: guid
-        example: 100B6B58-E1B3-4943-86ED-BB6B606FF0C9
+        example: 3AFADADF-7CAE-4549-B540-3945A1B948F4
       avatarUrl:
         type: string
         example: 'https://secure.gravatar.com/avatar/64e1b8d34f425d19e1ee2ea7236d3028.png?s=200&amp;d=retro&amp;r=g'
@@ -2883,7 +2865,7 @@ definitions:
             type: array
             items:
               type: string
-              example: 823BF84D-9E2C-43B6-A55D-077E67F892CC
+              example: 0C24074F-CCFA-44EE-BEFF-DFB47B9E3D83
       settings:
         type: object
         properties:
@@ -2902,7 +2884,7 @@ definitions:
       id:
         type: string
         format: guid
-        example: 3201AD09-1EE1-427E-945F-63DB1F1CEAFB
+        example: F67F186C-BF11-4EB7-BAC9-1679C3FF9200
       name:
         type: string
         example: 'Convex hull'
@@ -2912,7 +2894,7 @@ definitions:
       authorId:
         type: string
         format: guid
-        example: 3E5A6DEE-D479-4211-89A3-F7897790B740
+        example: E5DCBFAC-CA15-491D-A809-EF01227CB2C5
       forkedFrom:
         type: string
         format: guid
@@ -2954,7 +2936,7 @@ definitions:
           properties:
             id:
               type: string
-              example: 7B3086D1-AA0D-4E2C-812E-BF87E0A7E00E
+              example: 74FB998A-E01F-467A-AA69-99EB2C7881D8
             name:
               type: string
               example: 'Convex hull - desc'
@@ -2987,7 +2969,7 @@ definitions:
           properties:
             id:
               type: string
-              example: 2F58F950-6B3D-4773-B07B-10D218713F42
+              example: 729FDFC2-86E6-40E0-ACC7-FECF808133BB
             name:
               type: string
               example: 'A demo runtime config'
@@ -3078,7 +3060,7 @@ definitions:
           properties:
             id:
               type: string
-              example: 4B70AEC6-049F-4FC6-BF3B-058BF71D0053
+              example: E01C8774-A218-4E41-A9B4-A4AEBB16071C
             commentThreadId:
               type: string
               example: mainThread
@@ -3087,7 +3069,7 @@ definitions:
               properties:
                 id:
                   type: string
-                  example: E3500FB1-5FDF-420B-BC20-1B443DB2B637
+                  example: 47A1C3C1-FBCE-4762-81CF-13EAC9C2E019
                 name:
                   type: string
                   example: 'Zetta Stroman'
@@ -3096,7 +3078,7 @@ definitions:
                   example: 'https://secure.gravatar.com/avatar/111d68d06e2d317b5a59c2c6c5bad808.png?s=200&amp;d=retro&amp;r=g'
             postedAt:
               type: integer
-              example: 1479896485
+              example: 1479900092
             isPrivate:
               type: boolean
               example: true
@@ -3108,7 +3090,7 @@ definitions:
     properties:
       id:
         type: string
-        example: 4B70AEC6-049F-4FC6-BF3B-058BF71D0053
+        example: E01C8774-A218-4E41-A9B4-A4AEBB16071C
       commentThreadId:
         type: string
         example: mainThread
@@ -3117,7 +3099,7 @@ definitions:
         properties:
           id:
             type: string
-            example: E3500FB1-5FDF-420B-BC20-1B443DB2B637
+            example: 47A1C3C1-FBCE-4762-81CF-13EAC9C2E019
           name:
             type: string
             example: 'Zetta Stroman'
@@ -3126,7 +3108,7 @@ definitions:
             example: 'https://secure.gravatar.com/avatar/111d68d06e2d317b5a59c2c6c5bad808.png?s=200&amp;d=retro&amp;r=g'
       postedAt:
         type: integer
-        example: 1479896485
+        example: 1479900092
       isPrivate:
         type: boolean
         example: true
@@ -3168,7 +3150,7 @@ definitions:
     properties:
       id:
         type: string
-        example: 2F58F950-6B3D-4773-B07B-10D218713F42
+        example: 729FDFC2-86E6-40E0-ACC7-FECF808133BB
       name:
         type: string
         example: 'A demo runtime config'
@@ -3216,19 +3198,19 @@ definitions:
     properties:
       id:
         type: string
-        example: 531CA9F3-92E4-473D-A05A-311838B5254C
+        example: 1ED6F50D-D0ED-400E-B831-A4DF18D7F277
       userId:
         type: string
-        example: 85D424E3-1178-457D-9286-A0E99D51D4D1
+        example: 55F3AB46-0C3B-4EAF-AAB1-510566C8D92E
       note:
         type: string
         example: 'Random note'
       exerciseAssignmentId:
         type: string
-        example: 3691738E-3B69-4C30-85CF-6E9FF61D85C9
+        example: EB72CB88-ECAE-4C22-9685-6A5460475A3E
       submittedAt:
         type: integer
-        example: 1479896485
+        example: 1479900092
       evaluationStatus:
         type: string
         example: evaluation-failed
@@ -3238,10 +3220,10 @@ definitions:
         properties:
           id:
             type: string
-            example: D9DAD06E-68A4-4F01-B65B-6C60F0268001
+            example: EF1A7360-792F-48E9-B84D-BE50301E0656
           evaluatedAt:
             type: integer
-            example: 248373853
+            example: 248374458
           score:
             type: double
             example: 0.95
@@ -3277,7 +3259,7 @@ definitions:
           properties:
             id:
               type: string
-              example: 24D0811B-0D05-4D51-827A-76F41297C7FE
+              example: 8F3935F3-265A-4084-A404-B9D4CF054766
             name:
               type: string
               example: filename.ext
@@ -3286,19 +3268,19 @@ definitions:
               example: 0
             uploadedAt:
               type: integer
-              example: 1296965217
+              example: 1296968378
             userId:
               type: string
-              example: 85D424E3-1178-457D-9286-A0E99D51D4D1
+              example: 55F3AB46-0C3B-4EAF-AAB1-510566C8D92E
       submittedBy:
         type: string
-        example: 85D424E3-1178-457D-9286-A0E99D51D4D1
+        example: 55F3AB46-0C3B-4EAF-AAB1-510566C8D92E
   LocalizedAssignment:
     type: object
     properties:
       id:
         type: string
-        example: 7B3086D1-AA0D-4E2C-812E-BF87E0A7E00E
+        example: 74FB998A-E01F-467A-AA69-99EB2C7881D8
       name:
         type: string
         example: 'Convex hull - desc'
@@ -3329,10 +3311,10 @@ definitions:
     properties:
       id:
         type: string
-        example: D9DAD06E-68A4-4F01-B65B-6C60F0268001
+        example: EF1A7360-792F-48E9-B84D-BE50301E0656
       evaluatedAt:
         type: integer
-        example: 248373853
+        example: 248374458
       score:
         type: double
         example: 0.95
@@ -3362,10 +3344,10 @@ definitions:
     properties:
       id:
         type: string
-        example: AF8764B1-60F9-4BC3-8B39-A8DA10DACF5A
+        example: 7DF9EAE6-620A-472D-84A4-FB85FFC73FB8
       userId:
         type: string
-        example: 85D424E3-1178-457D-9286-A0E99D51D4D1
+        example: 55F3AB46-0C3B-4EAF-AAB1-510566C8D92E
       files:
         type: array
         items:
@@ -3373,7 +3355,7 @@ definitions:
           properties:
             id:
               type: string
-              example: 24D0811B-0D05-4D51-827A-76F41297C7FE
+              example: 8F3935F3-265A-4084-A404-B9D4CF054766
             name:
               type: string
               example: filename.ext
@@ -3382,16 +3364,16 @@ definitions:
               example: 0
             uploadedAt:
               type: integer
-              example: 1296965217
+              example: 1296968378
             userId:
               type: string
-              example: 85D424E3-1178-457D-9286-A0E99D51D4D1
+              example: 55F3AB46-0C3B-4EAF-AAB1-510566C8D92E
   SolutionFile:
     type: object
     properties:
       id:
         type: string
-        example: 24D0811B-0D05-4D51-827A-76F41297C7FE
+        example: 8F3935F3-265A-4084-A404-B9D4CF054766
       name:
         type: string
         example: filename.ext
@@ -3400,10 +3382,10 @@ definitions:
         example: 0
       uploadedAt:
         type: integer
-        example: 1296965217
+        example: 1296968378
       userId:
         type: string
-        example: 85D424E3-1178-457D-9286-A0E99D51D4D1
+        example: 55F3AB46-0C3B-4EAF-AAB1-510566C8D92E
   SubmissionFailure:
     type: object
     properties:
@@ -3415,13 +3397,13 @@ definitions:
         example: 'Things went south'
       submission:
         type: string
-        example: 531CA9F3-92E4-473D-A05A-311838B5254C
+        example: 1ED6F50D-D0ED-400E-B831-A4DF18D7F277
       createdAt:
         type: integer
-        example: 1323925258
+        example: 1323928485
       resolvedAt:
         type: integer
-        example: 1479896485
+        example: 1479900092
       resolutionNote:
         type: string
         example: 'Got it!'
