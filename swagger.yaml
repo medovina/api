@@ -1814,6 +1814,13 @@ paths:
           required: false
           type: string
           minLength: 1
+          description: 'Old password of current user'
+        -
+          name: newPassword
+          in: formData
+          required: false
+          type: string
+          minLength: 1
           description: 'New password of current user'
       responses:
         200: {  }
@@ -2567,7 +2574,7 @@ definitions:
       id:
         type: string
         format: guid
-        example: EB72CB88-ECAE-4C22-9685-6A5460475A3E
+        example: 6D37C542-1DC6-460B-9CED-9AADB740C7DA
       name:
         type: string
         example: 'Convex hull'
@@ -2608,10 +2615,10 @@ definitions:
         example: ''
       firstDeadline:
         type: integer
-        example: 1555102264
+        example: 1555102818
       secondDeadline:
         type: integer
-        example: 1597883129
+        example: 1597883683
       maxPointsBeforeFirstDeadline:
         type: integer
         example: 0
@@ -2622,7 +2629,7 @@ definitions:
         type: array
         items:
           type: string
-          example: 729FDFC2-86E6-40E0-ACC7-FECF808133BB
+          example: 51150853-589E-4E15-A9C1-73A8207A332B
       canViewLimitRatios:
         type: boolean
         example: false
@@ -2633,7 +2640,7 @@ definitions:
           properties:
             id:
               type: string
-              example: 74FB998A-E01F-467A-AA69-99EB2C7881D8
+              example: B68DA1F0-12B3-4BBE-873B-93649F70319E
             name:
               type: string
               example: 'Convex hull - desc'
@@ -2647,24 +2654,15 @@ definitions:
               type: string
               example: ''
             createdAt:
-              type: object
-              properties:
-                date:
-                  type: string
-                  example: '2016-11-23 10:39:37.000000'
-                timezone_type:
-                  type: integer
-                  example: 3
-                timezone:
-                  type: string
-                  example: Europe/Prague
+              type: integer
+              example: 1479900646
   Group:
     type: object
     properties:
       id:
         type: string
         format: guid
-        example: 0C24074F-CCFA-44EE-BEFF-DFB47B9E3D83
+        example: 95EE6EC9-FB8E-4903-9359-324600A3ADA1
       name:
         type: string
         example: 'Demo group'
@@ -2674,29 +2672,29 @@ definitions:
       adminId:
         type: string
         format: guid
-        example: E5DCBFAC-CA15-491D-A809-EF01227CB2C5
+        example: E0962D94-0E2B-4998-896C-BC9F0D635C99
       admins:
         type: array
         items:
           type: string
           format: guid
-          example: E5DCBFAC-CA15-491D-A809-EF01227CB2C5
+          example: E0962D94-0E2B-4998-896C-BC9F0D635C99
       supervisors:
         type: array
         items:
           type: string
           format: guid
-          example: E5DCBFAC-CA15-491D-A809-EF01227CB2C5
+          example: E0962D94-0E2B-4998-896C-BC9F0D635C99
       students:
         type: array
         items:
           type: string
           format: guid
-          example: D39BC309-908B-424E-9862-B0A75D20409E
+          example: 0AFA8BAE-658B-4250-A9BB-FC94C2016044
       instanceId:
         type: string
         format: guid
-        example: 3AFADADF-7CAE-4549-B540-3945A1B948F4
+        example: FAD82ADF-4441-4F8B-9DD0-4F314AABE53D
       hasValidLicence:
         type: boolean
         example: true
@@ -2715,12 +2713,12 @@ definitions:
             type: array
             items:
               type: string
-              example: EB72CB88-ECAE-4C22-9685-6A5460475A3E
+              example: 6D37C542-1DC6-460B-9CED-9AADB740C7DA
           public:
             type: array
             items:
               type: string
-              example: EB72CB88-ECAE-4C22-9685-6A5460475A3E
+              example: 6D37C542-1DC6-460B-9CED-9AADB740C7DA
       publicStats:
         type: boolean
         example: true
@@ -2737,12 +2735,12 @@ definitions:
             type: array
             items:
               type: string
-              example: 2723F51F-FC17-44FD-A90C-47D6F9E7DE79
+              example: 598491F0-8EAF-4342-8108-B3C21535F27B
           public:
             type: array
             items:
               type: string
-              example: 2723F51F-FC17-44FD-A90C-47D6F9E7DE79
+              example: 598491F0-8EAF-4342-8108-B3C21535F27B
       threshold:
         type: float
         example: 0.75
@@ -2755,7 +2753,7 @@ definitions:
       id:
         type: string
         format: guid
-        example: 3AFADADF-7CAE-4549-B540-3945A1B948F4
+        example: FAD82ADF-4441-4F8B-9DD0-4F314AABE53D
       name:
         type: string
         example: 'Frankenstein University, Atlantida'
@@ -2772,24 +2770,24 @@ definitions:
         type: integer
         format: int64
         description: 'UNIX timestamp'
-        example: 1479900091
+        example: 1479900646
       updatedAt:
         type: integer
         format: int64
         description: 'UNIX timestamp'
-        example: 1479900091
+        example: 1479900646
       isAllowed:
         type: boolean
         example: true
       admin:
         type: string
         format: guid
-        example: E5DCBFAC-CA15-491D-A809-EF01227CB2C5
+        example: E0962D94-0E2B-4998-896C-BC9F0D635C99
       topLevelGroups:
         type: array
         items:
           type: string
-          example: 0C24074F-CCFA-44EE-BEFF-DFB47B9E3D83
+          example: 95EE6EC9-FB8E-4903-9359-324600A3ADA1
       deletedAt:
         type: integer
         format: int64
@@ -2801,7 +2799,7 @@ definitions:
       id:
         type: string
         format: guid
-        example: 384BF629-E3F5-49C9-9B0C-AFADE318FB86
+        example: D7EFE1B1-80E5-4F77-8443-AC331A186CBB
       note:
         type: string
         example: 'Year licence for the first Fish University'
@@ -2812,14 +2810,14 @@ definitions:
         type: integer
         format: int64
         description: 'UNIX timestamp'
-        example: 1607541395
+        example: 1607541949
   User:
     type: object
     properties:
       id:
         type: string
         format: guid
-        example: E5DCBFAC-CA15-491D-A809-EF01227CB2C5
+        example: E0962D94-0E2B-4998-896C-BC9F0D635C99
       fullName:
         type: string
         example: 'Adah Reichel'
@@ -2841,7 +2839,7 @@ definitions:
       instanceId:
         type: string
         format: guid
-        example: 3AFADADF-7CAE-4549-B540-3945A1B948F4
+        example: FAD82ADF-4441-4F8B-9DD0-4F314AABE53D
       avatarUrl:
         type: string
         example: 'https://secure.gravatar.com/avatar/64e1b8d34f425d19e1ee2ea7236d3028.png?s=200&amp;d=retro&amp;r=g'
@@ -2865,7 +2863,7 @@ definitions:
             type: array
             items:
               type: string
-              example: 0C24074F-CCFA-44EE-BEFF-DFB47B9E3D83
+              example: 95EE6EC9-FB8E-4903-9359-324600A3ADA1
       settings:
         type: object
         properties:
@@ -2884,7 +2882,7 @@ definitions:
       id:
         type: string
         format: guid
-        example: F67F186C-BF11-4EB7-BAC9-1679C3FF9200
+        example: 2E328369-8247-4323-981F-92F0DF59D8DA
       name:
         type: string
         example: 'Convex hull'
@@ -2894,7 +2892,7 @@ definitions:
       authorId:
         type: string
         format: guid
-        example: E5DCBFAC-CA15-491D-A809-EF01227CB2C5
+        example: E0962D94-0E2B-4998-896C-BC9F0D635C99
       forkedFrom:
         type: string
         format: guid
@@ -2905,30 +2903,6 @@ definitions:
       difficulty:
         type: string
         example: moderate
-      createdAt:
-        type: object
-        properties:
-          date:
-            type: string
-            example: '2016-11-23 10:39:37.000000'
-          timezone_type:
-            type: integer
-            example: 3
-          timezone:
-            type: string
-            example: Europe/Prague
-      updatedAt:
-        type: object
-        properties:
-          date:
-            type: string
-            example: '2016-11-23 10:39:37.000000'
-          timezone_type:
-            type: integer
-            example: 3
-          timezone:
-            type: string
-            example: Europe/Prague
       localizedAssignments:
         type: array
         items:
@@ -2936,7 +2910,7 @@ definitions:
           properties:
             id:
               type: string
-              example: 74FB998A-E01F-467A-AA69-99EB2C7881D8
+              example: B68DA1F0-12B3-4BBE-873B-93649F70319E
             name:
               type: string
               example: 'Convex hull - desc'
@@ -2950,17 +2924,8 @@ definitions:
               type: string
               example: ''
             createdAt:
-              type: object
-              properties:
-                date:
-                  type: string
-                  example: '2016-11-23 10:39:37.000000'
-                timezone_type:
-                  type: integer
-                  example: 3
-                timezone:
-                  type: string
-                  example: Europe/Prague
+              type: integer
+              example: 1479900646
       solutionRuntimeConfigs:
         type: array
         items:
@@ -2969,22 +2934,10 @@ definitions:
           properties:
             id:
               type: string
-              example: 729FDFC2-86E6-40E0-ACC7-FECF808133BB
+              example: 51150853-589E-4E15-A9C1-73A8207A332B
             name:
               type: string
               example: 'A demo runtime config'
-            createdAt:
-              type: object
-              properties:
-                date:
-                  type: string
-                  example: '2016-11-23 10:39:37.000000'
-                timezone_type:
-                  type: integer
-                  example: 3
-                timezone:
-                  type: string
-                  example: Europe/Prague
             jobConfig:
               type: boolean
               example: false
@@ -3009,9 +2962,21 @@ definitions:
                 description:
                   type: string
                   example: 'C compiled with GCC'
+            createdAt:
+              type: integer
+              example: 1479900646
+            runtimeEnvironmentId:
+              type: string
+              example: c-gcc-linux
       isPublic:
         type: boolean
         example: true
+      createdAt:
+        type: integer
+        example: 1479900646
+      updatedAt:
+        type: integer
+        example: 1479900646
   Role:
     type: string
     example: student
@@ -3060,7 +3025,7 @@ definitions:
           properties:
             id:
               type: string
-              example: E01C8774-A218-4E41-A9B4-A4AEBB16071C
+              example: 0578C0FE-7D7D-45D4-938C-52F132F805F6
             commentThreadId:
               type: string
               example: mainThread
@@ -3069,7 +3034,7 @@ definitions:
               properties:
                 id:
                   type: string
-                  example: 47A1C3C1-FBCE-4762-81CF-13EAC9C2E019
+                  example: CED97EBF-E4E3-48F2-BC5C-BF1454983942
                 name:
                   type: string
                   example: 'Zetta Stroman'
@@ -3078,7 +3043,7 @@ definitions:
                   example: 'https://secure.gravatar.com/avatar/111d68d06e2d317b5a59c2c6c5bad808.png?s=200&amp;d=retro&amp;r=g'
             postedAt:
               type: integer
-              example: 1479900092
+              example: 1479900646
             isPrivate:
               type: boolean
               example: true
@@ -3090,7 +3055,7 @@ definitions:
     properties:
       id:
         type: string
-        example: E01C8774-A218-4E41-A9B4-A4AEBB16071C
+        example: 0578C0FE-7D7D-45D4-938C-52F132F805F6
       commentThreadId:
         type: string
         example: mainThread
@@ -3099,7 +3064,7 @@ definitions:
         properties:
           id:
             type: string
-            example: 47A1C3C1-FBCE-4762-81CF-13EAC9C2E019
+            example: CED97EBF-E4E3-48F2-BC5C-BF1454983942
           name:
             type: string
             example: 'Zetta Stroman'
@@ -3108,7 +3073,7 @@ definitions:
             example: 'https://secure.gravatar.com/avatar/111d68d06e2d317b5a59c2c6c5bad808.png?s=200&amp;d=retro&amp;r=g'
       postedAt:
         type: integer
-        example: 1479900092
+        example: 1479900646
       isPrivate:
         type: boolean
         example: true
@@ -3150,7 +3115,7 @@ definitions:
     properties:
       id:
         type: string
-        example: 729FDFC2-86E6-40E0-ACC7-FECF808133BB
+        example: 51150853-589E-4E15-A9C1-73A8207A332B
       name:
         type: string
         example: 'A demo runtime config'
@@ -3178,39 +3143,33 @@ definitions:
           description:
             type: string
             example: 'C compiled with GCC'
-      createdAt:
-        type: object
-        properties:
-          date:
-            type: string
-            example: '2016-11-23 10:39:37.000000'
-          timezone_type:
-            type: integer
-            example: 3
-          timezone:
-            type: string
-            example: Europe/Prague
       jobConfig:
         type: boolean
         example: false
+      createdAt:
+        type: integer
+        example: 1479900646
+      runtimeEnvironmentId:
+        type: string
+        example: c-gcc-linux
   Submission:
     type: object
     properties:
       id:
         type: string
-        example: 1ED6F50D-D0ED-400E-B831-A4DF18D7F277
+        example: 3A584DA0-564D-4E65-8284-DBA43566B03A
       userId:
         type: string
-        example: 55F3AB46-0C3B-4EAF-AAB1-510566C8D92E
+        example: 03158369-EE1C-4935-A110-16689F167368
       note:
         type: string
         example: 'Random note'
       exerciseAssignmentId:
         type: string
-        example: EB72CB88-ECAE-4C22-9685-6A5460475A3E
+        example: 6D37C542-1DC6-460B-9CED-9AADB740C7DA
       submittedAt:
         type: integer
-        example: 1479900092
+        example: 1479900646
       evaluationStatus:
         type: string
         example: evaluation-failed
@@ -3220,10 +3179,10 @@ definitions:
         properties:
           id:
             type: string
-            example: EF1A7360-792F-48E9-B84D-BE50301E0656
+            example: E2CCD0CF-0DF9-4780-B0EF-D7CF90501043
           evaluatedAt:
             type: integer
-            example: 248374458
+            example: 248374551
           score:
             type: double
             example: 0.95
@@ -3259,7 +3218,7 @@ definitions:
           properties:
             id:
               type: string
-              example: 8F3935F3-265A-4084-A404-B9D4CF054766
+              example: EA30DC17-5F32-4B8D-B19B-5262D9EC16BF
             name:
               type: string
               example: filename.ext
@@ -3268,19 +3227,19 @@ definitions:
               example: 0
             uploadedAt:
               type: integer
-              example: 1296968378
+              example: 1296968863
             userId:
               type: string
-              example: 55F3AB46-0C3B-4EAF-AAB1-510566C8D92E
+              example: 03158369-EE1C-4935-A110-16689F167368
       submittedBy:
         type: string
-        example: 55F3AB46-0C3B-4EAF-AAB1-510566C8D92E
+        example: 03158369-EE1C-4935-A110-16689F167368
   LocalizedAssignment:
     type: object
     properties:
       id:
         type: string
-        example: 74FB998A-E01F-467A-AA69-99EB2C7881D8
+        example: B68DA1F0-12B3-4BBE-873B-93649F70319E
       name:
         type: string
         example: 'Convex hull - desc'
@@ -3295,26 +3254,17 @@ definitions:
         format: guid
         example: ''
       createdAt:
-        type: object
-        properties:
-          date:
-            type: string
-            example: '2016-11-23 10:39:37.000000'
-          timezone_type:
-            type: integer
-            example: 3
-          timezone:
-            type: string
-            example: Europe/Prague
+        type: integer
+        example: 1479900646
   SolutionEvaluation:
     type: object
     properties:
       id:
         type: string
-        example: EF1A7360-792F-48E9-B84D-BE50301E0656
+        example: E2CCD0CF-0DF9-4780-B0EF-D7CF90501043
       evaluatedAt:
         type: integer
-        example: 248374458
+        example: 248374551
       score:
         type: double
         example: 0.95
@@ -3344,10 +3294,10 @@ definitions:
     properties:
       id:
         type: string
-        example: 7DF9EAE6-620A-472D-84A4-FB85FFC73FB8
+        example: 654D6B80-8F8B-4329-8E75-4E07220A6A10
       userId:
         type: string
-        example: 55F3AB46-0C3B-4EAF-AAB1-510566C8D92E
+        example: 03158369-EE1C-4935-A110-16689F167368
       files:
         type: array
         items:
@@ -3364,16 +3314,16 @@ definitions:
               example: 0
             uploadedAt:
               type: integer
-              example: 1296968378
+              example: 1296968863
             userId:
               type: string
-              example: 55F3AB46-0C3B-4EAF-AAB1-510566C8D92E
+              example: 03158369-EE1C-4935-A110-16689F167368
   SolutionFile:
     type: object
     properties:
       id:
         type: string
-        example: 8F3935F3-265A-4084-A404-B9D4CF054766
+        example: EA30DC17-5F32-4B8D-B19B-5262D9EC16BF
       name:
         type: string
         example: filename.ext
@@ -3382,10 +3332,10 @@ definitions:
         example: 0
       uploadedAt:
         type: integer
-        example: 1296968378
+        example: 1296968863
       userId:
         type: string
-        example: 55F3AB46-0C3B-4EAF-AAB1-510566C8D92E
+        example: 03158369-EE1C-4935-A110-16689F167368
   SubmissionFailure:
     type: object
     properties:
@@ -3397,13 +3347,13 @@ definitions:
         example: 'Things went south'
       submission:
         type: string
-        example: 1ED6F50D-D0ED-400E-B831-A4DF18D7F277
+        example: 3A584DA0-564D-4E65-8284-DBA43566B03A
       createdAt:
         type: integer
-        example: 1323928485
+        example: 1323928980
       resolvedAt:
         type: integer
-        example: 1479900092
+        example: 1479900646
       resolutionNote:
         type: string
         example: 'Got it!'
