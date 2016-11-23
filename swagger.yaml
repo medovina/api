@@ -80,7 +80,10 @@ paths:
           in: formData
           description: Password
       responses:
-        200: {  }
+        200:
+          $ref: '#/responses/LoginResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
       tags:
         - login
   /login/refresh:
@@ -88,7 +91,8 @@ paths:
       description: 'Refresh the access token of current user'
       parameters: [ ]
       responses:
-        200: {  }
+        200:
+          $ref: '#/responses/LoginResponse'
         403:
           $ref: '#/responses/ForbiddenResponse'
         401:
@@ -121,7 +125,10 @@ paths:
           type: string
           description: 'Identifier of the login service'
       responses:
-        200: {  }
+        200:
+          $ref: '#/responses/LoginResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
       tags:
         - login
   '/comments/{id}':
@@ -135,7 +142,8 @@ paths:
           type: string
           description: 'Identifier of the comment thread'
       responses:
-        200: {  }
+        200:
+          $ref: '#/responses/CommentThreadResponse'
         403:
           $ref: '#/responses/ForbiddenResponse'
         401:
@@ -168,7 +176,8 @@ paths:
           type: string
           description: 'Identifier of the comment thread'
       responses:
-        200: {  }
+        200:
+          $ref: '#/responses/CommentResponse'
         403:
           $ref: '#/responses/ForbiddenResponse'
         401:
@@ -195,7 +204,8 @@ paths:
           type: string
           description: 'Identifier of the comment'
       responses:
-        200: {  }
+        200:
+          $ref: '#/responses/CommentResponse'
         403:
           $ref: '#/responses/ForbiddenResponse'
         401:
@@ -218,7 +228,10 @@ paths:
           in: formData
           description: 'A textual description of the error'
       responses:
-        200: {  }
+        200:
+          $ref: '#/responses/SuccessResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
       security:
         -
           BackendAuth: [ ]
@@ -247,7 +260,10 @@ paths:
           type: string
           description: 'Identifier of the job whose status is being reported'
       responses:
-        200: {  }
+        200:
+          $ref: '#/responses/SuccessResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
       security:
         -
           BackendAuth: [ ]
@@ -277,9 +293,12 @@ paths:
       description: "Create exercise with all default values.\nExercise detail can be then changed in appropriate endpoint."
       parameters: [ ]
       responses:
-        200: {  }
-        401: {  }
-        403: {  }
+        200:
+          $ref: '#/responses/ExerciseResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       security:
         -
           WebToken: [ ]
@@ -338,9 +357,12 @@ paths:
           description: 'Exercise can be public or private'
           type: boolean
       responses:
-        200: {  }
-        401: {  }
-        403: {  }
+        200:
+          $ref: '#/responses/ExerciseResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       security:
         -
           WebToken: [ ]
@@ -570,7 +592,8 @@ paths:
           type: string
           description: 'Identifier of the user'
       responses:
-        200: {  }
+        200:
+          $ref: '#/responses/SubmissionListResponse'
         403:
           $ref: '#/responses/ForbiddenResponse'
         401:
@@ -618,7 +641,8 @@ paths:
           required: false
           description: 'Author of the submission'
       responses:
-        200: {  }
+        200:
+          $ref: '#/responses/AssignmentSubmissionResponse'
         403:
           $ref: '#/responses/ForbiddenResponse'
         401:
@@ -730,7 +754,8 @@ paths:
           in: formData
           description: 'Identifier of the parent group'
       responses:
-        200: {  }
+        200:
+          $ref: '#/responses/BooleanResponse'
         403:
           $ref: '#/responses/ForbiddenResponse'
         401:
@@ -751,7 +776,8 @@ paths:
           type: string
           description: 'Identifier of the group'
       responses:
-        200: {  }
+        200:
+          $ref: '#/responses/GroupResponse'
         403:
           $ref: '#/responses/ForbiddenResponse'
         401:
@@ -830,9 +856,12 @@ paths:
           minLength: 1
           description: 'An informative, human readable indentifier of the group'
       responses:
-        200: {  }
-        401: {  }
-        403: {  }
+        200:
+          $ref: '#/responses/GroupResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       security:
         -
           WebToken: [ ]
@@ -915,7 +944,8 @@ paths:
           type: string
           description: 'Identifier of the group'
       responses:
-        200: {  }
+        200:
+          $ref: '#/responses/GroupStatsResponse'
         403:
           $ref: '#/responses/ForbiddenResponse'
         401:
@@ -942,7 +972,8 @@ paths:
           type: string
           description: 'Identifier of the student'
       responses:
-        200: {  }
+        200:
+          $ref: '#/responses/StudentStatsResponse'
         403:
           $ref: '#/responses/ForbiddenResponse'
         401:
@@ -997,33 +1028,6 @@ paths:
       responses:
         200:
           $ref: '#/responses/GroupResponse'
-        403:
-          $ref: '#/responses/ForbiddenResponse'
-        401:
-          $ref: '#/responses/UnauthorizedResponse'
-      tags:
-        - groups
-      security:
-        -
-          WebToken: [ ]
-  '/groups/{id}/students/{userId}/best-results':
-    get:
-      description: 'Get the best solution of an assignment for a group submitted by a student'
-      parameters:
-        -
-          name: id
-          required: true
-          in: path
-          type: string
-          description: 'Identifier of the group'
-        -
-          name: userId
-          required: true
-          in: path
-          type: string
-          description: 'Identifier of the student'
-      responses:
-        200: {  }
         403:
           $ref: '#/responses/ForbiddenResponse'
         401:
@@ -1121,7 +1125,8 @@ paths:
           type: string
           description: 'Identifier of the group'
       responses:
-        200: {  }
+        200:
+          $ref: '#/responses/AdminIdListResponse'
         403:
           $ref: '#/responses/ForbiddenResponse'
         401:
@@ -1249,7 +1254,8 @@ paths:
           type: string
           description: 'An identifier of the instance to be deleted'
       responses:
-        200: {  }
+        200:
+          $ref: '#/responses/DeleteResponse'
         403:
           $ref: '#/responses/ForbiddenResponse'
         401:
@@ -1287,9 +1293,12 @@ paths:
           type: string
           description: 'An identifier of the updated instance'
       responses:
-        200: {  }
-        401: {  }
-        403: {  }
+        200:
+          $ref: '#/responses/InstanceResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       tags:
         - instances
       security:
@@ -1419,8 +1428,10 @@ paths:
           type: string
           description: 'Identifier of the exercise'
       responses:
-        200: {  }
-        403: {  }
+        200:
+          $ref: '#/responses/ReferenceSolutionListResponse'
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       tags:
         - reference-exercise-solutions
     post:
@@ -1449,8 +1460,10 @@ paths:
           type: string
           description: 'Identifier of the exercise'
       responses:
-        200: {  }
-        403: {  }
+        200:
+          $ref: '#/responses/ReferenceSolutionResponse'
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       tags:
         - reference-exercise-solutions
   '/reference-solutions/{exerciseId}/evaluate/{id}':
@@ -1476,8 +1489,10 @@ paths:
           type: string
           description: 'Identifier of the reference solution'
       responses:
-        200: {  }
-        403: {  }
+        200:
+          $ref: '#/responses/ReferenceSolutionEvaluationResponse'
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       tags:
         - reference-exercise-solutions
   /submissions:
@@ -1485,7 +1500,8 @@ paths:
       description: 'Get a list of all submissions, ever'
       parameters: [ ]
       responses:
-        200: {  }
+        200:
+          $ref: '#/responses/SubmissionListResponse'
         403:
           $ref: '#/responses/ForbiddenResponse'
         401:
@@ -1506,7 +1522,8 @@ paths:
           type: string
           description: 'Identifier of the submission'
       responses:
-        200: {  }
+        200:
+          $ref: '#/responses/SubmissionResponse'
         403:
           $ref: '#/responses/ForbiddenResponse'
         401:
@@ -1532,9 +1549,12 @@ paths:
           type: string
           description: 'Identifier of the submission'
       responses:
-        200: {  }
-        401: {  }
-        403: {  }
+        200:
+          $ref: '#/responses/SuccessResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       security:
         -
           WebToken: [ ]
@@ -1545,7 +1565,8 @@ paths:
       description: 'Upload a file'
       parameters: [ ]
       responses:
-        200: {  }
+        200:
+          $ref: '#/responses/UploadedFileResponse'
         403:
           $ref: '#/responses/ForbiddenResponse'
         401:
@@ -1566,7 +1587,8 @@ paths:
           type: string
           description: 'Identifier of the uploaded file'
       responses:
-        200: {  }
+        200:
+          $ref: '#/responses/UploadedFileResponse'
         403:
           $ref: '#/responses/ForbiddenResponse'
         401:
@@ -1587,7 +1609,8 @@ paths:
           type: string
           description: 'Identifier of the file'
       responses:
-        200: {  }
+        200:
+          $ref: '#/responses/FileDownloadResponse'
         403:
           $ref: '#/responses/ForbiddenResponse'
         401:
@@ -1608,7 +1631,8 @@ paths:
           type: string
           description: 'Identifier of the file'
       responses:
-        200: {  }
+        200:
+          $ref: '#/responses/PlainTextResponse'
         403:
           $ref: '#/responses/ForbiddenResponse'
         401:
@@ -1742,7 +1766,8 @@ paths:
           in: formData
           description: 'Authentication password'
       responses:
-        200: {  }
+        200:
+          $ref: '#/responses/BooleanResponse'
       tags:
         - users
   '/users/{id}':
@@ -1823,8 +1848,10 @@ paths:
           minLength: 1
           description: 'New password of current user'
       responses:
-        200: {  }
-        401: {  }
+        200:
+          $ref: '#/responses/UserResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
       security:
         -
           WebToken: [ ]
@@ -1975,7 +2002,10 @@ paths:
           description: 'An identifier of the user whose password should be reset'
           minLength: 2
       responses:
-        200: {  }
+        200:
+          $ref: '#/responses/SuccessResponse'
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       tags:
         - forgotten-password
   /forgotten-password/change:
@@ -2014,7 +2044,8 @@ paths:
           in: formData
           description: 'The password to be checked'
       responses:
-        200: {  }
+        200:
+          $ref: '#/responses/BooleanResponse'
       tags:
         - forgotten-password
   '/exercise-assignments/{id}/limits':
@@ -2029,8 +2060,10 @@ paths:
           description: 'Identifier of the exercise'
       responses:
         200: {  }
-        401: {  }
-        403: {  }
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       tags:
         - assignments
       security:
@@ -2055,8 +2088,10 @@ paths:
             type: string
       responses:
         200: {  }
-        401: {  }
-        403: {  }
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       tags:
         - assignments
       security:
@@ -2092,9 +2127,12 @@ paths:
           type: string
           description: 'Identifier of the licence'
       responses:
-        200: {  }
-        401: {  }
-        403: {  }
+        200:
+          $ref: '#/responses/LicenceResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       tags:
         - instances
       security:
@@ -2110,9 +2148,12 @@ paths:
           type: string
           description: 'Identifier of the licence'
       responses:
-        200: {  }
-        401: {  }
-        403: {  }
+        200:
+          $ref: '#/responses/SuccessResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       tags:
         - instances
       security:
@@ -2134,9 +2175,12 @@ paths:
           type: string
           description: 'identification of exercise'
       responses:
-        200: {  }
-        401: {  }
-        403: {  }
+        200:
+          $ref: '#/responses/UploadedFileListResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       security:
         -
           WebToken: [ ]
@@ -2152,9 +2196,12 @@ paths:
           type: string
           description: 'identification of exercise'
       responses:
-        200: {  }
-        401: {  }
-        403: {  }
+        200:
+          $ref: '#/responses/UploadedFileListResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       security:
         -
           WebToken: [ ]
@@ -2176,9 +2223,12 @@ paths:
           type: string
           description: 'identification of exercise'
       responses:
-        200: {  }
-        401: {  }
-        403: {  }
+        200:
+          $ref: '#/responses/ExerciseResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       security:
         -
           WebToken: [ ]
@@ -2189,9 +2239,12 @@ paths:
       description: 'List all submission failures, ever'
       parameters: [ ]
       responses:
-        200: {  }
-        401: {  }
-        403: {  }
+        200:
+          $ref: '#/responses/SubmissionFailureListResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       security:
         -
           WebToken: [ ]
@@ -2202,9 +2255,12 @@ paths:
       description: 'List all unresolved submission failures'
       parameters: [ ]
       responses:
-        200: {  }
-        401: {  }
-        403: {  }
+        200:
+          $ref: '#/responses/SubmissionFailureListResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       security:
         -
           WebToken: [ ]
@@ -2221,9 +2277,12 @@ paths:
           type: string
           description: 'An identifier of the submission'
       responses:
-        200: {  }
-        401: {  }
-        403: {  }
+        200:
+          $ref: '#/responses/SubmissionFailureListResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       security:
         -
           WebToken: [ ]
@@ -2240,9 +2299,12 @@ paths:
           type: string
           description: 'An identifier of the failure'
       responses:
-        200: {  }
-        401: {  }
-        403: {  }
+        200:
+          $ref: '#/responses/SubmissionFailureResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       security:
         -
           WebToken: [ ]
@@ -2266,9 +2328,12 @@ paths:
           type: string
           description: 'An identifier of the failure'
       responses:
-        200: {  }
-        401: {  }
-        403: {  }
+        200:
+          $ref: '#/responses/SubmissionFailureResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       security:
         -
           WebToken: [ ]
@@ -2297,8 +2362,10 @@ paths:
           type: string
           description: 'Default language of UI'
       responses:
-        200: {  }
-        401: {  }
+        200:
+          $ref: '#/responses/UserSettingsResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
       security:
         -
           WebToken: [ ]
@@ -2310,7 +2377,8 @@ paths:
       parameters: [ ]
       responses:
         200: {  }
-        403: {  }
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       tags:
         - runtime-environments
 responses:
@@ -2470,6 +2538,247 @@ responses:
           properties:
             payload:
               $ref: '#/definitions/Assignment'
+  CommentResponse:
+    description: 'A comment object'
+    schema:
+      allOf:
+        -
+          $ref: '#/definitions/DefaultResponseParams'
+        -
+          type: object
+          properties:
+            payload:
+              $ref: '#/definitions/Comment'
+  CommentThreadResponse:
+    description: 'A comment thread object'
+    schema:
+      allOf:
+        -
+          $ref: '#/definitions/DefaultResponseParams'
+        -
+          type: object
+          properties:
+            payload:
+              $ref: '#/definitions/CommentThread'
+  SubmissionResponse:
+    description: 'A submission object'
+    schema:
+      allOf:
+        -
+          $ref: '#/definitions/DefaultResponseParams'
+        -
+          type: object
+          properties:
+            payload:
+              $ref: '#/definitions/Submission'
+  SubmissionListResponse:
+    description: 'A list of submissions'
+    schema:
+      allOf:
+        -
+          $ref: '#/definitions/DefaultResponseParams'
+        -
+          type: object
+          properties:
+            payload:
+              type: array
+              items:
+                $ref: '#/definitions/Submission'
+  AssignmentSubmissionResponse:
+    description: 'Information about submission'
+    schema:
+      allOf:
+        -
+          $ref: '#/definitions/DefaultResponseParams'
+        -
+          type: object
+          properties:
+            payload:
+              type: object
+              properties:
+                webSocketChannel:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    monitorUrl:
+                      type: string
+                    expectedTasksCount:
+                      type: integer
+                      example: 42
+                submission:
+                  $ref: '#/definitions/Submission'
+  ReferenceSolutionEvaluationResponse:
+    description: 'Information about evaluation'
+    schema:
+      allOf:
+        -
+          $ref: '#/definitions/DefaultResponseParams'
+        -
+          type: object
+          properties:
+            payload:
+              type: object
+              properties:
+                webSocketChannel:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    monitorUrl:
+                      type: string
+                    expectedTasksCount:
+                      type: integer
+                      example: 42
+                evaluation:
+                  $ref: '#/definitions/ReferenceSolutionEvaluation'
+  UploadedFileResponse:
+    description: 'An uploaded file object'
+    schema:
+      allOf:
+        -
+          $ref: '#/definitions/DefaultResponseParams'
+        -
+          type: object
+          properties:
+            payload:
+              $ref: '#/definitions/SolutionFile'
+  UploadedFileListResponse:
+    description: 'A list of uploaded file objects'
+    schema:
+      allOf:
+        -
+          $ref: '#/definitions/DefaultResponseParams'
+        -
+          type: object
+          properties:
+            payload:
+              type: array
+              items:
+                $ref: '#/definitions/SolutionFile'
+  LoginResponse:
+    description: 'Access token and user information'
+    schema:
+      allOf:
+        -
+          $ref: '#/definitions/DefaultResponseParams'
+        -
+          type: object
+          properties:
+            payload:
+              type: object
+              properties:
+                accessToken:
+                  type: string
+                  example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.TJVA95OrM7E2cBab30RMHrHDcEfxjoYZgeFONFh7HgQ
+                user:
+                  $ref: '#/definitions/Assignment'
+  FileDownloadResponse:
+    description: 'A file download'
+    schema:
+      type: file
+  PlainTextResponse:
+    description: 'Plain text'
+    schema:
+      type: text
+  GroupStatsResponse:
+    description: 'List of statistics for each student'
+    schema:
+      allOf:
+        -
+          $ref: '#/definitions/DefaultResponseParams'
+        -
+          type: object
+          properties:
+            payload:
+              type: array
+              items:
+                $ref: '#/definitions/StudentStatisticsData'
+  StudentStatsResponse:
+    description: 'Statistics for a single student'
+    schema:
+      allOf:
+        -
+          $ref: '#/definitions/DefaultResponseParams'
+        -
+          type: object
+          properties:
+            payload:
+              $ref: '#/definitions/StudentStatisticsData'
+  AdminIdListResponse:
+    description: 'A list of user identifiers'
+    schema:
+      allOf:
+        -
+          $ref: '#/definitions/DefaultResponseParams'
+        -
+          type: object
+          properties:
+            payload:
+              type: array
+              items:
+                type: string
+                format: guid
+                example: 3A584DA0-564D-4E65-8284-DBA43566B03A
+  ReferenceSolutionListResponse:
+    description: 'A list of reference solutions'
+    schema:
+      allOf:
+        -
+          $ref: '#/definitions/DefaultResponseParams'
+        -
+          type: object
+          properties:
+            payload:
+              type: array
+              items:
+                $ref: '#/definitions/ReferenceExerciseSolution'
+  ReferenceSolutionResponse:
+    description: 'A reference solution object'
+    schema:
+      allOf:
+        -
+          $ref: '#/definitions/DefaultResponseParams'
+        -
+          type: object
+          properties:
+            payload:
+                $ref: '#/definitions/ReferenceExerciseSolution'
+  SubmissionFailureResponse:
+    description: 'A submission failure object'
+    schema:
+      allOf:
+        -
+          $ref: '#/definitions/DefaultResponseParams'
+        -
+          type: object
+          properties:
+            payload:
+                $ref: '#/definitions/SubmissionFailure'
+  SubmissionFailureListResponse:
+    description: 'A list of submission failure objects'
+    schema:
+      allOf:
+        -
+          $ref: '#/definitions/DefaultResponseParams'
+        -
+          type: object
+          properties:
+            payload:
+              type: array
+              items:
+                $ref: '#/definitions/SubmissionFailure'
+  UserSettingsResponse:
+    description: 'User settings object'
+    schema:
+      allOf:
+        -
+          $ref: '#/definitions/DefaultResponseParams'
+        -
+          type: object
+          properties:
+            payload:
+                $ref: '#/definitions/UserSettings'
   SuccessResponse:
     description: Success
     schema:
@@ -2496,6 +2805,7 @@ responses:
   DeleteResponse:
     description: OK
     schema:
+      type: object
       properties:
         code:
           type: integer
@@ -2506,10 +2816,6 @@ responses:
         payload:
           type: string
           example: OK
-      example:
-        code: 200
-        success: true
-        payload: {  }
   UnauthorizedResponse:
     description: 'Login required'
     schema:
@@ -3357,3 +3663,104 @@ definitions:
       resolutionNote:
         type: string
         example: 'Got it!'
+  StudentStatisticsData:
+    type: object
+    properties:
+      userId:
+        type: string
+        example: 3A584DA0-564D-4E65-8284-DBA43566B03A
+      groupId:
+        type: string
+        example: 3A584DA0-564D-4E65-8284-DBA43566B03A
+      assignments:
+        type: object
+        properties:
+          total:
+            type: integer
+            example: 10
+          completed:
+            type: integer
+            example: 3
+          missed:
+            type: integer
+            example: 7
+      points:
+        type: object
+        properties:
+          total:
+            type: integer
+            example: 42
+          received:
+            type: integer
+            example: 12
+      statuses:
+        type: object
+        example:
+          3A584DA0-564D-4E65-8284-DBA43566B03A:
+            done
+          FB584DA0-564D-4E65-8284-DBA43566B03A:
+            failed
+      hasLimit:
+        type: boolean
+        example: false
+      passesLimit:
+        type: boolean
+        example: false
+  ReferenceExerciseSolution:
+    type: object
+    properties:
+      id:
+        type: string
+        example: 35A00E9E-81D0-46BC-92AF-E43CC36BFF0B
+      uploadedAt:
+        type: integer
+        example: 1479911753
+      description:
+        type: string
+        example: 'Brute force solution'
+      solution:
+        type: object
+        properties:
+          id:
+            type: string
+            example: D9DAB680-BEC2-489F-B8D4-76EA582E6D0F
+          userId:
+            type: string
+            example: F019B9EF-4216-4806-9729-2C7D97A20549
+          files:
+            type: array
+            items:
+              type: string
+              example: F019B9EF-4216-4806-9729-2C7D97A20549
+      evaluations:
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: string
+              example: 3684A998-4274-4F3D-B7A0-2FC31D5F1486
+            referenceSolutionId:
+              type: string
+              example: 35A00E9E-81D0-46BC-92AF-E43CC36BFF0B
+            evaluationStatus:
+              type: string
+              example: evaluation-failed
+            evaluation:
+              type: string
+              example: 3684A998-4274-4F3D-B7A0-2FC31D5F1486
+  ReferenceSolutionEvaluation:
+    type: object
+    properties:
+      id:
+        type: string
+        example: 3684A998-4274-4F3D-B7A0-2FC31D5F1486
+      referenceSolutionId:
+        type: string
+        example: 35A00E9E-81D0-46BC-92AF-E43CC36BFF0B
+      evaluationStatus:
+        type: string
+        example: evaluation-failed
+      evaluation:
+        type: string
+        example: 3684A998-4274-4F3D-B7A0-2FC31D5F1486
