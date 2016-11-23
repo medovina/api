@@ -2376,7 +2376,8 @@ paths:
       description: 'Get a list of all runtime environments'
       parameters: [ ]
       responses:
-        200: {  }
+        200:
+          $ref: '#/responses/RuntimeEnvironmentListResponse'
         403:
           $ref: '#/responses/ForbiddenResponse'
       tags:
@@ -2598,14 +2599,7 @@ responses:
               properties:
                 webSocketChannel:
                   type: object
-                  properties:
-                    id:
-                      type: string
-                    monitorUrl:
-                      type: string
-                    expectedTasksCount:
-                      type: integer
-                      example: 42
+                  properties: { id: { type: string }, monitorUrl: { type: string }, expectedTasksCount: { type: integer, example: 42 } }
                 submission:
                   $ref: '#/definitions/Submission'
   ReferenceSolutionEvaluationResponse:
@@ -2622,14 +2616,7 @@ responses:
               properties:
                 webSocketChannel:
                   type: object
-                  properties:
-                    id:
-                      type: string
-                    monitorUrl:
-                      type: string
-                    expectedTasksCount:
-                      type: integer
-                      example: 42
+                  properties: { id: { type: string }, monitorUrl: { type: string }, expectedTasksCount: { type: integer, example: 42 } }
                 evaluation:
                   $ref: '#/definitions/ReferenceSolutionEvaluation'
   UploadedFileResponse:
@@ -2743,7 +2730,7 @@ responses:
           type: object
           properties:
             payload:
-                $ref: '#/definitions/ReferenceExerciseSolution'
+              $ref: '#/definitions/ReferenceExerciseSolution'
   SubmissionFailureResponse:
     description: 'A submission failure object'
     schema:
@@ -2754,7 +2741,7 @@ responses:
           type: object
           properties:
             payload:
-                $ref: '#/definitions/SubmissionFailure'
+              $ref: '#/definitions/SubmissionFailure'
   SubmissionFailureListResponse:
     description: 'A list of submission failure objects'
     schema:
@@ -2778,7 +2765,20 @@ responses:
           type: object
           properties:
             payload:
-                $ref: '#/definitions/UserSettings'
+              $ref: '#/definitions/UserSettings'
+  RuntimeEnvironmentListResponse:
+    description: 'A list of runtime environment objects'
+    schema:
+      allOf:
+        -
+          $ref: '#/definitions/DefaultResponseParams'
+        -
+          type: object
+          properties:
+            payload:
+              type: array
+              items:
+                $ref: '#/definitions/RuntimeEnvironment'
   SuccessResponse:
     description: Success
     schema:
@@ -2880,7 +2880,7 @@ definitions:
       id:
         type: string
         format: guid
-        example: 6D37C542-1DC6-460B-9CED-9AADB740C7DA
+        example: A1EC9723-D200-4610-AF16-E4DF8707B0B4
       name:
         type: string
         example: 'Convex hull'
@@ -2921,10 +2921,10 @@ definitions:
         example: ''
       firstDeadline:
         type: integer
-        example: 1555102818
+        example: 1555117901
       secondDeadline:
         type: integer
-        example: 1597883683
+        example: 1597898766
       maxPointsBeforeFirstDeadline:
         type: integer
         example: 0
@@ -2935,7 +2935,7 @@ definitions:
         type: array
         items:
           type: string
-          example: 51150853-589E-4E15-A9C1-73A8207A332B
+          example: D9FAB341-4562-459B-868A-C5872D2DE0BF
       canViewLimitRatios:
         type: boolean
         example: false
@@ -2946,7 +2946,7 @@ definitions:
           properties:
             id:
               type: string
-              example: B68DA1F0-12B3-4BBE-873B-93649F70319E
+              example: 78854480-8B0F-4CB6-B901-FEF25187148D
             name:
               type: string
               example: 'Convex hull - desc'
@@ -2961,14 +2961,14 @@ definitions:
               example: ''
             createdAt:
               type: integer
-              example: 1479900646
+              example: 1479915729
   Group:
     type: object
     properties:
       id:
         type: string
         format: guid
-        example: 95EE6EC9-FB8E-4903-9359-324600A3ADA1
+        example: D39E10C2-B3CE-4286-95D9-EBB30A118541
       name:
         type: string
         example: 'Demo group'
@@ -2978,29 +2978,29 @@ definitions:
       adminId:
         type: string
         format: guid
-        example: E0962D94-0E2B-4998-896C-BC9F0D635C99
+        example: 74FAEBA8-D6A0-49EB-AF7B-658A4C34B695
       admins:
         type: array
         items:
           type: string
           format: guid
-          example: E0962D94-0E2B-4998-896C-BC9F0D635C99
+          example: 74FAEBA8-D6A0-49EB-AF7B-658A4C34B695
       supervisors:
         type: array
         items:
           type: string
           format: guid
-          example: E0962D94-0E2B-4998-896C-BC9F0D635C99
+          example: 74FAEBA8-D6A0-49EB-AF7B-658A4C34B695
       students:
         type: array
         items:
           type: string
           format: guid
-          example: 0AFA8BAE-658B-4250-A9BB-FC94C2016044
+          example: 06ACD9C9-93F1-48D2-9689-E9620DE30690
       instanceId:
         type: string
         format: guid
-        example: FAD82ADF-4441-4F8B-9DD0-4F314AABE53D
+        example: 63581D3B-440C-4190-9042-2B16BFD5BA6B
       hasValidLicence:
         type: boolean
         example: true
@@ -3019,12 +3019,12 @@ definitions:
             type: array
             items:
               type: string
-              example: 6D37C542-1DC6-460B-9CED-9AADB740C7DA
+              example: A1EC9723-D200-4610-AF16-E4DF8707B0B4
           public:
             type: array
             items:
               type: string
-              example: 6D37C542-1DC6-460B-9CED-9AADB740C7DA
+              example: A1EC9723-D200-4610-AF16-E4DF8707B0B4
       publicStats:
         type: boolean
         example: true
@@ -3041,12 +3041,12 @@ definitions:
             type: array
             items:
               type: string
-              example: 598491F0-8EAF-4342-8108-B3C21535F27B
+              example: CA6C146E-3973-4D6E-B051-A13C6584E9BE
           public:
             type: array
             items:
               type: string
-              example: 598491F0-8EAF-4342-8108-B3C21535F27B
+              example: CA6C146E-3973-4D6E-B051-A13C6584E9BE
       threshold:
         type: float
         example: 0.75
@@ -3059,7 +3059,7 @@ definitions:
       id:
         type: string
         format: guid
-        example: FAD82ADF-4441-4F8B-9DD0-4F314AABE53D
+        example: 63581D3B-440C-4190-9042-2B16BFD5BA6B
       name:
         type: string
         example: 'Frankenstein University, Atlantida'
@@ -3076,24 +3076,24 @@ definitions:
         type: integer
         format: int64
         description: 'UNIX timestamp'
-        example: 1479900646
+        example: 1479915728
       updatedAt:
         type: integer
         format: int64
         description: 'UNIX timestamp'
-        example: 1479900646
+        example: 1479915728
       isAllowed:
         type: boolean
         example: true
       admin:
         type: string
         format: guid
-        example: E0962D94-0E2B-4998-896C-BC9F0D635C99
+        example: 74FAEBA8-D6A0-49EB-AF7B-658A4C34B695
       topLevelGroups:
         type: array
         items:
           type: string
-          example: 95EE6EC9-FB8E-4903-9359-324600A3ADA1
+          example: D39E10C2-B3CE-4286-95D9-EBB30A118541
       deletedAt:
         type: integer
         format: int64
@@ -3105,7 +3105,7 @@ definitions:
       id:
         type: string
         format: guid
-        example: D7EFE1B1-80E5-4F77-8443-AC331A186CBB
+        example: BC4AB7A2-6473-43AA-AAD9-A03ABE37F91C
       note:
         type: string
         example: 'Year licence for the first Fish University'
@@ -3116,14 +3116,14 @@ definitions:
         type: integer
         format: int64
         description: 'UNIX timestamp'
-        example: 1607541949
+        example: 1607557032
   User:
     type: object
     properties:
       id:
         type: string
         format: guid
-        example: E0962D94-0E2B-4998-896C-BC9F0D635C99
+        example: 74FAEBA8-D6A0-49EB-AF7B-658A4C34B695
       fullName:
         type: string
         example: 'Adah Reichel'
@@ -3145,7 +3145,7 @@ definitions:
       instanceId:
         type: string
         format: guid
-        example: FAD82ADF-4441-4F8B-9DD0-4F314AABE53D
+        example: 63581D3B-440C-4190-9042-2B16BFD5BA6B
       avatarUrl:
         type: string
         example: 'https://secure.gravatar.com/avatar/64e1b8d34f425d19e1ee2ea7236d3028.png?s=200&amp;d=retro&amp;r=g'
@@ -3169,7 +3169,7 @@ definitions:
             type: array
             items:
               type: string
-              example: 95EE6EC9-FB8E-4903-9359-324600A3ADA1
+              example: D39E10C2-B3CE-4286-95D9-EBB30A118541
       settings:
         type: object
         properties:
@@ -3188,7 +3188,7 @@ definitions:
       id:
         type: string
         format: guid
-        example: 2E328369-8247-4323-981F-92F0DF59D8DA
+        example: F73FBEB6-878E-4F1A-8FC7-701068609532
       name:
         type: string
         example: 'Convex hull'
@@ -3198,7 +3198,7 @@ definitions:
       authorId:
         type: string
         format: guid
-        example: E0962D94-0E2B-4998-896C-BC9F0D635C99
+        example: 74FAEBA8-D6A0-49EB-AF7B-658A4C34B695
       forkedFrom:
         type: string
         format: guid
@@ -3216,7 +3216,7 @@ definitions:
           properties:
             id:
               type: string
-              example: B68DA1F0-12B3-4BBE-873B-93649F70319E
+              example: 78854480-8B0F-4CB6-B901-FEF25187148D
             name:
               type: string
               example: 'Convex hull - desc'
@@ -3231,7 +3231,7 @@ definitions:
               example: ''
             createdAt:
               type: integer
-              example: 1479900646
+              example: 1479915729
       solutionRuntimeConfigs:
         type: array
         items:
@@ -3240,7 +3240,7 @@ definitions:
           properties:
             id:
               type: string
-              example: 51150853-589E-4E15-A9C1-73A8207A332B
+              example: D9FAB341-4562-459B-868A-C5872D2DE0BF
             name:
               type: string
               example: 'A demo runtime config'
@@ -3270,7 +3270,7 @@ definitions:
                   example: 'C compiled with GCC'
             createdAt:
               type: integer
-              example: 1479900646
+              example: 1479915729
             runtimeEnvironmentId:
               type: string
               example: c-gcc-linux
@@ -3279,10 +3279,10 @@ definitions:
         example: true
       createdAt:
         type: integer
-        example: 1479900646
+        example: 1479915729
       updatedAt:
         type: integer
-        example: 1479900646
+        example: 1479915729
   Role:
     type: string
     example: student
@@ -3331,7 +3331,7 @@ definitions:
           properties:
             id:
               type: string
-              example: 0578C0FE-7D7D-45D4-938C-52F132F805F6
+              example: F65D1247-DF5B-41D3-8139-D8F012D08665
             commentThreadId:
               type: string
               example: mainThread
@@ -3340,7 +3340,7 @@ definitions:
               properties:
                 id:
                   type: string
-                  example: CED97EBF-E4E3-48F2-BC5C-BF1454983942
+                  example: A2DE8FC1-6C4B-4CB7-AE17-B50740FA7C4C
                 name:
                   type: string
                   example: 'Zetta Stroman'
@@ -3349,7 +3349,7 @@ definitions:
                   example: 'https://secure.gravatar.com/avatar/111d68d06e2d317b5a59c2c6c5bad808.png?s=200&amp;d=retro&amp;r=g'
             postedAt:
               type: integer
-              example: 1479900646
+              example: 1479915729
             isPrivate:
               type: boolean
               example: true
@@ -3361,7 +3361,7 @@ definitions:
     properties:
       id:
         type: string
-        example: 0578C0FE-7D7D-45D4-938C-52F132F805F6
+        example: F65D1247-DF5B-41D3-8139-D8F012D08665
       commentThreadId:
         type: string
         example: mainThread
@@ -3370,7 +3370,7 @@ definitions:
         properties:
           id:
             type: string
-            example: CED97EBF-E4E3-48F2-BC5C-BF1454983942
+            example: A2DE8FC1-6C4B-4CB7-AE17-B50740FA7C4C
           name:
             type: string
             example: 'Zetta Stroman'
@@ -3379,7 +3379,7 @@ definitions:
             example: 'https://secure.gravatar.com/avatar/111d68d06e2d317b5a59c2c6c5bad808.png?s=200&amp;d=retro&amp;r=g'
       postedAt:
         type: integer
-        example: 1479900646
+        example: 1479915729
       isPrivate:
         type: boolean
         example: true
@@ -3421,7 +3421,7 @@ definitions:
     properties:
       id:
         type: string
-        example: 51150853-589E-4E15-A9C1-73A8207A332B
+        example: D9FAB341-4562-459B-868A-C5872D2DE0BF
       name:
         type: string
         example: 'A demo runtime config'
@@ -3454,7 +3454,7 @@ definitions:
         example: false
       createdAt:
         type: integer
-        example: 1479900646
+        example: 1479915729
       runtimeEnvironmentId:
         type: string
         example: c-gcc-linux
@@ -3463,19 +3463,19 @@ definitions:
     properties:
       id:
         type: string
-        example: 3A584DA0-564D-4E65-8284-DBA43566B03A
+        example: 5936A4B4-623B-4E47-AB95-9DEF514784A0
       userId:
         type: string
-        example: 03158369-EE1C-4935-A110-16689F167368
+        example: 07FBCF18-7517-4E79-9055-A136A32BF47E
       note:
         type: string
         example: 'Random note'
       exerciseAssignmentId:
         type: string
-        example: 6D37C542-1DC6-460B-9CED-9AADB740C7DA
+        example: A1EC9723-D200-4610-AF16-E4DF8707B0B4
       submittedAt:
         type: integer
-        example: 1479900646
+        example: 1479915729
       evaluationStatus:
         type: string
         example: evaluation-failed
@@ -3485,10 +3485,10 @@ definitions:
         properties:
           id:
             type: string
-            example: E2CCD0CF-0DF9-4780-B0EF-D7CF90501043
+            example: 9C5E7C2B-F619-4CFD-901B-3BE5633C6BC0
           evaluatedAt:
             type: integer
-            example: 248374551
+            example: 248377083
           score:
             type: double
             example: 0.95
@@ -3524,7 +3524,7 @@ definitions:
           properties:
             id:
               type: string
-              example: EA30DC17-5F32-4B8D-B19B-5262D9EC16BF
+              example: B4AE290C-3E35-4037-991C-7E5F2A0598B1
             name:
               type: string
               example: filename.ext
@@ -3533,19 +3533,19 @@ definitions:
               example: 0
             uploadedAt:
               type: integer
-              example: 1296968863
+              example: 1296982082
             userId:
               type: string
-              example: 03158369-EE1C-4935-A110-16689F167368
+              example: 07FBCF18-7517-4E79-9055-A136A32BF47E
       submittedBy:
         type: string
-        example: 03158369-EE1C-4935-A110-16689F167368
+        example: 07FBCF18-7517-4E79-9055-A136A32BF47E
   LocalizedAssignment:
     type: object
     properties:
       id:
         type: string
-        example: B68DA1F0-12B3-4BBE-873B-93649F70319E
+        example: 78854480-8B0F-4CB6-B901-FEF25187148D
       name:
         type: string
         example: 'Convex hull - desc'
@@ -3561,16 +3561,16 @@ definitions:
         example: ''
       createdAt:
         type: integer
-        example: 1479900646
+        example: 1479915729
   SolutionEvaluation:
     type: object
     properties:
       id:
         type: string
-        example: E2CCD0CF-0DF9-4780-B0EF-D7CF90501043
+        example: 9C5E7C2B-F619-4CFD-901B-3BE5633C6BC0
       evaluatedAt:
         type: integer
-        example: 248374551
+        example: 248377083
       score:
         type: double
         example: 0.95
@@ -3600,10 +3600,10 @@ definitions:
     properties:
       id:
         type: string
-        example: 654D6B80-8F8B-4329-8E75-4E07220A6A10
+        example: 9AE81636-BC49-442A-B441-A01FA43860B8
       userId:
         type: string
-        example: 03158369-EE1C-4935-A110-16689F167368
+        example: 74FAEBA8-D6A0-49EB-AF7B-658A4C34B695
       files:
         type: array
         items:
@@ -3629,7 +3629,7 @@ definitions:
     properties:
       id:
         type: string
-        example: EA30DC17-5F32-4B8D-B19B-5262D9EC16BF
+        example: B4AE290C-3E35-4037-991C-7E5F2A0598B1
       name:
         type: string
         example: filename.ext
@@ -3638,10 +3638,10 @@ definitions:
         example: 0
       uploadedAt:
         type: integer
-        example: 1296968863
+        example: 1296982082
       userId:
         type: string
-        example: 03158369-EE1C-4935-A110-16689F167368
+        example: 07FBCF18-7517-4E79-9055-A136A32BF47E
   SubmissionFailure:
     type: object
     properties:
@@ -3653,13 +3653,13 @@ definitions:
         example: 'Things went south'
       submission:
         type: string
-        example: 3A584DA0-564D-4E65-8284-DBA43566B03A
+        example: 5936A4B4-623B-4E47-AB95-9DEF514784A0
       createdAt:
         type: integer
-        example: 1323928980
+        example: 1323942473
       resolvedAt:
         type: integer
-        example: 1479900646
+        example: 1479915729
       resolutionNote:
         type: string
         example: 'Got it!'
@@ -3696,10 +3696,8 @@ definitions:
       statuses:
         type: object
         example:
-          3A584DA0-564D-4E65-8284-DBA43566B03A:
-            done
-          FB584DA0-564D-4E65-8284-DBA43566B03A:
-            failed
+          3A584DA0-564D-4E65-8284-DBA43566B03A: done
+          FB584DA0-564D-4E65-8284-DBA43566B03A: failed
       hasLimit:
         type: boolean
         example: false
@@ -3711,10 +3709,10 @@ definitions:
     properties:
       id:
         type: string
-        example: 35A00E9E-81D0-46BC-92AF-E43CC36BFF0B
+        example: 8711F7E9-A13C-42FA-800E-A54911D514C6
       uploadedAt:
         type: integer
-        example: 1479911753
+        example: 1479915729
       description:
         type: string
         example: 'Brute force solution'
@@ -3723,10 +3721,10 @@ definitions:
         properties:
           id:
             type: string
-            example: D9DAB680-BEC2-489F-B8D4-76EA582E6D0F
+            example: 9AE81636-BC49-442A-B441-A01FA43860B8
           userId:
             type: string
-            example: F019B9EF-4216-4806-9729-2C7D97A20549
+            example: 74FAEBA8-D6A0-49EB-AF7B-658A4C34B695
           files:
             type: array
             items:
@@ -3739,10 +3737,10 @@ definitions:
           properties:
             id:
               type: string
-              example: 3684A998-4274-4F3D-B7A0-2FC31D5F1486
+              example: C20AE2E6-06CB-4F82-BAB1-0AFC5658EC21
             referenceSolutionId:
               type: string
-              example: 35A00E9E-81D0-46BC-92AF-E43CC36BFF0B
+              example: 8711F7E9-A13C-42FA-800E-A54911D514C6
             evaluationStatus:
               type: string
               example: evaluation-failed
@@ -3754,13 +3752,70 @@ definitions:
     properties:
       id:
         type: string
-        example: 3684A998-4274-4F3D-B7A0-2FC31D5F1486
+        example: C20AE2E6-06CB-4F82-BAB1-0AFC5658EC21
       referenceSolutionId:
         type: string
-        example: 35A00E9E-81D0-46BC-92AF-E43CC36BFF0B
+        example: 8711F7E9-A13C-42FA-800E-A54911D514C6
       evaluationStatus:
         type: string
         example: evaluation-failed
       evaluation:
         type: string
         example: 3684A998-4274-4F3D-B7A0-2FC31D5F1486
+  GroupMembership:
+    type: object
+    properties:
+      id:
+        type: string
+        example: 9877538E-C8CF-4A92-AC93-9C9B1F0005B4
+      userId:
+        type: string
+        example: 74FAEBA8-D6A0-49EB-AF7B-658A4C34B695
+      groupId:
+        type: string
+        example: D39E10C2-B3CE-4286-95D9-EBB30A118541
+      status:
+        type: string
+        example: active
+      requestedAt:
+        type: 'NULL'
+      joinedAt:
+        type: object
+        properties:
+          date:
+            type: string
+            example: '2016-11-23 16:42:09.000000'
+          timezone_type:
+            type: integer
+            example: 3
+          timezone:
+            type: string
+            example: Europe/Prague
+      rejectedAt:
+        type: 'NULL'
+      studentSince:
+        type: 'NULL'
+      supervisorSince:
+        type: object
+        properties:
+          date:
+            type: string
+            example: '2016-11-23 16:42:09.000000'
+          timezone_type:
+            type: integer
+            example: 3
+          timezone:
+            type: string
+            example: Europe/Prague
+  UserSettings:
+    type: object
+    properties:
+      darkTheme:
+        type: boolean
+        example: true
+      vimMode:
+        type: boolean
+        example: false
+      defaultLanguage:
+        type: string
+        example: en
