@@ -714,6 +714,7 @@ paths:
           description: 'Should the group be visible to all student?'
         -
           name: externalId
+          type: string
           in: formData
           required: false
           description: 'An informative, human readable indentifier of the group'
@@ -1410,13 +1411,6 @@ paths:
       security:
         -
           WebToken: [ ]
-  '/instances/{id}/licences/{licenceId}':
-    put:
-      tags:
-        - instances
-    delete:
-      tags:
-        - instances
   '/reference-solutions/{id}':
     get:
       description: 'Get reference solutions for an exercise'
@@ -2792,16 +2786,6 @@ responses:
             payload:
               type: string
               example: OK
-  CreatedResponseParams:
-    properties:
-      code:
-        type: integer
-        required: true
-        example: 201
-      success:
-        type: boolean
-        required: true
-        example: true
   DeleteResponse:
     description: OK
     schema:
