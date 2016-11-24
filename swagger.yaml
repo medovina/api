@@ -3765,17 +3765,8 @@ definitions:
         type: integer
         example: 1479915729
       joinedAt:
-        type: object
-        properties:
-          date:
-            type: string
-            example: '2016-11-23 16:42:09.000000'
-          timezone_type:
-            type: integer
-            example: 3
-          timezone:
-            type: string
-            example: Europe/Prague
+        type: integer
+        example: 1479915729
       rejectedAt:
         type: integer
         example: 1479915729
@@ -3783,17 +3774,8 @@ definitions:
         type: integer
         example: 1479915729
       supervisorSince:
-        type: object
-        properties:
-          date:
-            type: string
-            example: '2016-11-23 16:42:09.000000'
-          timezone_type:
-            type: integer
-            example: 3
-          timezone:
-            type: string
-            example: Europe/Prague
+        type: integer
+        example: 1479915729
   UserSettings:
     type: object
     properties:
