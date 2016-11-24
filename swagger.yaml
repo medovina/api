@@ -1790,13 +1790,6 @@ paths:
       description: 'Update the profile associated with a user account'
       parameters:
         -
-          name: email
-          in: formData
-          required: false
-          type: string
-          format: email
-          description: 'E-mail address'
-        -
           name: firstName
           in: formData
           required: false
@@ -2357,7 +2350,7 @@ paths:
           description: 'Default language of UI'
       responses:
         200:
-          $ref: '#/responses/UserSettingsResponse'
+          $ref: '#/responses/UserResponse'
         401:
           $ref: '#/responses/UnauthorizedResponse'
       security:
