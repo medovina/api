@@ -61,6 +61,12 @@ tags:
   -
     name: runtime-environments
     description: 'Runtime environments endpoints'
+  -
+    name: hardware-groups
+    description: 'Hardware groups endpoints'
+  -
+    name: job-config
+    description: 'Endpoints for job configuration manipulation and validation'
 paths:
   /login:
     post:
@@ -340,11 +346,6 @@ paths:
           in: formData
           description: 'Difficulty of an exercise, should be one of ''easy'', ''medium'' or ''hard'''
         -
-          name: localizedAssignments
-          required: false
-          in: formData
-          description: 'A description of the exercise'
-        -
           name: id
           in: path
           required: true
@@ -356,6 +357,21 @@ paths:
           required: false
           description: 'Exercise can be public or private'
           type: boolean
+        -
+          name: version
+          in: formData
+          required: false
+          description: 'Version of the edited exercise'
+        -
+          name: description
+          in: formData
+          required: false
+          description: 'Some brief description of this exercise for supervisors'
+        -
+          name: localizedTexts
+          in: formData
+          required: false
+          description: 'A description of the exercise'
       responses:
         200:
           $ref: '#/responses/ExerciseResponse'
@@ -507,7 +523,7 @@ paths:
           in: formData
           description: 'A maximum of points that can be awarded for a late submission'
         -
-          name: localizedAssignments
+          name: localizedTexts
           required: false
           type: array
           items:
@@ -520,6 +536,24 @@ paths:
           type: boolean
           in: formData
           description: 'Can user view ratio of his solution memory and time usages and assignment limits?'
+        -
+          name: version
+          in: formData
+          required: false
+          type: integer
+          description: 'Version of the edited exercise'
+        -
+          name: isBonus
+          in: formData
+          required: false
+          type: boolean
+          description: 'If set to true then points from this exercise will not be included in overall score of group'
+        -
+          name: pointsPercentualThreshold
+          in: formData
+          required: false
+          type: integer
+          description: 'A minimum percentage of points needed to gain point from assignment'
       responses:
         200:
           $ref: '#/responses/AssignmentResponse'
@@ -629,17 +663,17 @@ paths:
           type: string
           description: 'Identifier of the assignment'
         -
-          name: runtimeConfigurationId
-          required: false
-          type: string
-          format: guid
-          in: formData
-          description: 'Identifier of the runtime configuration used for evaluation'
-        -
           name: userId
           in: formData
           required: false
           description: 'Author of the submission'
+        -
+          name: runtimeEnvironmentId
+          in: formData
+          type: string
+          format: guid
+          required: false
+          description: 'Identifier of the runtime environment used for evaluation'
       responses:
         200:
           $ref: '#/responses/AssignmentSubmissionResponse'
@@ -1390,7 +1424,7 @@ paths:
         -
           name: validUntil
           required: false
-          type: string
+          type: integer
           in: formData
           description: 'Expiration date of the license'
         -
@@ -1834,6 +1868,11 @@ paths:
           type: string
           minLength: 1
           description: 'New password of current user'
+        -
+          name: email
+          in: formData
+          required: false
+          description: 'New email address'
       responses:
         200:
           $ref: '#/responses/UserResponse'
@@ -2348,6 +2387,12 @@ paths:
           required: false
           type: string
           description: 'Default language of UI'
+        -
+          name: openedSidebar
+          in: formData
+          required: false
+          type: boolean
+          description: 'Flag if the sidebar of the web-app should be opened by default.'
       responses:
         200:
           $ref: '#/responses/UserResponse'
@@ -2369,6 +2414,117 @@ paths:
           $ref: '#/responses/ForbiddenResponse'
       tags:
         - runtime-environments
+  '/exercises/{id}/validate':
+    post:
+      description: 'Check if the version of the exercise is up-to-date.'
+      parameters:
+        -
+          name: version
+          in: formData
+          required: false
+          type: integer
+          description: 'Version of the exercise.'
+        -
+          name: id
+          in: path
+          required: true
+          type: string
+          description: 'Identifier of the exercise'
+      responses:
+        200: {  }
+        401: {  }
+        403: {  }
+      security:
+        -
+          WebToken: [ ]
+      tags:
+        - exercises
+  '/exercises/{id}/fork':
+    get:
+      description: 'Fork exercise from given one into the completely new one.'
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          type: string
+          description: ''
+      responses:
+        200: {  }
+        401: {  }
+        403: {  }
+      security:
+        -
+          WebToken: [ ]
+      tags:
+        - exercises
+  '/exercise-assignments/{id}/validate':
+    post:
+      description: 'Check if the version of the assignment is up-to-date.'
+      parameters:
+        -
+          name: version
+          in: formData
+          required: false
+          type: integer
+          description: 'Version of the assignment.'
+        -
+          name: id
+          in: path
+          required: true
+          type: string
+          description: 'Identifier of the assignment'
+      responses:
+        200: {  }
+        401: {  }
+        403: {  }
+      security:
+        -
+          WebToken: [ ]
+      tags:
+        - assignments
+  '/submissions/{id}/download-result':
+    get:
+      description: 'Download result archive from backend for particular submission.'
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          type: string
+          description: ''
+      responses:
+        200: {  }
+        401: {  }
+        403: {  }
+      security:
+        -
+          WebToken: [ ]
+      tags:
+        - submissions
+  /hardware-groups:
+    get:
+      description: 'Get a list of all hardware groups in system'
+      parameters: [ ]
+      responses:
+        200: {  }
+        403: {  }
+      tags:
+        - hardware-groups
+  /job-config/validate:
+    post:
+      description: 'Validate low-level job configuration in YAML and return list of error messages'
+      parameters:
+        -
+          name: jobConfig
+          in: formData
+          required: false
+          type: string
+          description: 'Job configuration YAML'
+      responses:
+        200: {  }
+      tags:
+        - job-config
 responses:
   BooleanResponse:
     description: 'A boolean value'
@@ -2857,7 +3013,7 @@ definitions:
       id:
         type: string
         format: guid
-        example: A1EC9723-D200-4610-AF16-E4DF8707B0B4
+        example: 62D87D5E-7D81-46D4-9D0C-3C1E6C0C722D
       name:
         type: string
         example: 'Convex hull'
@@ -2898,10 +3054,10 @@ definitions:
         example: ''
       firstDeadline:
         type: integer
-        example: 1555117901
+        example: 1527759319
       secondDeadline:
         type: integer
-        example: 1597898766
+        example: 1528090018
       maxPointsBeforeFirstDeadline:
         type: integer
         example: 0
@@ -2916,36 +3072,47 @@ definitions:
       canViewLimitRatios:
         type: boolean
         example: false
-      localizedAssignments:
+      version:
+        type: integer
+        example: 1
+      localizedTexts:
         type: array
         items:
           type: object
           properties:
             id:
               type: string
-              example: 78854480-8B0F-4CB6-B901-FEF25187148D
-            name:
-              type: string
-              example: 'Convex hull - desc'
+              example: B50BB5F4-132A-4E42-9441-A8D15471D8DB
             locale:
               type: string
               example: en
-            description:
+            text:
               type: string
               example: 'A true classic'
+            createdAt:
+              type: integer
+              example: 1487104368
             createdFrom:
               type: string
               example: ''
-            createdAt:
-              type: integer
-              example: 1479915729
+      runtimeEnvironmentsIds:
+        type: array
+        items:
+          type: string
+          example: c-gcc-linux
+      isBonus:
+        type: boolean
+        example: false
+      pointsPercentualThreshold:
+        type: double
+        example: !!float 0
   Group:
     type: object
     properties:
       id:
         type: string
         format: guid
-        example: D39E10C2-B3CE-4286-95D9-EBB30A118541
+        example: 336B1872-7B09-4A43-A5C0-2E2749F8E9F3
       name:
         type: string
         example: 'Demo group'
@@ -2955,29 +3122,29 @@ definitions:
       adminId:
         type: string
         format: guid
-        example: 74FAEBA8-D6A0-49EB-AF7B-658A4C34B695
+        example: E6E6F998-51A8-495C-907B-A9706A56B562
       admins:
         type: array
         items:
           type: string
           format: guid
-          example: 74FAEBA8-D6A0-49EB-AF7B-658A4C34B695
+          example: E6E6F998-51A8-495C-907B-A9706A56B562
       supervisors:
         type: array
         items:
           type: string
           format: guid
-          example: 74FAEBA8-D6A0-49EB-AF7B-658A4C34B695
+          example: E6E6F998-51A8-495C-907B-A9706A56B562
       students:
         type: array
         items:
           type: string
           format: guid
-          example: 06ACD9C9-93F1-48D2-9689-E9620DE30690
+          example: E737BDDD-C5EA-46E6-8358-4712B6E6BF25
       instanceId:
         type: string
         format: guid
-        example: 63581D3B-440C-4190-9042-2B16BFD5BA6B
+        example: 0F13CCE2-409C-4428-AD03-6FD5B7A1057E
       hasValidLicence:
         type: boolean
         example: true
@@ -2996,12 +3163,12 @@ definitions:
             type: array
             items:
               type: string
-              example: A1EC9723-D200-4610-AF16-E4DF8707B0B4
+              example: 62D87D5E-7D81-46D4-9D0C-3C1E6C0C722D
           public:
             type: array
             items:
               type: string
-              example: A1EC9723-D200-4610-AF16-E4DF8707B0B4
+              example: 62D87D5E-7D81-46D4-9D0C-3C1E6C0C722D
       publicStats:
         type: boolean
         example: true
@@ -3018,12 +3185,12 @@ definitions:
             type: array
             items:
               type: string
-              example: CA6C146E-3973-4D6E-B051-A13C6584E9BE
+              example: 1A867E09-46A7-4A44-A9A1-22140392FF41
           public:
             type: array
             items:
               type: string
-              example: CA6C146E-3973-4D6E-B051-A13C6584E9BE
+              example: 1A867E09-46A7-4A44-A9A1-22140392FF41
       threshold:
         type: float
         example: 0.75
@@ -3036,7 +3203,7 @@ definitions:
       id:
         type: string
         format: guid
-        example: 63581D3B-440C-4190-9042-2B16BFD5BA6B
+        example: 0F13CCE2-409C-4428-AD03-6FD5B7A1057E
       name:
         type: string
         example: 'Frankenstein University, Atlantida'
@@ -3053,24 +3220,24 @@ definitions:
         type: integer
         format: int64
         description: 'UNIX timestamp'
-        example: 1479915728
+        example: 1487104368
       updatedAt:
         type: integer
         format: int64
         description: 'UNIX timestamp'
-        example: 1479915728
+        example: 1487104368
       isAllowed:
         type: boolean
         example: true
       admin:
         type: string
         format: guid
-        example: 74FAEBA8-D6A0-49EB-AF7B-658A4C34B695
+        example: E6E6F998-51A8-495C-907B-A9706A56B562
       topLevelGroups:
         type: array
         items:
           type: string
-          example: D39E10C2-B3CE-4286-95D9-EBB30A118541
+          example: 336B1872-7B09-4A43-A5C0-2E2749F8E9F3
       deletedAt:
         type: integer
         format: int64
@@ -3082,7 +3249,7 @@ definitions:
       id:
         type: string
         format: guid
-        example: BC4AB7A2-6473-43AA-AAD9-A03ABE37F91C
+        example: 955F6B52-3CBD-45FC-9B27-D5DD03440B2A
       note:
         type: string
         example: 'Year licence for the first Fish University'
@@ -3093,17 +3260,17 @@ definitions:
         type: integer
         format: int64
         description: 'UNIX timestamp'
-        example: 1607557032
+        example: 1522791592
   User:
     type: object
     properties:
       id:
         type: string
         format: guid
-        example: 74FAEBA8-D6A0-49EB-AF7B-658A4C34B695
+        example: E6E6F998-51A8-495C-907B-A9706A56B562
       fullName:
         type: string
-        example: 'Adah Reichel'
+        example: 'Harmony Erdman'
       name:
         type: object
         properties:
@@ -3112,17 +3279,17 @@ definitions:
             example: ''
           firstName:
             type: string
-            example: Adah
+            example: Harmony
           lastName:
             type: string
-            example: Reichel
+            example: Erdman
           degreesAfterName:
             type: string
             example: ''
       instanceId:
         type: string
         format: guid
-        example: 63581D3B-440C-4190-9042-2B16BFD5BA6B
+        example: 0F13CCE2-409C-4428-AD03-6FD5B7A1057E
       avatarUrl:
         type: string
         example: 'https://secure.gravatar.com/avatar/64e1b8d34f425d19e1ee2ea7236d3028.png?s=200&amp;d=retro&amp;r=g'
@@ -3146,7 +3313,7 @@ definitions:
             type: array
             items:
               type: string
-              example: D39E10C2-B3CE-4286-95D9-EBB30A118541
+              example: 336B1872-7B09-4A43-A5C0-2E2749F8E9F3
       settings:
         type: object
         properties:
@@ -3159,13 +3326,16 @@ definitions:
           defaultLanguage:
             type: string
             example: en
+          openedSidebar:
+            type: boolean
+            example: true
   Exercise:
     type: object
     properties:
       id:
         type: string
         format: guid
-        example: F73FBEB6-878E-4F1A-8FC7-701068609532
+        example: 90429722-6F29-4041-AACD-A9C0292E46C5
       name:
         type: string
         example: 'Convex hull'
@@ -3175,91 +3345,72 @@ definitions:
       authorId:
         type: string
         format: guid
-        example: 74FAEBA8-D6A0-49EB-AF7B-658A4C34B695
+        example: E6E6F998-51A8-495C-907B-A9706A56B562
       forkedFrom:
         type: string
         format: guid
         example: ed6eef24-6b1f-3781-b9d3-625d82830ec1
       description:
         type: string
-        example: 'A true classic'
+        example: ''
       difficulty:
         type: string
         example: moderate
-      localizedAssignments:
-        type: array
-        items:
-          type: object
-          properties:
-            id:
-              type: string
-              example: 78854480-8B0F-4CB6-B901-FEF25187148D
-            name:
-              type: string
-              example: 'Convex hull - desc'
-            locale:
-              type: string
-              example: en
-            description:
-              type: string
-              example: 'A true classic'
-            createdFrom:
-              type: string
-              example: ''
-            createdAt:
-              type: integer
-              example: 1479915729
-      solutionRuntimeConfigs:
-        type: array
-        items:
-          type: object
-          example: 8CD78B71-F741-448F-8D35-A75DF89F50F3
-          properties:
-            id:
-              type: string
-              example: D9FAB341-4562-459B-868A-C5872D2DE0BF
-            name:
-              type: string
-              example: 'A demo runtime config'
-            jobConfig:
-              type: boolean
-              example: false
-            runtimeEnvironment:
-              type: object
-              properties:
-                id:
-                  type: string
-                  example: c-gcc-linux
-                name:
-                  type: string
-                  example: 'C (GCC)'
-                language:
-                  type: string
-                  example: C
-                extensions:
-                  type: string
-                  example: '[c, h]'
-                platform:
-                  type: string
-                  example: GNU/Linux
-                description:
-                  type: string
-                  example: 'C compiled with GCC'
-            createdAt:
-              type: integer
-              example: 1479915729
-            runtimeEnvironmentId:
-              type: string
-              example: c-gcc-linux
       isPublic:
         type: boolean
         example: true
       createdAt:
         type: integer
-        example: 1479915729
+        example: 1487104368
       updatedAt:
         type: integer
-        example: 1479915729
+        example: 1487104368
+      localizedTexts:
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: string
+              example: B50BB5F4-132A-4E42-9441-A8D15471D8DB
+            locale:
+              type: string
+              example: en
+            text:
+              type: string
+              example: 'A true classic'
+            createdAt:
+              type: integer
+              example: 1487104368
+            createdFrom:
+              type: string
+              example: ''
+      runtimeConfigs:
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: string
+              example: 0E0273A7-1DFE-4AFE-B671-528A9B50B561
+            name:
+              type: string
+              example: 'A demo runtime config'
+            createdAt:
+              type: integer
+              example: 1487104368
+            jobConfig:
+              type: boolean
+              example: false
+            isValid:
+              type: boolean
+              example: false
+            runtimeEnvironmentId:
+              type: string
+              example: c-gcc-linux
+            createdFrom:
+              type: string
+              example: ''
   Role:
     type: string
     example: student
@@ -3308,7 +3459,7 @@ definitions:
           properties:
             id:
               type: string
-              example: F65D1247-DF5B-41D3-8139-D8F012D08665
+              example: 7E61288E-B999-4D08-AE70-63FDABA2CE28
             commentThreadId:
               type: string
               example: mainThread
@@ -3317,16 +3468,16 @@ definitions:
               properties:
                 id:
                   type: string
-                  example: A2DE8FC1-6C4B-4CB7-AE17-B50740FA7C4C
+                  example: 396D9358-AACB-4467-A74F-0DA0ECD6CFFE
                 name:
                   type: string
-                  example: 'Zetta Stroman'
+                  example: 'Emanuel Konopelski'
                 avatarUrl:
                   type: string
                   example: 'https://secure.gravatar.com/avatar/111d68d06e2d317b5a59c2c6c5bad808.png?s=200&amp;d=retro&amp;r=g'
             postedAt:
               type: integer
-              example: 1479915729
+              example: 1487104368
             isPrivate:
               type: boolean
               example: true
@@ -3338,7 +3489,7 @@ definitions:
     properties:
       id:
         type: string
-        example: F65D1247-DF5B-41D3-8139-D8F012D08665
+        example: 7E61288E-B999-4D08-AE70-63FDABA2CE28
       commentThreadId:
         type: string
         example: mainThread
@@ -3347,16 +3498,16 @@ definitions:
         properties:
           id:
             type: string
-            example: A2DE8FC1-6C4B-4CB7-AE17-B50740FA7C4C
+            example: 396D9358-AACB-4467-A74F-0DA0ECD6CFFE
           name:
             type: string
-            example: 'Zetta Stroman'
+            example: 'Emanuel Konopelski'
           avatarUrl:
             type: string
             example: 'https://secure.gravatar.com/avatar/111d68d06e2d317b5a59c2c6c5bad808.png?s=200&amp;d=retro&amp;r=g'
       postedAt:
         type: integer
-        example: 1479915729
+        example: 1487104368
       isPrivate:
         type: boolean
         example: true
@@ -3393,6 +3544,9 @@ definitions:
       description:
         type: string
         example: 'Our only hardware group'
+      isAvailable:
+        type: boolean
+        example: false
   SolutionRuntimeConfig:
     type: object
     properties:
@@ -3440,32 +3594,32 @@ definitions:
     properties:
       id:
         type: string
-        example: 5936A4B4-623B-4E47-AB95-9DEF514784A0
+        example: D6B181F2-5C72-4F15-A996-83683B4A8330
       userId:
         type: string
-        example: 07FBCF18-7517-4E79-9055-A136A32BF47E
+        example: 04C0A4AA-FDCF-48CA-BBA8-1480E3C21916
       note:
         type: string
         example: 'Random note'
       exerciseAssignmentId:
         type: string
-        example: A1EC9723-D200-4610-AF16-E4DF8707B0B4
+        example: 62D87D5E-7D81-46D4-9D0C-3C1E6C0C722D
       submittedAt:
         type: integer
-        example: 1479915729
+        example: 1487104368
       evaluationStatus:
         type: string
-        example: evaluation-failed
+        example: done
       evaluation:
         type: object
         example: 69f0f87c-3158-3a33-941f-e4b1ec4a0a93
         properties:
           id:
             type: string
-            example: 9C5E7C2B-F619-4CFD-901B-3BE5633C6BC0
+            example: 05EBAAF5-21E9-44D0-9D10-D06D3FAD0488
           evaluatedAt:
             type: integer
-            example: 248377083
+            example: 588910582
           score:
             type: double
             example: 0.95
@@ -3501,7 +3655,7 @@ definitions:
           properties:
             id:
               type: string
-              example: B4AE290C-3E35-4037-991C-7E5F2A0598B1
+              example: E1E1CED4-683E-4BC7-A470-88503CBF6DC8
             name:
               type: string
               example: filename.ext
@@ -3510,13 +3664,13 @@ definitions:
               example: 0
             uploadedAt:
               type: integer
-              example: 1296982082
+              example: 789853983
             userId:
               type: string
-              example: 07FBCF18-7517-4E79-9055-A136A32BF47E
+              example: 04C0A4AA-FDCF-48CA-BBA8-1480E3C21916
       submittedBy:
         type: string
-        example: 07FBCF18-7517-4E79-9055-A136A32BF47E
+        example: 04C0A4AA-FDCF-48CA-BBA8-1480E3C21916
   LocalizedAssignment:
     type: object
     properties:
@@ -3544,10 +3698,10 @@ definitions:
     properties:
       id:
         type: string
-        example: 9C5E7C2B-F619-4CFD-901B-3BE5633C6BC0
+        example: 05EBAAF5-21E9-44D0-9D10-D06D3FAD0488
       evaluatedAt:
         type: integer
-        example: 248377083
+        example: 588910582
       score:
         type: double
         example: 0.95
@@ -3577,10 +3731,10 @@ definitions:
     properties:
       id:
         type: string
-        example: 9AE81636-BC49-442A-B441-A01FA43860B8
+        example: E7050EA7-86A2-4DC6-B176-DEA9B4009FDF
       userId:
         type: string
-        example: 74FAEBA8-D6A0-49EB-AF7B-658A4C34B695
+        example: E6E6F998-51A8-495C-907B-A9706A56B562
       files:
         type: array
         items:
@@ -3606,7 +3760,7 @@ definitions:
     properties:
       id:
         type: string
-        example: B4AE290C-3E35-4037-991C-7E5F2A0598B1
+        example: E1E1CED4-683E-4BC7-A470-88503CBF6DC8
       name:
         type: string
         example: filename.ext
@@ -3615,10 +3769,10 @@ definitions:
         example: 0
       uploadedAt:
         type: integer
-        example: 1296982082
+        example: 789853983
       userId:
         type: string
-        example: 07FBCF18-7517-4E79-9055-A136A32BF47E
+        example: 04C0A4AA-FDCF-48CA-BBA8-1480E3C21916
   SubmissionFailure:
     type: object
     properties:
@@ -3630,13 +3784,13 @@ definitions:
         example: 'Things went south'
       submission:
         type: string
-        example: 5936A4B4-623B-4E47-AB95-9DEF514784A0
+        example: D6B181F2-5C72-4F15-A996-83683B4A8330
       createdAt:
         type: integer
-        example: 1323942473
+        example: 868097626
       resolvedAt:
         type: integer
-        example: 1479915729
+        example: 1487104368
       resolutionNote:
         type: string
         example: 'Got it!'
@@ -3686,10 +3840,10 @@ definitions:
     properties:
       id:
         type: string
-        example: 8711F7E9-A13C-42FA-800E-A54911D514C6
+        example: 82DD998F-8CD5-4A75-ADF8-6B894DDC2497
       uploadedAt:
         type: integer
-        example: 1479915729
+        example: 1487104368
       description:
         type: string
         example: 'Brute force solution'
@@ -3698,10 +3852,10 @@ definitions:
         properties:
           id:
             type: string
-            example: 9AE81636-BC49-442A-B441-A01FA43860B8
+            example: E7050EA7-86A2-4DC6-B176-DEA9B4009FDF
           userId:
             type: string
-            example: 74FAEBA8-D6A0-49EB-AF7B-658A4C34B695
+            example: E6E6F998-51A8-495C-907B-A9706A56B562
           files:
             type: array
             items:
@@ -3729,28 +3883,54 @@ definitions:
     properties:
       id:
         type: string
-        example: C20AE2E6-06CB-4F82-BAB1-0AFC5658EC21
-      referenceSolutionId:
-        type: string
-        example: 8711F7E9-A13C-42FA-800E-A54911D514C6
+        example: 94BA3E11-657B-4DD3-9C23-9B9ACE43E46D
       evaluationStatus:
         type: string
         example: evaluation-failed
       evaluation:
         type: string
         example: 3684A998-4274-4F3D-B7A0-2FC31D5F1486
+      referenceSolution:
+        type: object
+        properties:
+          id:
+            type: string
+            example: 82DD998F-8CD5-4A75-ADF8-6B894DDC2497
+          uploadedAt:
+            type: integer
+            example: 1487104368
+          description:
+            type: string
+            example: 'Brute force solution'
+          solution:
+            type: object
+            properties:
+              id:
+                type: string
+                example: E7050EA7-86A2-4DC6-B176-DEA9B4009FDF
+              userId:
+                type: string
+                example: E6E6F998-51A8-495C-907B-A9706A56B562
+              files:
+                type: array
+                items: {  }
+          evaluations:
+            type: array
+            items:
+              type: string
+              example: 94BA3E11-657B-4DD3-9C23-9B9ACE43E46D
   GroupMembership:
     type: object
     properties:
       id:
         type: string
-        example: 9877538E-C8CF-4A92-AC93-9C9B1F0005B4
+        example: AEA18357-D212-4FEB-9C79-6C318E365792
       userId:
         type: string
-        example: 74FAEBA8-D6A0-49EB-AF7B-658A4C34B695
+        example: E6E6F998-51A8-495C-907B-A9706A56B562
       groupId:
         type: string
-        example: D39E10C2-B3CE-4286-95D9-EBB30A118541
+        example: 336B1872-7B09-4A43-A5C0-2E2749F8E9F3
       status:
         type: string
         example: active
@@ -3759,7 +3939,7 @@ definitions:
         example: 1479915729
       joinedAt:
         type: integer
-        example: 1479915729
+        example: 1487104368
       rejectedAt:
         type: integer
         example: 1479915729
@@ -3781,3 +3961,48 @@ definitions:
       defaultLanguage:
         type: string
         example: en
+      openedSidebar:
+        type: boolean
+        example: true
+  RuntimeConfig:
+    type: object
+    properties:
+      id:
+        type: string
+        example: 0E0273A7-1DFE-4AFE-B671-528A9B50B561
+      name:
+        type: string
+        example: 'A demo runtime config'
+      createdAt:
+        type: integer
+        example: 1487104368
+      jobConfig:
+        type: boolean
+        example: false
+      isValid:
+        type: boolean
+        example: false
+      runtimeEnvironmentId:
+        type: string
+        example: c-gcc-linux
+      createdFrom:
+        type: string
+        example: ''
+  LocalizedText:
+    type: object
+    properties:
+      id:
+        type: string
+        example: B50BB5F4-132A-4E42-9441-A8D15471D8DB
+      locale:
+        type: string
+        example: en
+      text:
+        type: string
+        example: 'A true classic'
+      createdAt:
+        type: integer
+        example: 1487104368
+      createdFrom:
+        type: string
+        example: ''
