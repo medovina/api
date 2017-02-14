@@ -2085,7 +2085,8 @@ paths:
           type: string
           description: 'Identifier of the exercise'
       responses:
-        200: {  }
+        200:
+          $ref: '#/responses/LimitsResponse'
         401:
           $ref: '#/responses/UnauthorizedResponse'
         403:
@@ -2113,7 +2114,8 @@ paths:
           items:
             type: string
       responses:
-        200: {  }
+        200:
+          $ref: '#/responses/LimitsResponse'
         401:
           $ref: '#/responses/UnauthorizedResponse'
         403:
@@ -2431,9 +2433,12 @@ paths:
           type: string
           description: 'Identifier of the exercise'
       responses:
-        200: {  }
-        401: {  }
-        403: {  }
+        200:
+          $ref: '#/responses/ValidationResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       security:
         -
           WebToken: [ ]
@@ -2450,9 +2455,12 @@ paths:
           type: string
           description: ''
       responses:
-        200: {  }
-        401: {  }
-        403: {  }
+        200:
+          $ref: '#/responses/ExerciseResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       security:
         -
           WebToken: [ ]
@@ -2475,9 +2483,12 @@ paths:
           type: string
           description: 'Identifier of the assignment'
       responses:
-        200: {  }
-        401: {  }
-        403: {  }
+        200:
+          $ref: '#/responses/ValidationResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       security:
         -
           WebToken: [ ]
@@ -2494,9 +2505,12 @@ paths:
           type: string
           description: ''
       responses:
-        200: {  }
-        401: {  }
-        403: {  }
+        200:
+          $ref: '#/responses/FileDownloadResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       security:
         -
           WebToken: [ ]
@@ -2507,8 +2521,10 @@ paths:
       description: 'Get a list of all hardware groups in system'
       parameters: [ ]
       responses:
-        200: {  }
-        403: {  }
+        200:
+          $ref: '#/responses/HardwareGroupListResponse'
+        403:
+          $ref: '#/responses/ForbiddenResponse'
       tags:
         - hardware-groups
   /job-config/validate:
@@ -2522,7 +2538,8 @@ paths:
           type: string
           description: 'Job configuration YAML'
       responses:
-        200: {  }
+        200:
+          $ref: '#/responses/PlainTextResponse'
       tags:
         - job-config
 responses:
@@ -2786,6 +2803,19 @@ responses:
               type: array
               items:
                 $ref: '#/definitions/SolutionFile'
+  HardwareGroupListResponse:
+    description: 'A list of hardware group objects'
+    schema:
+      allOf:
+        -
+          $ref: '#/definitions/DefaultResponseParams'
+        -
+          type: object
+          properties:
+            payload:
+              type: array
+              items:
+                $ref: '#/definitions/HardwareGroup'
   LoginResponse:
     description: 'Access token and user information'
     schema:
@@ -2922,6 +2952,17 @@ responses:
               type: array
               items:
                 $ref: '#/definitions/RuntimeEnvironment'
+  LimitsResponse:
+    description: 'A list of resource limits'
+    schema:
+      allOf:
+        -
+          $ref: '#/definitions/DefaultResponseParams'
+        -
+          type: array
+          items:
+            type: object
+            properties: [ ]
   SuccessResponse:
     description: Success
     schema:
@@ -2997,6 +3038,22 @@ responses:
         msg: 'Bad Request - Missing required POST field'
         code: 400
         success: false
+  ValidationResponse:
+    description: Validation results
+    schema:
+      type: object
+      allOf:
+        -
+          $ref: '#/definitions/DefaultResponseParams'
+        -
+          type: object
+          properties:
+            payload:
+              type: object
+              properties:
+                versionIsUpToDate:
+                  type: boolean
+                  example: false
 definitions:
   DefaultResponseParams:
     type: object
