@@ -2959,10 +2959,13 @@ responses:
         -
           $ref: '#/definitions/DefaultResponseParams'
         -
-          type: array
-          items:
-            type: object
-            properties: [ ]
+          type: object
+          properties:
+            environments:
+              type: array
+              items:
+                type: object
+                properties: [ ]
   SuccessResponse:
     description: Success
     schema:
