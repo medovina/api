@@ -1895,7 +1895,7 @@ paths:
           description: 'Identifier of the user'
       responses:
         200:
-          $ref: '#/responses/GroupListResponse'
+          $ref: '#/responses/UserGroupsResponse'
         403:
           $ref: '#/responses/ForbiddenResponse'
         401:
@@ -3057,6 +3057,31 @@ responses:
                 versionIsUpToDate:
                   type: boolean
                   example: false
+  UserGroupsResponse:
+    description: Group data for a user
+    schema:
+      type: object
+      allOf:
+        -
+          $ref: '#/definitions/DefaultResponseParams'
+        -
+          type: object
+          properties:
+            payload:
+              type: object
+              properties:
+                student:
+                  type: array
+                  items:
+                    $ref: '#/definitions/Group'
+                supervisor:
+                  type: array
+                  items:
+                    $ref: '#/definitions/Group'
+                stats:
+                  type: array
+                  items:
+                    $ref: '#/definitions/GroupStats'
 definitions:
   DefaultResponseParams:
     type: object
@@ -4066,3 +4091,34 @@ definitions:
       createdFrom:
         type: string
         example: ''
+  GroupStats:
+    type: object
+    properties:
+      userId:
+        type: string
+        example: B50BB5F4-132A-4E42-9441-A8D15471D8DB
+      groupId:
+        type: string
+        example: B50BB5F4-132A-4E42-9441-A8D15471D8DB
+      assignments:
+        type: object
+        properties:
+          total:
+            type: integer
+          completed:
+            type: integer
+          missed:
+            type: integer
+      points:
+        type: object
+        properties:
+          total:
+            type: integer
+          gained:
+            type: integer
+      statuses:
+        type: object
+      hasLimit:
+        type: boolean
+      passesLimit:
+        type: boolean
