@@ -635,6 +635,34 @@ paths:
       security:
         -
           WebToken: [ ]
+  '/exercise-assignments/{id}/users/{userId}/best-submission':
+    get:
+      tags:
+        - assignments
+      description: 'Get the best solution by a user to an assignment'
+      parameters:
+        -
+          name: id
+          required: true
+          in: path
+          type: string
+          description: 'Identifier of the assignment'
+        -
+          name: userId
+          required: true
+          in: path
+          type: string
+          description: 'Identifier of the user'
+      responses:
+        200:
+          $ref: '#/responses/SubmissionResponse'
+        403:
+          $ref: '#/responses/ForbiddenResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+      security:
+        -
+          WebToken: [ ]
   '/exercise-assignments/{id}/submit':
     post:
       tags:
