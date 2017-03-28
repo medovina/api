@@ -384,6 +384,57 @@ paths:
           WebToken: [ ]
       tags:
         - exercises
+  '/exercises/{id}/limits':
+    get:
+      description: 'Get a description of resource limits for an exercise'
+      parameters:
+        -
+          name: id
+          required: true
+          in: path
+          type: string
+          description: 'Identifier of the exercise'
+      responses:
+        200:
+          $ref: '#/responses/LimitsResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+        403:
+          $ref: '#/responses/ForbiddenResponse'
+      tags:
+        - exercises
+      security:
+        -
+          WebToken: [ ]
+    post:
+      description: 'Set resource limits for an exercise'
+      parameters:
+        -
+          name: id
+          required: true
+          in: path
+          type: string
+          description: 'Identifier of the exercise'
+        -
+          name: environments
+          required: false
+          in: formData
+          description: 'A list of resource limits for the environments and hardware groups'
+          type: array
+          items:
+            type: string
+      responses:
+        200:
+          $ref: '#/responses/LimitsResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+        403:
+          $ref: '#/responses/ForbiddenResponse'
+      tags:
+        - exercises
+      security:
+        -
+          WebToken: [ ]
   /exercise-assignments:
     get:
       tags:
@@ -2102,57 +2153,6 @@ paths:
           $ref: '#/responses/BooleanResponse'
       tags:
         - forgotten-password
-  '/exercise-assignments/{id}/limits':
-    get:
-      description: 'Get a description of resource limits for an assignment'
-      parameters:
-        -
-          name: id
-          required: true
-          in: path
-          type: string
-          description: 'Identifier of the exercise'
-      responses:
-        200:
-          $ref: '#/responses/LimitsResponse'
-        401:
-          $ref: '#/responses/UnauthorizedResponse'
-        403:
-          $ref: '#/responses/ForbiddenResponse'
-      tags:
-        - assignments
-      security:
-        -
-          WebToken: [ ]
-    post:
-      description: 'Set resource limits for an assignment'
-      parameters:
-        -
-          name: id
-          required: true
-          in: path
-          type: string
-          description: 'Identifier of the assignment'
-        -
-          name: environments
-          required: false
-          in: formData
-          description: 'A list of resource limits for the environments and hardware groups'
-          type: array
-          items:
-            type: string
-      responses:
-        200:
-          $ref: '#/responses/LimitsResponse'
-        401:
-          $ref: '#/responses/UnauthorizedResponse'
-        403:
-          $ref: '#/responses/ForbiddenResponse'
-      tags:
-        - assignments
-      security:
-        -
-          WebToken: [ ]
   '/instances/licences/{licenceId}':
     post:
       description: 'Update an existing license for an instance'
