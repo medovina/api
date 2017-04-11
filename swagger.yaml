@@ -3447,7 +3447,7 @@ definitions:
         example: false
       pointsPercentualThreshold:
         type: double
-        example: !!float 0
+        example: 0.66
       createdAt:
         type: integer
         example: 1491913711
