@@ -1594,35 +1594,6 @@ paths:
           $ref: '#/responses/ForbiddenResponse'
       tags:
         - reference-exercise-solutions
-  '/reference-solutions/{exerciseId}/evaluate/{id}':
-    post:
-      description: 'Evaluate reference solutions to an exercise for a hardware group'
-      parameters:
-        -
-          name: hwGroup
-          required: false
-          type: string
-          in: formData
-          description: 'Identififer of a hardware group'
-        -
-          name: exerciseId
-          required: true
-          in: path
-          type: string
-          description: 'Identifier of the exercise'
-        -
-          name: id
-          required: true
-          in: path
-          type: string
-          description: 'Identifier of the reference solution'
-      responses:
-        200:
-          $ref: '#/responses/ReferenceSolutionEvaluationResponse'
-        403:
-          $ref: '#/responses/ForbiddenResponse'
-      tags:
-        - reference-exercise-solutions
   /submissions:
     get:
       description: 'Get a list of all submissions, ever'
@@ -2974,23 +2945,6 @@ responses:
                   properties: { id: { type: string }, monitorUrl: { type: string }, expectedTasksCount: { type: integer, example: 42 } }
                 submission:
                   $ref: '#/definitions/Submission'
-  ReferenceSolutionEvaluationResponse:
-    description: 'Information about evaluation'
-    schema:
-      allOf:
-        -
-          $ref: '#/definitions/DefaultResponseParams'
-        -
-          type: object
-          properties:
-            payload:
-              type: object
-              properties:
-                webSocketChannel:
-                  type: object
-                  properties: { id: { type: string }, monitorUrl: { type: string }, expectedTasksCount: { type: integer, example: 42 } }
-                evaluation:
-                  $ref: '#/definitions/ReferenceSolutionEvaluation'
   UploadedFileResponse:
     description: 'An uploaded file object'
     schema:
