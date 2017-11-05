@@ -1,8 +1,8 @@
 swagger: '2.0'
-host: 'recodex.projekty.ms.mff.cuni.cz:4000'
+host: recodex.mff.cuni.cz/api
 basePath: /v1
 consumes:
-  - application/json
+  - multipart/form-data
 produces:
   - application/json
 schemes:
@@ -67,6 +67,27 @@ tags:
   -
     name: job-config
     description: 'Endpoints for job configuration manipulation and validation'
+  -
+    name: exercise-files
+    description: 'Endpoints for exercise files manipulation'
+  -
+    name: exercises-config
+    description: 'Endpoints for exercise configuration manipulation'
+  -
+    name: submit
+    description: 'Endpoints for submitting an assignment'
+  -
+    name: registration
+    description: 'Registration management endpoints'
+  -
+    name: email-verification
+    description: 'Verify user''s email addresses.'
+  -
+    name: pipelines
+    description: 'Endpoints for pipelines manipulation'
+  -
+    name: sis
+    description: ''
 paths:
   /login:
     post:
@@ -79,12 +100,14 @@ paths:
           in: formData
           description: 'User''s E-mail'
           format: email
+          minLength: 1
         -
           name: password
           required: false
           type: string
           in: formData
           description: Password
+          minLength: 1
       responses:
         200:
           $ref: '#/responses/LoginResponse'
@@ -108,35 +131,6 @@ paths:
       security:
         -
           WebToken: [ ]
-  '/login/{serviceId}':
-    post:
-      description: 'Log in using an external authentication service'
-      parameters:
-        -
-          name: username
-          required: false
-          type: string
-          in: formData
-          description: 'User name'
-        -
-          name: password
-          required: false
-          type: string
-          in: formData
-          description: Password
-        -
-          name: serviceId
-          required: true
-          in: path
-          type: string
-          description: 'Identifier of the login service'
-      responses:
-        200:
-          $ref: '#/responses/LoginResponse'
-        401:
-          $ref: '#/responses/UnauthorizedResponse'
-      tags:
-        - login
   '/comments/{id}':
     get:
       description: 'Get a comment thread'
@@ -297,7 +291,12 @@ paths:
           WebToken: [ ]
     post:
       description: "Create exercise with all default values.\nExercise detail can be then changed in appropriate endpoint."
-      parameters: [ ]
+      parameters:
+        -
+          name: groupId
+          in: formData
+          required: false
+          description: 'Identifier of the group to which exercise belongs to'
       responses:
         200:
           $ref: '#/responses/ExerciseResponse'
@@ -336,11 +335,6 @@ paths:
       description: 'Update detail of an exercise'
       parameters:
         -
-          name: name
-          required: false
-          in: formData
-          description: 'Name of exercise'
-        -
           name: difficulty
           required: false
           in: formData
@@ -362,16 +356,21 @@ paths:
           in: formData
           required: false
           description: 'Version of the edited exercise'
-        -
-          name: description
-          in: formData
-          required: false
-          description: 'Some brief description of this exercise for supervisors'
+          type: integer
         -
           name: localizedTexts
           in: formData
           required: false
           description: 'A description of the exercise'
+          type: array
+          items:
+            $ref: '#/definitions/LocalizedExerciseParam'
+        -
+          name: isLocked
+          in: formData
+          required: false
+          type: boolean
+          description: 'If true, the exercise cannot be assigned'
       responses:
         200:
           $ref: '#/responses/ExerciseResponse'
@@ -405,57 +404,6 @@ paths:
           WebToken: [ ]
       tags:
         - exercises
-  '/exercises/{id}/limits':
-    get:
-      description: 'Get a description of resource limits for an exercise'
-      parameters:
-        -
-          name: id
-          required: true
-          in: path
-          type: string
-          description: 'Identifier of the exercise'
-      responses:
-        200:
-          $ref: '#/responses/LimitsResponse'
-        401:
-          $ref: '#/responses/UnauthorizedResponse'
-        403:
-          $ref: '#/responses/ForbiddenResponse'
-      tags:
-        - exercises
-      security:
-        -
-          WebToken: [ ]
-    post:
-      description: 'Set resource limits for an exercise'
-      parameters:
-        -
-          name: id
-          required: true
-          in: path
-          type: string
-          description: 'Identifier of the exercise'
-        -
-          name: environments
-          required: false
-          in: formData
-          description: 'A list of resource limits for the environments and hardware groups'
-          type: array
-          items:
-            type: string
-      responses:
-        200:
-          $ref: '#/responses/LimitsResponse'
-        401:
-          $ref: '#/responses/UnauthorizedResponse'
-        403:
-          $ref: '#/responses/ForbiddenResponse'
-      tags:
-        - exercises
-      security:
-        -
-          WebToken: [ ]
   /exercise-assignments:
     get:
       tags:
@@ -528,36 +476,17 @@ paths:
       description: 'Update details of an assignment'
       parameters:
         -
-          name: name
-          required: false
-          type: string
-          in: formData
-          description: 'Name of the assignment'
-          minLength: 2
-        -
           name: isPublic
           required: false
           type: boolean
           in: formData
           description: 'Is the assignment ready to be displayed to students?'
         -
-          name: description
-          required: false
-          type: string
-          in: formData
-          description: 'A description of the assignment'
-        -
           name: firstDeadline
           required: false
           type: integer
           in: formData
           description: 'First deadline for submission of the assignment'
-        -
-          name: scoreConfig
-          required: false
-          type: string
-          in: formData
-          description: 'A configuration of the score calculator (the exact format depends on the calculator assigned to the exercise)'
         -
           name: allowSecondDeadline
           required: false
@@ -599,7 +528,7 @@ paths:
           required: false
           type: array
           items:
-            $ref: '#/definitions/LocalizedAssignmentParam'
+            $ref: '#/definitions/LocalizedExerciseParam'
           in: formData
           description: 'A description of the assignment'
         -
@@ -660,7 +589,7 @@ paths:
   '/exercise-assignments/{id}/can-submit':
     get:
       tags:
-        - assignments
+        - submit
       description: 'Check if the current user can submit solutions to the assignment'
       parameters:
         -
@@ -738,7 +667,7 @@ paths:
   '/exercise-assignments/{id}/submit':
     post:
       tags:
-        - assignments
+        - submit
       description: 'Submit a solution of an assignment'
       parameters:
         -
@@ -1070,7 +999,7 @@ paths:
           WebToken: [ ]
   '/groups/{id}/students/stats':
     get:
-      description: 'Get statistics of a group'
+      description: "Get statistics of a group. If the user does not have the rights to view all of these, try to at least\nreturn their statistics."
       parameters:
         -
           name: id
@@ -1441,7 +1370,7 @@ paths:
           WebToken: [ ]
   '/instances/{id}/groups':
     get:
-      description: 'Get a list of groups in an instance'
+      description: 'Get a list of all groups which user can view in an instance'
       parameters:
         -
           name: id
@@ -1545,55 +1474,6 @@ paths:
       security:
         -
           WebToken: [ ]
-  '/reference-solutions/{id}':
-    get:
-      description: 'Get reference solutions for an exercise'
-      parameters:
-        -
-          name: id
-          required: true
-          in: path
-          type: string
-          description: 'Identifier of the exercise'
-      responses:
-        200:
-          $ref: '#/responses/ReferenceSolutionListResponse'
-        403:
-          $ref: '#/responses/ForbiddenResponse'
-      tags:
-        - reference-exercise-solutions
-    post:
-      description: 'Add new reference solution to an exercise'
-      parameters:
-        -
-          name: note
-          required: false
-          type: string
-          in: formData
-          description: 'Description of this particular reference solution, for example used algorithm'
-        -
-          name: files
-          required: false
-          in: formData
-          description: 'Files of the reference solution'
-        -
-          name: runtime
-          required: false
-          in: formData
-          description: 'ID of runtime for this solution'
-        -
-          name: id
-          in: path
-          required: true
-          type: string
-          description: 'Identifier of the exercise'
-      responses:
-        200:
-          $ref: '#/responses/ReferenceSolutionResponse'
-        403:
-          $ref: '#/responses/ForbiddenResponse'
-      tags:
-        - reference-exercise-solutions
   /submissions:
     get:
       description: 'Get a list of all submissions, ever'
@@ -1731,7 +1611,7 @@ paths:
           description: 'Identifier of the file'
       responses:
         200:
-          $ref: '#/responses/PlainTextResponse'
+          $ref: '#/responses/FileContentResponse'
         403:
           $ref: '#/responses/ForbiddenResponse'
         401:
@@ -1804,29 +1684,22 @@ paths:
           minLength: 1
           in: formData
           description: 'Degrees which is placed after user name'
+        -
+          name: passwordConfirm
+          in: formData
+          required: false
+          type: string
+          minLength: 1
+          description: 'A password confirmation'
       responses:
         200:
           $ref: '#/responses/UserResponse'
       tags:
-        - users
+        - registration
   /users/ext:
     post:
-      description: 'Create an account authenticated with an external service'
+      description: 'Create an account authenticated with an external service (and link it with either a new user account or an existing one)'
       parameters:
-        -
-          name: username
-          required: false
-          type: string
-          in: formData
-          description: 'Login name'
-          minLength: 2
-        -
-          name: password
-          required: false
-          type: string
-          in: formData
-          description: 'Authentication password'
-          minLength: 1
         -
           name: instanceId
           required: false
@@ -1845,7 +1718,7 @@ paths:
         200:
           $ref: '#/responses/UserResponse'
       tags:
-        - users
+        - registration
   /users/validate-registration-data:
     post:
       description: 'Check if the registered E-mail isn''t already used and if the password is strong enough'
@@ -1868,7 +1741,7 @@ paths:
         200:
           $ref: '#/responses/BooleanResponse'
       tags:
-        - users
+        - registration
   '/users/{id}':
     get:
       description: 'Get details of a user account'
@@ -1931,19 +1804,27 @@ paths:
           required: false
           type: string
           minLength: 1
-          description: 'Old password of current user'
-        -
-          name: newPassword
-          in: formData
-          required: false
-          type: string
-          minLength: 1
           description: 'New password of current user'
         -
           name: email
           in: formData
           required: false
           description: 'New email address'
+          type: string
+          format: email
+        -
+          name: passwordConfirm
+          in: formData
+          required: false
+          type: string
+          minLength: 1
+          description: 'Confirmation of new password of current user'
+        -
+          name: id
+          in: path
+          required: true
+          type: string
+          description: 'Identifier of the user'
       responses:
         200:
           $ref: '#/responses/UserResponse'
@@ -1952,6 +1833,20 @@ paths:
       security:
         -
           WebToken: [ ]
+      tags:
+        - users
+    delete:
+      description: 'Delete a user account'
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          type: string
+          description: 'Identifier of the user'
+      responses:
+        200:
+          $ref: '#/responses/SuccessResponse'
       tags:
         - users
   '/users/{id}/groups':
@@ -2011,73 +1906,6 @@ paths:
       responses:
         200:
           $ref: '#/responses/ExerciseListResponse'
-        403:
-          $ref: '#/responses/ForbiddenResponse'
-        401:
-          $ref: '#/responses/UnauthorizedResponse'
-      tags:
-        - users
-      security:
-        -
-          WebToken: [ ]
-  /users/detail:
-    post:
-      description: 'Update the profile associated with a user account'
-      parameters:
-        -
-          name: email
-          required: false
-          type: string
-          in: formData
-          description: 'E-mail address'
-          format: email
-        -
-          name: firstName
-          required: false
-          type: string
-          in: formData
-          description: 'First name'
-          minLength: 2
-        -
-          name: lastName
-          required: false
-          type: string
-          in: formData
-          description: 'Last name'
-          minLength: 2
-        -
-          name: degreesBeforeName
-          required: false
-          type: string
-          in: formData
-          description: 'Degrees before name'
-          minLength: 1
-        -
-          name: degreesAfterName
-          required: false
-          type: string
-          in: formData
-          description: 'Degrees after name'
-          minLength: 1
-        -
-          name: oldPassword
-          required: false
-          type: string
-          format: password
-          minLength: 1
-          in: formData
-          description: 'Old password of current user'
-        -
-          name: password
-          required: false
-          type: string
-          format: password
-          minLength: 1
-          in: formData
-          description: 'New password of current user'
-      responses:
-        200:
-          $ref: '#/responses/UserResponse'
         403:
           $ref: '#/responses/ForbiddenResponse'
         401:
@@ -2233,7 +2061,7 @@ paths:
         -
           WebToken: [ ]
       tags:
-        - exercises
+        - exercise-files
     get:
       description: 'Get list of all supplementary files for an exercise'
       parameters:
@@ -2254,34 +2082,7 @@ paths:
         -
           WebToken: [ ]
       tags:
-        - exercises
-  '/exercises/{id}/runtime-configs':
-    post:
-      description: "Change runtime configuration of exercise.\nConfigurations can be added or deleted here, based on what is provided in arguments."
-      parameters:
-        -
-          name: runtimeConfigs
-          required: false
-          in: formData
-          description: 'Runtime configurations for the exercise'
-        -
-          name: id
-          in: path
-          required: true
-          type: string
-          description: 'identification of exercise'
-      responses:
-        200:
-          $ref: '#/responses/ExerciseResponse'
-        401:
-          $ref: '#/responses/UnauthorizedResponse'
-        403:
-          $ref: '#/responses/ForbiddenResponse'
-      security:
-        -
-          WebToken: [ ]
-      tags:
-        - exercises
+        - exercise-files
   /submission-failures:
     get:
       description: 'List all submission failures, ever'
@@ -2415,6 +2216,30 @@ paths:
           required: false
           type: boolean
           description: 'Flag if the sidebar of the web-app should be opened by default.'
+        -
+          name: newAssignmentEmails
+          in: formData
+          required: false
+          type: boolean
+          description: 'Flag if email should be sent to user when new assignment was created'
+        -
+          name: assignmentDeadlineEmails
+          in: formData
+          required: false
+          type: boolean
+          description: 'Flag if email should be sent to user if assignment deadline is nearby'
+        -
+          name: submissionEvaluatedEmails
+          in: formData
+          required: false
+          type: boolean
+          description: 'Flag if email should be sent to user when resubmission was evaluated'
+        -
+          name: id
+          in: path
+          required: true
+          type: string
+          description: 'Identifier of the user'
       responses:
         200:
           $ref: '#/responses/UserResponse'
@@ -2473,7 +2298,12 @@ paths:
           in: path
           required: true
           type: string
-          description: ''
+          description: 'Identifier of the exercise'
+        -
+          name: groupId
+          in: formData
+          required: false
+          description: 'Identifier of the group to which exercise will be forked'
       responses:
         200:
           $ref: '#/responses/ExerciseResponse'
@@ -2592,7 +2422,26 @@ paths:
         -
           WebToken: [ ]
       tags:
-        - exercises
+        - exercise-files
+    get:
+      description: 'Get a list of all additional files for an exercise'
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          type: string
+          description: 'identification of exercise'
+      responses:
+        200:
+          $ref: '#/responses/UploadedFileListResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+      security:
+        -
+          WebToken: [ ]
+      tags:
+        - exercise-files
   '/reference-solutions/exercise/{exerciseId}':
     get:
       description: 'Get reference solutions for an exercise'
@@ -2627,16 +2476,16 @@ paths:
           required: false
           description: 'Files of the reference solution'
         -
-          name: runtime
-          in: formData
-          required: false
-          description: 'ID of runtime for this solution'
-        -
           name: exerciseId
           in: path
           required: true
           type: string
           description: 'Identifier of the exercise'
+        -
+          name: runtimeEnvironmentId
+          in: formData
+          required: false
+          description: 'ID of runtime for this solution'
       responses:
         200:
           $ref: '#/responses/ReferenceSolutionResponse'
@@ -2656,6 +2505,12 @@ paths:
           required: true
           type: string
           description: 'Identifier of the exercise'
+        -
+          name: debug
+          in: formData
+          required: false
+          type: boolean
+          description: ''
       responses:
         200:
           $ref: '#/responses/ExerciseReferenceSolutionEvaluationsReponse'
@@ -2675,6 +2530,12 @@ paths:
           required: true
           type: string
           description: 'Identifier of the reference solution'
+        -
+          name: debug
+          in: formData
+          required: false
+          type: boolean
+          description: ''
       responses:
         200:
           $ref: '#/responses/ReferenceSolutionEvaluationsReponse'
@@ -2704,8 +2565,878 @@ paths:
       tags:
         - reference-exercise-solutions
   '/submissions/{id}/set-accepted':
-    get:
+    post:
       description: 'Set submission of student as accepted, this submission will be then presented as the best one.'
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          type: string
+          description: 'identifier of the submission'
+      responses:
+        200:
+          $ref: '#/responses/StudentStatsResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+      security:
+        -
+          WebToken: [ ]
+      tags:
+        - submissions
+  '/login/takeover/{userId}':
+    post:
+      description: 'Takeover user account with specified user identification.'
+      parameters:
+        -
+          name: userId
+          in: path
+          required: true
+          description: ''
+      responses:
+        200:
+          $ref: '#/responses/LoginResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+      security:
+        -
+          WebToken: [ ]
+      tags:
+        - login
+  '/login/{serviceId}[/{type}]':
+    post:
+      description: 'Log in using an external authentication service'
+      parameters:
+        -
+          name: serviceId
+          in: path
+          required: true
+          type: string
+          description: 'Identifier of the login service'
+        -
+          name: type
+          in: path
+          required: true
+          type: string
+          description: 'Type of the authentication process'
+      responses:
+        200:
+          $ref: '#/responses/LoginResponse'
+      tags:
+        - login
+  '/exercises/{id}/pipelines':
+    get:
+      description: 'Get all pipelines for an exercise.'
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          type: string
+          description: 'Identifier of the exercise'
+      responses:
+        200:
+          $ref: '#/responses/PipelineListResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+      security:
+        -
+          WebToken: [ ]
+      tags:
+        - exercises
+  '/exercises/{id}/supplementary-files/{fileId}':
+    delete:
+      description: 'Delete supplementary exercise file with given id'
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          type: string
+          description: 'identification of exercise'
+        -
+          name: fileId
+          in: path
+          required: true
+          type: string
+          description: 'identification of file'
+      responses:
+        200:
+          $ref: '#/responses/SuccessResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+      security:
+        -
+          WebToken: [ ]
+      tags:
+        - exercise-files
+  '/exercises/{id}/additional-files/{fileId}':
+    delete:
+      description: 'Delete additional exercise file with given id'
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          type: string
+          description: 'identification of exercise'
+        -
+          name: fileId
+          in: path
+          required: true
+          type: string
+          description: 'identification of file'
+      responses:
+        200:
+          $ref: '#/responses/SuccessResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+      security:
+        -
+          WebToken: [ ]
+      tags:
+        - exercise-files
+  '/exercises/{id}/environment-configs':
+    get:
+      description: 'Get runtime configurations for exercise.'
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          type: string
+          description: 'Identifier of the exercise'
+      responses:
+        200: {  }
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+      security:
+        -
+          WebToken: [ ]
+      tags:
+        - exercises-config
+    post:
+      description: "Change runtime configuration of exercise.\nConfigurations can be added or deleted here, based on what is provided in arguments."
+      parameters:
+        -
+          name: environmentConfigs
+          in: formData
+          required: false
+          description: 'Environment configurations for the exercise'
+        -
+          name: id
+          in: path
+          required: true
+          type: string
+          description: 'identification of exercise'
+      responses:
+        200: {  }
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+      security:
+        -
+          WebToken: [ ]
+      tags:
+        - exercises-config
+  '/exercises/{id}/config':
+    get:
+      description: 'Get a basic exercise high level configuration.'
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          type: string
+          description: 'Identifier of the exercise'
+      responses:
+        200: {  }
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+      security:
+        -
+          WebToken: [ ]
+      tags:
+        - exercises-config
+    post:
+      description: 'Set basic exercise configuration'
+      parameters:
+        -
+          name: config
+          in: formData
+          required: false
+          description: 'A list of basic high level exercise configuration'
+        -
+          name: id
+          in: path
+          required: true
+          type: string
+          description: 'Identifier of the exercise'
+      responses:
+        200: {  }
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+      security:
+        -
+          WebToken: [ ]
+      tags:
+        - exercises-config
+  '/exercises/{id}/config/variables':
+    post:
+      description: "Get variables for exercise configuration which are derived from given\npipelines and runtime environment."
+      parameters:
+        -
+          name: runtimeEnvironmentId
+          in: formData
+          required: false
+          type: string
+          minLength: 1
+          description: 'Environment identifier'
+        -
+          name: pipelinesIds
+          in: formData
+          required: false
+          description: 'Identifiers of selected pipelines for one test'
+        -
+          name: id
+          in: path
+          required: true
+          type: string
+          description: 'Identifier of the exercise'
+      responses:
+        200: {  }
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+      security:
+        -
+          WebToken: [ ]
+      tags:
+        - exercises-config
+  '/exercises/{id}/environment/{runtimeEnvironmentId}/limits':
+    get:
+      description: 'Get a description of resource limits for an exercise.'
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          type: string
+          description: 'Identifier of the exercise'
+        -
+          name: runtimeEnvironmentId
+          in: path
+          required: true
+          type: string
+          description: ''
+      responses:
+        200:
+          $ref: '#/responses/LimitsResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+      security:
+        -
+          WebToken: [ ]
+      tags:
+        - exercises-config
+    post:
+      description: 'Set resource limits for an exercise.'
+      parameters:
+        -
+          name: limits
+          in: formData
+          required: false
+          description: 'A list of resource limits for the given environment'
+        -
+          name: id
+          in: path
+          required: true
+          type: string
+          description: 'Identifier of the exercise'
+        -
+          name: runtimeEnvironmentId
+          in: path
+          required: true
+          type: string
+          description: ''
+      responses:
+        200:
+          $ref: '#/responses/LimitsResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+      security:
+        -
+          WebToken: [ ]
+      tags:
+        - exercises-config
+  '/exercises/{id}/environment/{runtimeEnvironmentId}/hwgroup/{hwGroupId}/limits':
+    get:
+      description: 'Get a description of resource limits for an exercise for given hwgroup'
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          type: string
+          description: 'Identifier of the exercise'
+        -
+          name: runtimeEnvironmentId
+          in: path
+          required: true
+          type: string
+          description: ''
+        -
+          name: hwGroupId
+          in: path
+          required: true
+          type: string
+          description: ''
+      responses:
+        200:
+          $ref: '#/responses/LimitsResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+      security:
+        -
+          WebToken: [ ]
+      tags:
+        - exercises-config
+    post:
+      description: 'Set resource limits for an exercise for given hwgroup.'
+      parameters:
+        -
+          name: limits
+          in: formData
+          required: false
+          description: 'A list of resource limits for the given environment and hardware group'
+        -
+          name: id
+          in: path
+          required: true
+          type: string
+          description: 'Identifier of the exercise'
+        -
+          name: runtimeEnvironmentId
+          in: path
+          required: true
+          type: string
+          description: ''
+        -
+          name: hwGroupId
+          in: path
+          required: true
+          type: string
+          description: ''
+      responses:
+        200:
+          $ref: '#/responses/LimitsResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+      security:
+        -
+          WebToken: [ ]
+      tags:
+        - exercises-config
+    delete:
+      description: 'Remove resource limits of given hwgroup from an exercise.'
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          type: string
+          description: 'Identifier of the exercise'
+        -
+          name: runtimeEnvironmentId
+          in: path
+          required: true
+          type: string
+          description: ''
+        -
+          name: hwGroupId
+          in: path
+          required: true
+          type: string
+          description: ''
+      responses:
+        200:
+          $ref: '#/responses/SuccessResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+      security:
+        -
+          WebToken: [ ]
+      tags:
+        - exercises-config
+  '/exercises/{id}/score-config':
+    get:
+      description: 'Get score configuration for exercise based on given identification.'
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          type: string
+          description: 'Identifier of the exercise'
+      responses:
+        200: {  }
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+      security:
+        -
+          WebToken: [ ]
+      tags:
+        - exercises-config
+    post:
+      description: 'Set score configuration for exercise.'
+      parameters:
+        -
+          name: scoreConfig
+          in: formData
+          required: false
+          type: string
+          description: 'A configuration of the score calculator (the exact format depends on the calculator assigned to the exercise)'
+        -
+          name: id
+          in: path
+          required: true
+          type: string
+          description: 'Identifier of the exercise'
+      responses:
+        200: {  }
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+      security:
+        -
+          WebToken: [ ]
+      tags:
+        - exercises-config
+  '/exercise-assignments/{id}/best-submissions':
+    get:
+      description: 'Get the best solutions to an assignment for all students in group.'
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          type: string
+          description: 'Identifier of the assignment'
+      responses:
+        200: {  }
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+      security:
+        -
+          WebToken: [ ]
+      tags:
+        - assignments
+  '/exercise-assignments/{id}/sync-exercise':
+    post:
+      description: 'Update the assignment so that it matches with the current version of the exercise (limits, texts, etc.)'
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          type: string
+          description: 'Identifier of the exercise that should be synchronized'
+      responses:
+        200:
+          $ref: '#/responses/AssignmentResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+      security:
+        -
+          WebToken: [ ]
+      tags:
+        - assignments
+  '/exercise-assignments/{id}/resubmit-all':
+    post:
+      description: 'Resubmit all submissions to an assignment'
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          type: string
+          description: 'Identifier of the assignment'
+      responses:
+        200: {  }
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+      security:
+        -
+          WebToken: [ ]
+      tags:
+        - submit
+  '/groups/{id}/public':
+    get:
+      description: 'Get public data about group.'
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          type: string
+          description: ''
+      responses:
+        200: {  }
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+      security:
+        -
+          WebToken: [ ]
+      tags:
+        - groups
+  '/groups/{id}/admin/{userId}':
+    delete:
+      description: 'Remove user as an administrator of a group'
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          type: string
+          description: 'Identifier of the group'
+        -
+          name: userId
+          in: path
+          required: true
+          type: string
+          description: 'identifier of admin'
+      responses:
+        200:
+          $ref: '#/responses/GroupResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+      security:
+        -
+          WebToken: [ ]
+      tags:
+        - groups
+  '/groups/{id}/exercises':
+    get:
+      description: 'Get all exercises for a group'
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          type: string
+          description: 'Identifier of the group'
+      responses:
+        200:
+          $ref: '#/responses/ExerciseListResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+      security:
+        -
+          WebToken: [ ]
+      tags:
+        - groups
+  '/instances/{id}/groups/public':
+    get:
+      description: 'Get a list of all public groups in an instance.'
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          type: string
+          description: 'An identifier of the instance'
+      responses:
+        200:
+          $ref: '#/responses/GroupListResponse'
+      tags:
+        - instances
+  '/reference-solutions/evaluation/{evaluationId}':
+    get:
+      description: 'Get reference solution evaluation for an exercise solution.'
+      parameters:
+        -
+          name: evaluationId
+          in: path
+          required: true
+          type: string
+          description: 'identifier of the reference exercise evaluation'
+      responses:
+        200: {  }
+      tags:
+        - reference-exercise-solutions
+  '/reference-solutions/{solutionId}':
+    delete:
+      description: 'Delete reference solution with given identification.'
+      parameters:
+        -
+          name: solutionId
+          in: path
+          required: true
+          type: string
+          description: 'identifier of reference solution'
+      responses:
+        200:
+          $ref: '#/responses/SuccessResponse'
+      tags:
+        - reference-exercise-solutions
+  '/reference-solutions/{solutionId}/evaluations':
+    get:
+      description: 'Get reference solution evaluations for an exercise solution.'
+      parameters:
+        -
+          name: solutionId
+          in: path
+          required: true
+          type: string
+          description: 'identifier of the reference exercise solution'
+      responses:
+        200:
+          $ref: '#/responses/ReferenceSolutionEvaluationsReponse'
+      tags:
+        - reference-exercise-solutions
+  '/submissions/{id}/unset-accepted':
+    delete:
+      description: 'Set submission of student as unaccepted if it was.'
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          type: string
+          description: 'identifier of the submission'
+      responses:
+        200:
+          $ref: '#/responses/StudentStatsResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+      security:
+        -
+          WebToken: [ ]
+      tags:
+        - submissions
+  '/submissions/{id}/resubmit':
+    post:
+      description: 'Resubmit a submission (for example in case of broker failure)'
+      parameters:
+        -
+          name: private
+          in: formData
+          required: false
+          type: boolean
+          description: ''
+        -
+          name: debug
+          in: formData
+          required: false
+          type: boolean
+          description: ''
+        -
+          name: id
+          in: path
+          required: true
+          type: string
+          description: 'Identifier of the submission'
+      responses:
+        200: {  }
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+      security:
+        -
+          WebToken: [ ]
+      tags:
+        - submit
+  '/uploaded-files/supplementary-file/{id}/download':
+    get:
+      description: 'Download supplementary file'
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          type: string
+          description: 'Identifier of the file'
+      responses:
+        200:
+          $ref: '#/responses/FileDownloadResponse'
+      tags:
+        - uploaded-files
+  '/users/{id}/public':
+    get:
+      description: 'Get public data about user.'
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          type: string
+          description: ''
+      responses:
+        200: {  }
+      tags:
+        - users
+  /email-verification/verify:
+    post:
+      description: 'Verify users email.'
+      parameters: [ ]
+      responses:
+        200: {  }
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+      security:
+        -
+          WebToken: [ ]
+      tags:
+        - email-verification
+  /email-verification/resend:
+    post:
+      description: 'Resend the email for the current user to verify his/her email address.'
+      parameters: [ ]
+      responses:
+        200: {  }
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+      security:
+        -
+          WebToken: [ ]
+      tags:
+        - email-verification
+  /pipelines/boxes:
+    get:
+      description: 'Get a list of default boxes which might be used in pipeline.'
+      parameters: [ ]
+      responses:
+        200: {  }
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+      security:
+        -
+          WebToken: [ ]
+      tags:
+        - pipelines
+  /pipelines:
+    get:
+      description: 'Get a list of pipelines with an optional filter'
+      parameters:
+        -
+          name: search
+          in: query
+          required: false
+          type: string
+          description: 'text which will be searched in pipeline names'
+      responses:
+        200:
+          $ref: '#/responses/PipelineListResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+      security:
+        -
+          WebToken: [ ]
+      tags:
+        - pipelines
+    post:
+      description: 'Create pipeline.'
+      parameters:
+        -
+          name: exerciseId
+          in: formData
+          required: false
+          description: 'Exercise identification'
+      responses:
+        200:
+          $ref: '#/responses/PipelineResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+      security:
+        -
+          WebToken: [ ]
+      tags:
+        - pipelines
+  '/pipelines/{id}/fork':
+    post:
+      description: "Fork pipeline, if exercise identification is given pipeline is forked\nto specified exercise."
+      parameters:
+        -
+          name: exerciseId
+          in: formData
+          required: false
+          description: 'Exercise identification'
+        -
+          name: id
+          in: path
+          required: true
+          type: string
+          description: 'identification of pipeline'
+      responses:
+        200:
+          $ref: '#/responses/PipelineResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+      security:
+        -
+          WebToken: [ ]
+      tags:
+        - pipelines
+  '/pipelines/{id}':
+    get:
+      description: 'Get pipeline based on given identification.'
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          type: string
+          description: 'Identifier of the pipeline'
+      responses:
+        200:
+          $ref: '#/responses/PipelineResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+      security:
+        -
+          WebToken: [ ]
+      tags:
+        - pipelines
+    post:
+      description: 'Update pipeline with given data.'
+      parameters:
+        -
+          name: name
+          in: formData
+          required: false
+          type: string
+          minLength: 2
+          description: 'Name of the pipeline'
+        -
+          name: version
+          in: formData
+          required: false
+          type: integer
+          description: 'Version of the edited pipeline'
+        -
+          name: description
+          in: formData
+          required: false
+          description: 'Human readable description of pipeline'
+        -
+          name: pipeline
+          in: formData
+          required: false
+          description: 'Pipeline configuration'
+        -
+          name: id
+          in: path
+          required: true
+          type: string
+          description: 'Identifier of the pipeline'
+      responses:
+        200:
+          $ref: '#/responses/PipelineResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+      security:
+        -
+          WebToken: [ ]
+      tags:
+        - pipelines
+    delete:
+      description: 'Delete an pipeline'
       parameters:
         -
           name: id
@@ -2718,13 +3449,241 @@ paths:
           $ref: '#/responses/SuccessResponse'
         401:
           $ref: '#/responses/UnauthorizedResponse'
-        403:
-          $ref: '#/responses/ForbiddenResponse'
       security:
         -
           WebToken: [ ]
       tags:
-        - submissions
+        - pipelines
+  '/pipelines/{id}/validate':
+    post:
+      description: 'Check if the version of the pipeline is up-to-date.'
+      parameters:
+        -
+          name: version
+          in: formData
+          required: false
+          type: integer
+          description: 'Version of the pipeline.'
+        -
+          name: id
+          in: path
+          required: true
+          type: string
+          description: 'Identifier of the pipeline'
+      responses:
+        200:
+          $ref: '#/responses/BooleanResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+      security:
+        -
+          WebToken: [ ]
+      tags:
+        - pipelines
+  '/pipelines/{id}/supplementary-files':
+    get:
+      description: 'Get list of all supplementary files for a pipeline'
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          type: string
+          description: 'identification of pipeline'
+      responses:
+        200:
+          $ref: '#/responses/UploadedFileListResponse'
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+      security:
+        -
+          WebToken: [ ]
+      tags:
+        - pipelines
+    post:
+      description: 'Associate supplementary files with a pipeline and upload them to remote file server'
+      parameters:
+        -
+          name: files
+          in: formData
+          required: false
+          description: 'Identifiers of supplementary files'
+        -
+          name: id
+          in: path
+          required: true
+          type: string
+          description: 'identification of pipeline'
+      responses:
+        200: {  }
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+      security:
+        -
+          WebToken: [ ]
+      tags:
+        - pipelines
+  /extensions/sis/status/:
+    get:
+      description: ''
+      parameters: [ ]
+      responses:
+        200: {  }
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+      security:
+        -
+          WebToken: [ ]
+      tags:
+        - sis
+  /extensions/sis/terms/:
+    post:
+      description: ''
+      parameters:
+        -
+          name: year
+          in: formData
+          required: false
+          description: ''
+        -
+          name: term
+          in: formData
+          required: false
+          description: ''
+      responses:
+        200: {  }
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+      security:
+        -
+          WebToken: [ ]
+      tags:
+        - sis
+  '/extensions/sis/users/{userId}/subscribed-groups/{year}/{term}/as-student':
+    get:
+      description: 'Get ReCodEx group bound to SIS groups of which the user is a student'
+      parameters:
+        -
+          name: userId
+          in: path
+          required: true
+          description: ''
+        -
+          name: year
+          in: path
+          required: true
+          description: ''
+        -
+          name: term
+          in: path
+          required: true
+          description: ''
+      responses:
+        200: {  }
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+      security:
+        -
+          WebToken: [ ]
+      tags:
+        - sis
+  '/extensions/sis/users/{userId}/supervised-courses/{year}/{term}':
+    get:
+      description: 'Get SIS groups of which the user is a supervisor (regardless of them being bound to a local group)'
+      parameters:
+        -
+          name: userId
+          in: path
+          required: true
+          description: ''
+        -
+          name: year
+          in: path
+          required: true
+          description: ''
+        -
+          name: term
+          in: path
+          required: true
+          description: ''
+      responses:
+        200: {  }
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+      security:
+        -
+          WebToken: [ ]
+      tags:
+        - sis
+  '/extensions/sis/remote-courses/{courseId}/possible-parents':
+    get:
+      description: 'Find groups that can be chosen as parents of a group created from given SIS group by current user'
+      parameters:
+        -
+          name: courseId
+          in: path
+          required: true
+          description: ''
+      responses:
+        200: {  }
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+      security:
+        -
+          WebToken: [ ]
+      tags:
+        - sis
+  '/extensions/sis/remote-courses/{courseId}/create':
+    post:
+      description: 'Create a new group based on a SIS group'
+      parameters:
+        -
+          name: parentGroupId
+          in: formData
+          required: false
+          description: ''
+        -
+          name: language
+          in: formData
+          required: false
+          description: ''
+        -
+          name: courseId
+          in: path
+          required: true
+          description: ''
+      responses:
+        200: {  }
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+      security:
+        -
+          WebToken: [ ]
+      tags:
+        - sis
+  '/extensions/sis/remote-courses/{courseId}/bind':
+    post:
+      description: 'Bind an existing local group to a SIS group'
+      parameters:
+        -
+          name: groupId
+          in: formData
+          required: false
+          description: ''
+        -
+          name: courseId
+          in: path
+          required: true
+          description: ''
+      responses:
+        200: {  }
+        401:
+          $ref: '#/responses/UnauthorizedResponse'
+      security:
+        -
+          WebToken: [ ]
+      tags:
+        - sis
 responses:
   BooleanResponse:
     description: 'A boolean value'
@@ -3094,6 +4053,30 @@ responses:
               type: array
               items:
                 $ref: '#/definitions/SubmissionFailure'
+  PipelineResponse:
+    description: 'A pipeline object'
+    schema:
+      allOf:
+        -
+          $ref: '#/definitions/DefaultResponseParams'
+        -
+          type: object
+          properties:
+            payload:
+              $ref: '#/definitions/Pipeline'
+  PipelineListResponse:
+    description: 'A list of pipeline objects'
+    schema:
+      allOf:
+        -
+          $ref: '#/definitions/DefaultResponseParams'
+        -
+          type: object
+          properties:
+            payload:
+              type: array
+              items:
+                $ref: '#/definitions/Pipeline'
   UserSettingsResponse:
     description: 'User settings object'
     schema:
@@ -3265,9 +4248,7 @@ responses:
                   items: { $ref: '#/definitions/ReferenceSolutionEvaluation' }
                 errors:
                   type: array
-                  items:
-                    description: "Hardware group identifiers"
-                    type: string
+                  items: { description: 'Hardware group identifiers', type: string }
   ExerciseReferenceSolutionEvaluationsReponse:
     description: 'Details of evaluation of all reference solutions to an exercise'
     schema:
@@ -3283,16 +4264,23 @@ responses:
               items:
                 type: object
                 properties:
-                  referenceSolution:
-                    $ref: '#/definitions/ReferenceExerciseSolution'
-                  evaluations:
-                    type: array
-                    items: { $ref: '#/definitions/ReferenceSolutionEvaluation' }
-                  errors:
-                    type: array
-                    items:
-                      description: "Hardware group identifiers"
-                      type: string
+                  referenceSolution: { $ref: '#/definitions/ReferenceExerciseSolution' }
+                  evaluations: { type: array, items: { $ref: '#/definitions/ReferenceSolutionEvaluation' } }
+                  errors: { type: array, items: { description: 'Hardware group identifiers', type: string } }
+  FileContentResponse:
+    description: 'Content of a file'
+    schema:
+      type: object
+      properties:
+        content:
+          type: string
+          example: 'Content of the file, lorem ipsum'
+        malformedCharacters:
+          type: boolean
+          example: false
+        tooLarge:
+          type: boolean
+          example: false
 definitions:
   DefaultResponseParams:
     type: object
@@ -3309,7 +4297,7 @@ definitions:
       id:
         type: string
         format: guid
-        example: BD596E89-86B6-4A2B-A880-45E27718E354
+        example: 9B07CD1C-5A92-4A05-A86B-BE85B0407635
       name:
         type: string
         example: 'Convex hull'
@@ -3345,15 +4333,12 @@ definitions:
           second:
             type: integer
             example: 0
-      scoreConfig:
-        type: string
-        example: ''
       firstDeadline:
         type: integer
-        example: 1538353925
+        example: 1579152435
       secondDeadline:
         type: integer
-        example: 1628652475
+        example: 1665339200
       maxPointsBeforeFirstDeadline:
         type: integer
         example: 0
@@ -3378,17 +4363,26 @@ definitions:
           properties:
             id:
               type: string
-              example: E52E38F5-9EE0-47E3-8F28-5DEAEDD9274F
+              example: EC8219C5-B738-4F08-AF0D-648A0E13571A
             locale:
               type: string
               example: en
             text:
               type: string
-              example: 'A true classic'
+              example: ''
             createdAt:
               type: integer
-              example: 1491913711
+              example: 1509899373
             createdFrom:
+              type: string
+              example: ''
+            name:
+              type: string
+              example: 'Convex hull'
+            shortText:
+              type: string
+              example: 'Convex hull'
+            description:
               type: string
               example: ''
       runtimeEnvironmentsIds:
@@ -3401,17 +4395,65 @@ definitions:
         example: false
       pointsPercentualThreshold:
         type: double
-        example: 0.66
+        example: !!float 0
       createdAt:
         type: integer
-        example: 1491913711
+        example: 1509899373
+      updatedAt:
+        type: integer
+        example: 1509899373
+      exerciseSynchronizationInfo:
+        type: object
+        properties:
+          exerciseConfig:
+            type: object
+            properties:
+              upToDate:
+                type: boolean
+                example: true
+          scoreConfig:
+            type: object
+            properties:
+              upToDate:
+                type: boolean
+                example: true
+          scoreCalculator:
+            type: object
+            properties:
+              upToDate:
+                type: boolean
+                example: true
+          exerciseEnvironmentConfigs:
+            type: object
+            properties:
+              upToDate:
+                type: boolean
+                example: true
+          hardwareGroups:
+            type: object
+            properties:
+              upToDate:
+                type: boolean
+                example: true
+          localizedTexts:
+            type: object
+            properties:
+              upToDate:
+                type: boolean
+                example: true
+          limits:
+            type: object
+            properties:
+              upToDate:
+                type: boolean
+                example: true
   Group:
     type: object
     properties:
       id:
         type: string
         format: guid
-        example: 5330C80C-5EDF-4D0C-B6D8-09B95BE12566
+        example: BF66743D-1768-40B0-9C3F-7103D140F8FE
       name:
         type: string
         example: 'Frankenstein University, Atlantida'
@@ -3443,7 +4485,7 @@ definitions:
       instanceId:
         type: string
         format: guid
-        example: A7FB7C1A-B414-4E6D-8FB5-086A7F981D8B
+        example: BE668416-7A5E-4D6A-A296-20D51E6BC888
       hasValidLicence:
         type: boolean
         example: true
@@ -3496,13 +4538,23 @@ definitions:
       externalId:
         type: string
         example: ''
+      primaryAdminsIds:
+        type: array
+        items:
+          type: string
+          example: 1A867E09-46A7-4A44-A9A1-22140392FF41
+      parentGroupsIds:
+        type: array
+        items:
+          type: string
+          example: 1A867E09-46A7-4A44-A9A1-22140392FF41
   Instance:
     type: object
     properties:
       id:
         type: string
         format: guid
-        example: A7FB7C1A-B414-4E6D-8FB5-086A7F981D8B
+        example: BE668416-7A5E-4D6A-A296-20D51E6BC888
       name:
         type: string
         example: 'Frankenstein University, Atlantida'
@@ -3519,19 +4571,19 @@ definitions:
         type: integer
         format: int64
         description: 'UNIX timestamp'
-        example: 1491913710
+        example: 1509899372
       updatedAt:
         type: integer
         format: int64
         description: 'UNIX timestamp'
-        example: 1491913710
+        example: 1509899372
       isAllowed:
         type: boolean
         example: true
       admin:
         type: string
         format: guid
-        example: 90B9949A-2AFA-4D62-A662-840DB6B79AF4
+        example: 28FB1D10-66C7-4ABB-A8E9-96086718AFFE
       topLevelGroups:
         type: array
         items:
@@ -3544,14 +4596,14 @@ definitions:
         example: 1479893977
       rootGroupId:
         type: string
-        example: 5330C80C-5EDF-4D0C-B6D8-09B95BE12566
+        example: BF66743D-1768-40B0-9C3F-7103D140F8FE
   Licence:
     type: object
     properties:
       id:
         type: string
         format: guid
-        example: 5A7770A0-9556-4F65-9022-926E0946736C
+        example: FA1C0029-D460-4C75-8889-F3FF38FA1464
       note:
         type: string
         example: 'Year licence for the first Fish University'
@@ -3562,17 +4614,17 @@ definitions:
         type: integer
         format: int64
         description: 'UNIX timestamp'
-        example: 1527600935
+        example: 1577639854
   User:
     type: object
     properties:
       id:
         type: string
         format: guid
-        example: 90B9949A-2AFA-4D62-A662-840DB6B79AF4
+        example: 28FB1D10-66C7-4ABB-A8E9-96086718AFFE
       fullName:
         type: string
-        example: 'Harmony Erdman'
+        example: 'Admin Admin'
       name:
         type: object
         properties:
@@ -3581,17 +4633,17 @@ definitions:
             example: ''
           firstName:
             type: string
-            example: Harmony
+            example: Admin
           lastName:
             type: string
-            example: Erdman
+            example: Admin
           degreesAfterName:
             type: string
             example: ''
       instanceId:
         type: string
         format: guid
-        example: A7FB7C1A-B414-4E6D-8FB5-086A7F981D8B
+        example: BE668416-7A5E-4D6A-A296-20D51E6BC888
       avatarUrl:
         type: string
         example: 'https://secure.gravatar.com/avatar/64e1b8d34f425d19e1ee2ea7236d3028.png?s=200&amp;d=retro&amp;r=g'
@@ -3615,7 +4667,7 @@ definitions:
             type: array
             items:
               type: string
-              example: 161FCAD5-E54F-4424-8EAF-362193D697CC
+              example: 32D3D459-F0EA-4C49-B3DC-FB4D5CE3AD3C
       settings:
         type: object
         properties:
@@ -3631,13 +4683,28 @@ definitions:
           openedSidebar:
             type: boolean
             example: true
+          newAssignmentEmails:
+            type: boolean
+            example: true
+          assignmentDeadlineEmails:
+            type: boolean
+            example: true
+          submissionEvaluatedEmails:
+            type: boolean
+            example: true
+      email:
+        type: string
+        example: admin@admin.com
+      isExternal:
+        type: boolean
+        example: false
   Exercise:
     type: object
     properties:
       id:
         type: string
         format: guid
-        example: CC79B359-D6D4-415B-895D-C35A2892F4BE
+        example: 6E1AA0D0-07C6-402B-AFD9-01E0B91D7FCB
       name:
         type: string
         example: 'Convex hull'
@@ -3647,7 +4714,7 @@ definitions:
       authorId:
         type: string
         format: guid
-        example: 90B9949A-2AFA-4D62-A662-840DB6B79AF4
+        example: 28FB1D10-66C7-4ABB-A8E9-96086718AFFE
       forkedFrom:
         type: string
         format: guid
@@ -3663,10 +4730,10 @@ definitions:
         example: true
       createdAt:
         type: integer
-        example: 1491913711
+        example: 1509899373
       updatedAt:
         type: integer
-        example: 1491913711
+        example: 1509899373
       localizedTexts:
         type: array
         items:
@@ -3674,17 +4741,26 @@ definitions:
           properties:
             id:
               type: string
-              example: E52E38F5-9EE0-47E3-8F28-5DEAEDD9274F
+              example: EC8219C5-B738-4F08-AF0D-648A0E13571A
             locale:
               type: string
               example: en
             text:
               type: string
-              example: 'A true classic'
+              example: ''
             createdAt:
               type: integer
-              example: 1491913711
+              example: 1509899373
             createdFrom:
+              type: string
+              example: ''
+            name:
+              type: string
+              example: 'Convex hull'
+            shortText:
+              type: string
+              example: 'Convex hull'
+            description:
               type: string
               example: ''
       runtimeConfigs:
@@ -3715,7 +4791,72 @@ definitions:
               example: ''
       additionalFiles:
         type: array
-        items: {  }
+        items:
+          type: string
+          example: 2A9D62F7-DC5B-4E11-9C6E-F671E44E6F29
+      runtimeEnvironments:
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: string
+              example: c-gcc-linux
+            name:
+              type: string
+              example: 'C (GCC)'
+            language:
+              type: string
+              example: C
+            extensions:
+              type: string
+              example: '[c, h]'
+            platform:
+              type: string
+              example: GNU/Linux
+            description:
+              type: string
+              example: 'C compiled with GCC'
+            defaultVariables:
+              type: array
+              items:
+                type: object
+                properties:
+                  name: { type: string, example: source-files }
+                  type: { type: string, example: 'file[]' }
+                  value: { type: string, example: '*.{c,h}' }
+      hardwareGroups:
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: string
+              example: group1
+            description:
+              type: string
+              example: 'Our only hardware group'
+            isAvailable:
+              type: boolean
+              example: false
+      groupsIds:
+        type: array
+        items:
+          type: string
+          example: 2A9D62F7-DC5B-4E11-9C6E-F671E44E6F29
+      isLocked:
+        type: boolean
+        example: false
+      supplementaryFilesIds:
+        type: array
+        items:
+          type: string
+          example: 2A9D62F7-DC5B-4E11-9C6E-F671E44E6F29
+      additionalExerciseFilesIds:
+        type: array
+        items:
+          type: string
+          example: D5409FA3-F791-4076-861B-59BA630CC407
   Role:
     type: string
     example: student
@@ -3739,7 +4880,7 @@ definitions:
       isAllowed:
         type: integer
         example: 1
-  LocalizedAssignmentParam:
+  LocalizedExerciseParam:
     type: object
     properties:
       locale:
@@ -3748,9 +4889,12 @@ definitions:
       name:
         type: string
         example: 'Your assignment'
-      description:
+      text:
         type: string
         example: 'This is your assignment!'
+      description:
+        type: string
+        example: 'This is a private note from the author of the assignment!'
   CommentThread:
     type: object
     properties:
@@ -3764,7 +4908,7 @@ definitions:
           properties:
             id:
               type: string
-              example: B5A58DC6-754B-4B71-92EA-A26BF4EFE791
+              example: 3532F12F-85CE-404D-A899-A93AA9FA9A03
             commentThreadId:
               type: string
               example: mainThread
@@ -3773,16 +4917,16 @@ definitions:
               properties:
                 id:
                   type: string
-                  example: E7298F1D-61FF-4ACA-A8A7-EBBD33D99BE3
+                  example: E42E7574-72A8-464C-9012-271A210DBB13
                 name:
                   type: string
-                  example: 'Emanuel Konopelski'
+                  example: 'Harmony Erdman'
                 avatarUrl:
                   type: string
                   example: 'https://secure.gravatar.com/avatar/111d68d06e2d317b5a59c2c6c5bad808.png?s=200&amp;d=retro&amp;r=g'
             postedAt:
               type: integer
-              example: 1491913711
+              example: 1509899373
             isPrivate:
               type: boolean
               example: true
@@ -3794,7 +4938,7 @@ definitions:
     properties:
       id:
         type: string
-        example: B5A58DC6-754B-4B71-92EA-A26BF4EFE791
+        example: 3532F12F-85CE-404D-A899-A93AA9FA9A03
       commentThreadId:
         type: string
         example: mainThread
@@ -3803,16 +4947,16 @@ definitions:
         properties:
           id:
             type: string
-            example: E7298F1D-61FF-4ACA-A8A7-EBBD33D99BE3
+            example: E42E7574-72A8-464C-9012-271A210DBB13
           name:
             type: string
-            example: 'Emanuel Konopelski'
+            example: 'Harmony Erdman'
           avatarUrl:
             type: string
             example: 'https://secure.gravatar.com/avatar/111d68d06e2d317b5a59c2c6c5bad808.png?s=200&amp;d=retro&amp;r=g'
       postedAt:
         type: integer
-        example: 1491913711
+        example: 1509899373
       isPrivate:
         type: boolean
         example: true
@@ -3840,6 +4984,20 @@ definitions:
       description:
         type: string
         example: 'C compiled with GCC'
+      defaultVariables:
+        type: array
+        items:
+          type: object
+          properties:
+            name:
+              type: string
+              example: source-files
+            type:
+              type: string
+              example: 'file[]'
+            value:
+              type: string
+              example: '*.{c,h}'
   HardwareGroup:
     type: object
     properties:
@@ -3899,32 +5057,32 @@ definitions:
     properties:
       id:
         type: string
-        example: C66918A4-CB25-4FF9-8A30-FF966197355A
+        example: EC22035C-A97D-42BC-B44D-F17CBF3A2ECA
       userId:
         type: string
-        example: BB1199D5-4BA8-4FE2-9745-FDC6C36E9AD8
+        example: 72CE6AB6-C806-4426-A0E1-B8B6EC567D0D
       note:
         type: string
         example: 'Random note'
       exerciseAssignmentId:
         type: string
-        example: BD596E89-86B6-4A2B-A880-45E27718E354
+        example: 9B07CD1C-5A92-4A05-A86B-BE85B0407635
       submittedAt:
         type: integer
-        example: 1491913711
+        example: 1509899373
       evaluationStatus:
         type: string
-        example: done
+        example: evaluation-failed
       evaluation:
         type: object
         example: 69f0f87c-3158-3a33-941f-e4b1ec4a0a93
         properties:
           id:
             type: string
-            example: 88CD2C50-F121-4C89-B0EA-07D6341B7230
+            example: E9C4531F-E549-448F-834A-2434A76608CB
           evaluatedAt:
             type: integer
-            example: 167739021
+            example: 1172740723
           score:
             type: double
             example: 0.95
@@ -3963,7 +5121,7 @@ definitions:
           properties:
             id:
               type: string
-              example: E67E7776-A96C-4965-8927-83F29E253CD2
+              example: 108EAE1F-BFFE-45EF-B994-4B2FAB3AB174
             name:
               type: string
               example: filename.ext
@@ -3972,47 +5130,37 @@ definitions:
               example: 0
             uploadedAt:
               type: integer
-              example: 731406240
+              example: 822507616
             userId:
               type: string
-              example: BB1199D5-4BA8-4FE2-9745-FDC6C36E9AD8
+              example: 72CE6AB6-C806-4426-A0E1-B8B6EC567D0D
+            isPublic:
+              type: boolean
+              example: false
       submittedBy:
         type: string
-        example: BB1199D5-4BA8-4FE2-9745-FDC6C36E9AD8
+        example: 72CE6AB6-C806-4426-A0E1-B8B6EC567D0D
       accepted:
         type: boolean
         example: false
-  LocalizedAssignment:
-    type: object
-    properties:
-      id:
+      isCorrect:
+        type: boolean
+        example: true
+      runtimeEnvironmentId:
         type: string
-        example: 78854480-8B0F-4CB6-B901-FEF25187148D
-      name:
+        example: c-gcc-linux
+      originalSubmissionId:
         type: string
-        example: 'Convex hull - desc'
-      locale:
-        type: string
-        example: en
-      description:
-        type: string
-        example: 'A true classic'
-      createdFrom:
-        type: string
-        format: guid
-        example: ''
-      createdAt:
-        type: integer
-        example: 1479915729
+        example: BC2B4B65-0557-4E9B-90B9-1C7FA65559CD
   SolutionEvaluation:
     type: object
     properties:
       id:
         type: string
-        example: 88CD2C50-F121-4C89-B0EA-07D6341B7230
+        example: EF24A34F-9618-4D83-97CA-4A9B2B2748A9
       evaluatedAt:
         type: integer
-        example: 167739021
+        example: 715548875
       score:
         type: double
         example: 0.95
@@ -4045,10 +5193,10 @@ definitions:
     properties:
       id:
         type: string
-        example: A7CBC568-DE82-43EA-BDD7-30BAAF18A392
+        example: A2FC9E00-7C82-45EB-B00B-8D8C09794925
       userId:
         type: string
-        example: 90B9949A-2AFA-4D62-A662-840DB6B79AF4
+        example: 28FB1D10-66C7-4ABB-A8E9-96086718AFFE
       files:
         type: array
         items:
@@ -4074,7 +5222,7 @@ definitions:
     properties:
       id:
         type: string
-        example: E67E7776-A96C-4965-8927-83F29E253CD2
+        example: 108EAE1F-BFFE-45EF-B994-4B2FAB3AB174
       name:
         type: string
         example: filename.ext
@@ -4083,10 +5231,13 @@ definitions:
         example: 0
       uploadedAt:
         type: integer
-        example: 731406240
+        example: 822507616
       userId:
         type: string
-        example: BB1199D5-4BA8-4FE2-9745-FDC6C36E9AD8
+        example: 72CE6AB6-C806-4426-A0E1-B8B6EC567D0D
+      isPublic:
+        type: boolean
+        example: false
   SubmissionFailure:
     type: object
     properties:
@@ -4098,13 +5249,13 @@ definitions:
         example: 'Things went south'
       submission:
         type: string
-        example: C66918A4-CB25-4FF9-8A30-FF966197355A
+        example: EC22035C-A97D-42BC-B44D-F17CBF3A2ECA
       createdAt:
         type: integer
-        example: 577331441
+        example: 365262088
       resolvedAt:
         type: integer
-        example: 1491913711
+        example: 1509899373
       resolutionNote:
         type: string
         example: 'Got it!'
@@ -4154,10 +5305,10 @@ definitions:
     properties:
       id:
         type: string
-        example: 324A9176-B962-4780-B67B-FC2FA757CD5D
+        example: 851758BB-0E69-4441-AF4E-F6C239E88197
       uploadedAt:
         type: integer
-        example: 1491913711
+        example: 1509899373
       description:
         type: string
         example: 'Brute force solution'
@@ -4166,10 +5317,10 @@ definitions:
         properties:
           id:
             type: string
-            example: A7CBC568-DE82-43EA-BDD7-30BAAF18A392
+            example: A2FC9E00-7C82-45EB-B00B-8D8C09794925
           userId:
             type: string
-            example: 90B9949A-2AFA-4D62-A662-840DB6B79AF4
+            example: 28FB1D10-66C7-4ABB-A8E9-96086718AFFE
           files:
             type: array
             items:
@@ -4192,18 +5343,46 @@ definitions:
             evaluation:
               type: string
               example: 3684A998-4274-4F3D-B7A0-2FC31D5F1486
+      runtimeEnvironmentId:
+        type: string
+        example: c-gcc-linux
   ReferenceSolutionEvaluation:
     type: object
     properties:
       id:
         type: string
-        example: C820F6E0-5973-416D-BF57-BC97D3BAF8AB
+        example: 45D69CD9-3353-4810-8C96-8DD2DB738CCE
       evaluationStatus:
         type: string
-        example: evaluation-failed
+        example: done
       evaluation:
-        type: string
+        type: object
         example: 3684A998-4274-4F3D-B7A0-2FC31D5F1486
+        properties:
+          id:
+            type: string
+            example: EF24A34F-9618-4D83-97CA-4A9B2B2748A9
+          evaluatedAt:
+            type: integer
+            example: 715548875
+          score:
+            type: double
+            example: 0.95
+          points:
+            type: integer
+            example: 10
+          bonusPoints:
+            type: integer
+            example: 10
+          initFailed:
+            type: boolean
+            example: false
+          initiationOutputs:
+            type: string
+            example: ''
+          testResults:
+            type: array
+            items: {  }
       referenceSolution:
         type: object
         properties:
@@ -4227,24 +5406,32 @@ definitions:
                 example: 90B9949A-2AFA-4D62-A662-840DB6B79AF4
               files:
                 type: array
-                items: {  }
+                items:
+                  type: string
+                  example: 90B9949A-2AFA-4D62-A662-840DB6B79AF4
           evaluations:
             type: array
             items:
               type: string
               example: C820F6E0-5973-416D-BF57-BC97D3BAF8AB
+      referenceSolutionId:
+        type: string
+        example: 851758BB-0E69-4441-AF4E-F6C239E88197
+      isCorrect:
+        type: boolean
+        example: true
   GroupMembership:
     type: object
     properties:
       id:
         type: string
-        example: 4D148624-A1C4-4326-9483-41E545183326
+        example: 9CD848E1-34FC-46C1-9494-7FD6A385B7AF
       userId:
         type: string
-        example: 90B9949A-2AFA-4D62-A662-840DB6B79AF4
+        example: 28FB1D10-66C7-4ABB-A8E9-96086718AFFE
       groupId:
         type: string
-        example: 161FCAD5-E54F-4424-8EAF-362193D697CC
+        example: 32D3D459-F0EA-4C49-B3DC-FB4D5CE3AD3C
       status:
         type: string
         example: active
@@ -4253,7 +5440,7 @@ definitions:
         example: 1479915729
       joinedAt:
         type: integer
-        example: 1491913711
+        example: 1509899373
       rejectedAt:
         type: integer
         example: 1479915729
@@ -4262,7 +5449,7 @@ definitions:
         example: 1479915729
       supervisorSince:
         type: integer
-        example: 1491913711
+        example: 1509899373
   UserSettings:
     type: object
     properties:
@@ -4276,6 +5463,15 @@ definitions:
         type: string
         example: en
       openedSidebar:
+        type: boolean
+        example: true
+      newAssignmentEmails:
+        type: boolean
+        example: true
+      assignmentDeadlineEmails:
+        type: boolean
+        example: true
+      submissionEvaluatedEmails:
         type: boolean
         example: true
   RuntimeConfig:
@@ -4299,24 +5495,6 @@ definitions:
       runtimeEnvironmentId:
         type: string
         example: c-gcc-linux
-      createdFrom:
-        type: string
-        example: ''
-  LocalizedText:
-    type: object
-    properties:
-      id:
-        type: string
-        example: E52E38F5-9EE0-47E3-8F28-5DEAEDD9274F
-      locale:
-        type: string
-        example: en
-      text:
-        type: string
-        example: 'A true classic'
-      createdAt:
-        type: integer
-        example: 1491913711
       createdFrom:
         type: string
         example: ''
@@ -4356,7 +5534,7 @@ definitions:
     properties:
       id:
         type: string
-        example: 9CECFB9D-29F1-4A7E-A219-A3A41B0366F8
+        example: D5409FA3-F791-4076-861B-59BA630CC407
       name:
         type: string
         example: 'Our additional file'
@@ -4365,7 +5543,124 @@ definitions:
         example: 42
       uploadedAt:
         type: integer
-        example: 1414860153
+        example: 1420263124
       userId:
         type: string
-        example: 90B9949A-2AFA-4D62-A662-840DB6B79AF4
+        example: 28FB1D10-66C7-4ABB-A8E9-96086718AFFE
+      isPublic:
+        type: boolean
+        example: true
+  LocalizedExercise:
+    type: object
+    properties:
+      id:
+        type: string
+        example: E2D09ADA-0DF8-4FC7-BDB0-E31B3B7E835E
+      locale:
+        type: string
+        example: en
+      name:
+        type: string
+        example: 'A true classic'
+      shortText:
+        type: string
+        example: 'A true classic'
+      text:
+        type: string
+        example: 'Extensive assignment description'
+      description:
+        type: string
+        example: 'Description for teachers'
+      createdAt:
+        type: integer
+        example: 1509899373
+      createdFrom:
+        type: string
+        example: ''
+  ExerciseLimits:
+    type: object
+    properties:
+      id:
+        type: string
+        example: 4440354C-4EEC-48AF-A3B1-752B4947B947
+      runtimeConfigId:
+        type: string
+        example: c-gcc-linux
+      hardwareGroupId:
+        type: string
+        example: group1
+      limits:
+        type: string
+        example: "test-id-1:\n  wall-time: 5\n  memory: 50\n  parallel: 500"
+      createdAt:
+        type: integer
+        example: 1509899373
+      createdFrom:
+        type: string
+        example: ''
+  Pipeline:
+    type: object
+    properties:
+      id:
+        type: string
+        example: 9F46BBD2-3252-4517-85C6-53F6D0A6EA3B
+      name:
+        type: string
+        example: compilationPipeline
+      version:
+        type: integer
+        example: 1
+      createdAt:
+        type: integer
+        example: 1509899373
+      updatedAt:
+        type: integer
+        example: 1509899373
+      description:
+        type: string
+        example: ''
+      author:
+        type: string
+        example: 28FB1D10-66C7-4ABB-A8E9-96086718AFFE
+      exerciseId:
+        type: string
+        example: 95EBCA48-ED94-4F02-88C0-62E343D4CD48
+      supplementaryFilesIds:
+        type: array
+        items:
+          type: string
+          example: 95EBCA48-ED94-4F02-88C0-62E343D4CD48
+      pipeline:
+        type: object
+        properties:
+          variables:
+            type: array
+            items:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: source-files
+                type:
+                  type: string
+                  example: 'file[]'
+                value:
+                  type: array
+                  items: { type: string, example: source.cpp }
+          boxes:
+            type: array
+            items:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: source
+                type:
+                  type: string
+                  example: file-in
+                portsIn:
+                  type: array
+                  items: {  }
+                portsOut:
+                  type: object
+                  properties: { input: { type: object, properties: { type: { type: string, example: file }, value: { type: string, example: source-files } } } }
