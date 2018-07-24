@@ -56,8 +56,9 @@
 		"forxer/gravatar": "^2.1",
 		"mrdm-nl/ldap": "^1.1",
 		"bjeavons/zxcvbn-php": "^0.3.0",
-		"limenet/git-version": "^0.1"
-	},
+		"limenet/git-version": "^0.1",
+		"ext-json": "*"
+    },
 	"require-dev": {
 		"nette/tester": "^2.1",
 		"mockery/mockery": "@stable",

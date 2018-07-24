@@ -11,13 +11,16 @@ use App\Exceptions\NotFoundException;
 use App\Helpers\FileServerProxy;
 use App\Helpers\UploadedFileStorage;
 use App\Helpers\UploadsConfig;
+use App\Model\Entity\SolutionFile;
+use App\Model\Entity\SupplementaryExerciseFile;
+use App\Model\Entity\UploadedFile;
 use App\Model\Repository\Assignments;
 use App\Model\Repository\SupplementaryExerciseFiles;
 use App\Model\Repository\UploadedFiles;
 use App\Responses\GuzzleResponse;
 use App\Security\ACL\IUploadedFilePermissions;
-use ForceUTF8\Encoding;
 use Nette\Application\Responses\FileResponse;
+use Nette\Application\IResponse;
 use Nette\Utils\Strings;
 
 /**
@@ -101,7 +104,7 @@ class UploadedFilesPresenter extends BasePresenter {
    */
   public function actionDownload(string $id) {
     $file = $this->uploadedFiles->findOrThrow($id);
-    $this->sendResponse(new FileResponse($file->getLocalFilePath(), $file->getName()));
+    $this->sendResponse($this->getFileResponse($file));
   }
 
   public function checkContent(string $id) {
@@ -119,7 +122,7 @@ class UploadedFilesPresenter extends BasePresenter {
   public function actionContent(string $id) {
     $file = $this->uploadedFiles->findOrThrow($id);
     $sizeLimit = $this->uploadsConfig->getMaxPreviewSize();
-    $content = $file->getContent($sizeLimit);
+    $content = $this->getFileContents($file, $sizeLimit);
 
     // Remove UTF BOM prefix...
     $utf8bom = "\xef\xbb\xbf";
@@ -195,4 +198,32 @@ class UploadedFilesPresenter extends BasePresenter {
     $this->sendResponse(new GuzzleResponse($stream, $file->getName()));
   }
 
+  protected function getFileContents(UploadedFile $file, int $sizeLimit = null) {
+    if ($file instanceof SolutionFile || $file instanceof SupplementaryExerciseFile) {
+      $stream = $this->fileServerProxy->getFileserverFileStream($this->fileServerProxy->getFileserverUrl() . $file->getFileServerPath());
+      if ($stream === null) {
+        throw new NotFoundException("File '{$file->getId()}' not found on remote fileserver");
+      }
+      return $stream->read($sizeLimit === null ? $stream->getSize() : $sizeLimit);
+    }
+
+    return $file->getContent($sizeLimit);
+  }
+
+  /**
+   * @param UploadedFile $file
+   * @return IResponse
+   * @throws \Nette\Application\BadRequestException
+   */
+  protected function getFileResponse(UploadedFile $file): IResponse {
+    if ($file instanceof SolutionFile || $file instanceof SupplementaryExerciseFile) {
+      $stream = $this->fileServerProxy->getFileserverFileStream($this->fileServerProxy->getFileserverUrl() . $file->getFileServerPath());
+      if ($stream === null) {
+        throw new NotFoundException("File '{$file->getId()}' not found on remote fileserver");
+      }
+      return new GuzzleResponse($stream, $file->getName());
+    }
+
+    return new FileResponse($file->getLocalFilePath(), $file->getName());
+  }
 }

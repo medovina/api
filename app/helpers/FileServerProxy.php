@@ -57,6 +57,10 @@ class FileServerProxy {
       return $this->remoteServerAddress . self::TASKS_ROUTE;
   }
 
+  public function getFileserverUrl(): string {
+    return $this->remoteServerAddress;
+  }
+
   /**
    * Downloads the contents of a file and return it in form of guzzle stream.
    * <p>
