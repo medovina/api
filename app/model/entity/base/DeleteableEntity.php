@@ -22,4 +22,7 @@ trait DeleteableEntity {
     return $this->deletedAt !== null;
   }
 
+  public function deletedNow() {
+    $this->deletedAt = new DateTime();
+  }
 }
